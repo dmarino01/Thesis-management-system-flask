@@ -34,7 +34,7 @@ def status_401(error):
     return redirect(url_for('login'))
 
 def status_404(error):
-    return "<h1>Página no encontrada</h1>"
+    return render_template("404.html")
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -48,10 +48,10 @@ def login():
                 login_user(logged_user)
                 return redirect(url_for('home'))
             else:
-                flash ("Invalid password...")
+                flash ("Contraseña Inválida...")
                 return render_template("auth/login.html")
         else:
-            flash("User not found...")
+            flash("Usuario No Encontrado...")
             return render_template("auth/login.html")
     else:
         return render_template("auth/login.html")

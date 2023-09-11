@@ -12,3 +12,5 @@ class User(UserMixin):
     @classmethod
     def check_password(cls, hashed_password, password):
         return check_password_hash(hashed_password, password)
+
+#print(generate_password_hash("Unitru@2023"))
