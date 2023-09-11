@@ -65,6 +65,11 @@ def logout():
 def register():
     return render_template("auth/register.html")
 
+@app.route("/registerUser")
+def registerUser():
+    #Logic
+    return redirect(url_for('login'))
+
 @app.route('/usuarios')
 @login_required
 def usuarios():
@@ -87,6 +92,14 @@ def temas():
 def libreria():
     # Handle the librery page logic here
     return render_template('libreria.html')
+
+# Routes Components
+
+@app.route('/tesis')
+@login_required
+def tesis():
+    # Handle the librery page logic here
+    return render_template('components/tesis/index.html')
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])

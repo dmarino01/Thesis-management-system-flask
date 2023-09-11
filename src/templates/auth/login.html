@@ -44,7 +44,6 @@
         </div>
         <!-- Spinner End -->
 
-
         <!-- Sign In Start -->
         <div class="container-fluid">
             <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
@@ -59,11 +58,12 @@
                         <form class="form-signin" action="/login" method="POST">
                             {% with messages = get_flashed_messages() %}
                             {% if messages %}
-                            <br/>
-                            {% for message in messages %} 
+                            <br />
+                            {% for message in messages %}
                             <div class="alert alert-primary alert-dismissible" role="alert">
                                 <strong>{{ message }}</strong>
-                                <button type="buttton" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="buttton" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                             {% endfor %}
                             {% endif %}
