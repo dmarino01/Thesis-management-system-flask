@@ -31,6 +31,25 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <style>
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            /* Adjust the height of the progress bar */
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #8d0d0d;
+            /* Adjust the color of the progress bar */
+        }
+    </style>
+    
 </head>
 
 <body>
@@ -60,14 +79,20 @@
                             {% if messages %}
                             <br />
                             {% for message in messages %}
-                            <div class="alert alert-primary alert-dismissible" role="alert">
+                            <div class="alert alert-primary alert-dismissible position-relative" role="alert"
+                                id="myAlert">
                                 <strong>{{ message }}</strong>
-                                <button type="buttton" class="btn-close" data-bs-dismiss="alert"
+                                <div class="progress-container">
+                                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
                                     aria-label="Close"></button>
                             </div>
+
                             {% endfor %}
                             {% endif %}
                             {% endwith %}
+
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="floatingInput" name="username"
@@ -109,6 +134,31 @@
 
     <!-- Template Javascript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        // Use JavaScript to automatically dismiss the alert after 5 seconds
+        var alert = document.getElementById("myAlert");
+        var progressBar = document.getElementById("myProgressBar");
+
+        setTimeout(function () {
+            alert.classList.add("fade"); // Add the "fade" class for the fade-out animation
+            alert.style.transition = "opacity 0.5s ease"; // Define the transition duration
+            setTimeout(function () {
+                alert.style.display = "none"; // Hide the alert after the transition
+            }, 500); // Adjust the timeout to match the transition duration
+        }, 5000); // Set the timeout for 5 seconds
+
+        // Update the progress bar as time elapses
+        var totalTime = 5000; // Total time in milliseconds (5 seconds)
+        var interval = 100; // Update interval in milliseconds
+        var increment = (interval / totalTime) * 100;
+        var currentWidth = 100;
+
+        var progressBarUpdate = setInterval(function () {
+            currentWidth -= increment;
+            progressBar.style.width = currentWidth + "%";
+        }, interval);
+    </script>
 
 </body>
 

@@ -1,18 +1,53 @@
 {% extends "base.html" %}
 
+{% block customCSS %}
+<style>
+    .progress-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        /* Adjust the height of the progress bar */
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        /* Adjust the color of the progress bar */
+    }
+</style>
+{% endblock %}
+
 {% block title %} AUTORES {% endblock %}
 
 {% block content %}
 
-<h2>Mantenedor de Inicio</h2>
-
 <!-- Recent Sales Start -->
 <div class="container-fluid pt-4 px-4">
+    <h3>Mantenedor de Autores</h3>
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Registros</h6>
-            <a href="">Mostrar Todo</a>
+            <a class="btn btn-sm btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> Nuevo Autor</a>
         </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+            id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
         <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
@@ -35,8 +70,10 @@
                         <td>{{ autor.email }}</td>
                         <td>{{ autor.phone }}</td>
                         <td>
-                            <a class="btn btn-sm btn-primary" href="">Detail</a>
-                            <a class="btn btn-sm btn-danger" href="">Delete</a>
+                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ autor.id }}"><i
+                                    class="fa fa-pen"></i> Editar</a>
+                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ autor.id }}"
+                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -46,6 +83,39 @@
     </div>
 </div>
 <!-- Recent Sales End -->
+{% endblock %}
 
+
+{% block customJS %}
+<script>
+    // Use JavaScript to automatically dismiss the alert after 5 seconds
+    var alert = document.getElementById("myAlert");
+    var progressBar = document.getElementById("myProgressBar");
+
+    setTimeout(function () {
+        alert.classList.add("fade"); // Add the "fade" class for the fade-out animation
+        alert.style.transition = "opacity 0.5s ease"; // Define the transition duration
+        setTimeout(function () {
+            alert.style.display = "none"; // Hide the alert after the transition
+        }, 500); // Adjust the timeout to match the transition duration
+    }, 5000); // Set the timeout for 5 seconds
+
+    // Update the progress bar as time elapses
+    var totalTime = 5000; // Total time in milliseconds (5 seconds)
+    var interval = 100; // Update interval in milliseconds
+    var increment = (interval / totalTime) * 100;
+    var currentWidth = 100;
+
+    var progressBarUpdate = setInterval(function () {
+        currentWidth -= increment;
+        progressBar.style.width = currentWidth + "%";
+    }, interval);
+
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar este Autor?');
+    }
+
+</script>
+<!-- Include jQuery and Bootstrap JS -->
 
 {% endblock %}

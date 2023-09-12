@@ -7,7 +7,7 @@ class Autor:
     #phone = db.Column(db.String(255))
     #is_deleted = db.Column(db.Boolean, default=False)  # Field for logic deletion
 
-    def __init__(self, id, firstname, lastname, email, phone):
+    def __init__(self, id, firstname, lastname, email, phone,):
         self.id = id
         self.firstname = firstname
         self.lastname = lastname

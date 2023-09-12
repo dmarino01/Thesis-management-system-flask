@@ -287,3 +287,12 @@
     background: var(--dark);
     border-color: var(--primary);
 }
+
+/* Override conflicting styles */
+.custom-primary-button {
+    background-color: #007bff; /* Bootstrap's primary blue color */
+    border-color: #007bff; /* Border color */
+    color: #fff; /* Text color */
+
+    /* Add any additional styling you need */
+}

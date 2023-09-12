@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
@@ -102,20 +102,79 @@ def libreria():
     # Handle the librery page logic here
     return render_template('libreria.html')
 
-# START ROUTES COMPONENTS
+# START TESIS ROUTES
 @app.route('/tesis')
 @login_required
 def tesis():
     # Handle the library page logic here
     return render_template('components/tesis/index.html')
 
+# START AUTOR ROUTES
 @app.route('/autor')
 @login_required
 def autor():
-    # Handle the author page logic here
     data = ControllerAutor.getAutors(db)
     return render_template('components/autor/index.html', autores = data)
 
+@app.route('/create_autor_form', methods=['GET'])
+@login_required
+def create_autor_form():   
+    return render_template('components/autor/create.html')
+
+@app.route('/save_autor', methods=['POST'])
+@login_required
+def save_autor():
+    try:
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        phone = request.form['phone']
+        ControllerAutor.createAutor(db, firstname, lastname, email, phone)  
+        flash ("Autor Creado Exitosamente...")
+        return redirect(url_for('autor'))
+    except Exception as ex:
+        return redirect(url_for('create_autor_form'))    
+
+@app.route('/edit_autor_form/<int:id>', methods=['GET'])
+@login_required
+def edit_autor_form(id):
+    autor = ControllerAutor.get_autor_by_id(db, id)
+    return render_template('components/autor/edit.html', autor=autor)
+
+@app.route('/update_autor/<int:id>', methods=['POST'])
+@login_required
+def update_autor(id):
+    try:
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        phone = request.form['phone']
+        ControllerAutor.update_autor(db, id, firstname, lastname, email, phone)
+        flash ("Autor Actualizado Exitosamente...")
+        return redirect(url_for('autor'))
+    except Exception as ex:
+        return redirect(url_for('create_autor_form'))
+
+@app.route('/desactivate_autor/<int:id>')
+@login_required
+def desactivate_autor(id):
+    try:
+        autor = ControllerAutor.get_autor_by_id(db, id)
+        if autor:
+            # Set the is_deleted flag to 1
+            cursor = db.connection.cursor()
+            cursor.execute("UPDATE autor SET is_deleted = 1 WHERE id = %s", (id,))
+            db.connection.commit()
+            cursor.close()
+            flash ("Autor Eliminado Exitosamente...")
+            return redirect(url_for('autor'))
+        else:
+            flash ("No se pudo eliminar el Autor...")
+            return redirect(url_for('autor'))
+    except Exception as ex:
+        raise Exception(ex)
+           
+# START ASESOR ROUTES
 @app.route('/asesor')
 @login_required
 def asesor():
