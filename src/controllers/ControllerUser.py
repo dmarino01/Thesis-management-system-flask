@@ -1,6 +1,6 @@
-from .entities.User import User
+from models.User import User
 
-class ModelUser():
+class ControllerUser():
 
     @classmethod
     def login(cls, db, user):

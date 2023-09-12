@@ -3,15 +3,24 @@ from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
 
+
 from config import config
 
 # Models:
-from models.ModelUser import ModelUser
+from controllers.ControllerUser import ControllerUser
+from controllers.ControllerAutor import ControllerAutor
+#from controllers.ControllerTesis import ControllerTesis
+#from controllers.ControllerCritico import ControllerCritico
+#from controllers.ControllerRevision import ControllerRevision
+#from controllers.ControllerAsesor import ControllerAsesor
 
 # Entities:
-from models.entities.User import User
+from models.User import User
+from models.Autor import Autor
 
 app = Flask(__name__)
+
+
 
 csrf = CSRFProtect()
 app.url_map.strict_slashes = False
@@ -21,7 +30,7 @@ login_manager_app=LoginManager(app)
 
 @login_manager_app.user_loader
 def load_user(id):
-    return ModelUser.get_by_id(db, id)
+    return ControllerUser.get_by_id(db, id)
 
 @app.route('/')
 @app.route('/index')
@@ -42,7 +51,7 @@ def login():
         #print(request.form['username'])
         #print(request.form['password'])
         user = User(0, request.form['username'], 0, request.form['password'])
-        logged_user=ModelUser.login(db,user)
+        logged_user=ControllerUser.login(db,user)
         if logged_user != None:
             if logged_user.password:
                 login_user(logged_user)
@@ -93,13 +102,38 @@ def libreria():
     # Handle the librery page logic here
     return render_template('libreria.html')
 
-# Routes Components
-
+# START ROUTES COMPONENTS
 @app.route('/tesis')
 @login_required
 def tesis():
-    # Handle the librery page logic here
+    # Handle the library page logic here
     return render_template('components/tesis/index.html')
+
+@app.route('/autor')
+@login_required
+def autor():
+    # Handle the author page logic here
+    data = ControllerAutor.getAutors(db)
+    return render_template('components/autor/index.html', autores = data)
+
+@app.route('/asesor')
+@login_required
+def asesor():
+    # Handle the Authors page logic here
+    return render_template('components/asesor/index.html')
+
+@app.route('/review')
+@login_required
+def review():
+    # Handle the Authors page logic here
+    return render_template('components/review/index.html')
+
+@app.route('/reviewer')
+@login_required
+def reviewer():
+    # Handle the Authors page logic here
+    return render_template('components/reviewer/index.html')
+# END ROUTES COMPONENTS
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])
