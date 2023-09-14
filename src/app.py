@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
-
+from email_validator import validate_email, EmailNotValidError
 
 from config import config
 
@@ -57,10 +57,10 @@ def login():
                 login_user(logged_user)
                 return redirect(url_for('home'))
             else:
-                flash ("Contraseña Inválida...")
+                flash ('Contraseña Inválida...', 'error')
                 return render_template("auth/login.html")
         else:
-            flash("Usuario No Encontrado...")
+            flash('Usuario No Encontrado...', 'error')
             return render_template("auth/login.html")
     else:
         return render_template("auth/login.html")
@@ -129,6 +129,14 @@ def save_autor():
         lastname = request.form['lastname']
         email = request.form['email']
         phone = request.form['phone']
+
+        if not firstname.isalpha() or not lastname.isalpha():
+            flash('Nombres y Apellidos solo deben contener letras.', 'error')
+        else:
+            # Valid form submission
+            flash('Form submitted successfully...', 'success')
+
+
         ControllerAutor.createAutor(db, firstname, lastname, email, phone)  
         flash ("Autor Creado Exitosamente...")
         return redirect(url_for('autor'))
