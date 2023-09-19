@@ -2,8 +2,42 @@
 
 {% block title %} LIBRERIA {% endblock %}
 
+{% block customCSS %}
+<!-- Cuustom CSS for the page -->
+{% endblock %}
+
 {% block content %}
 
-<h2>Librería</h2>
+<!-- Recent Sales Start -->
+<div class="container-fluid pt-4 px-4">
+    <h3>Libreria</h3>
+    <div class="bg-secondary rounded p-4">
+        <form class="form-inline">
+            <div class="input-group mb-2" style="width: 50%;">
+                <input type="text" class="form-control" placeholder="Buscar tesis por título">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form><br>
+        <h4>Resultados</h4>
+        <div class="card bg-dark text-white">
+            <div class="card-body">
+                <p class="card-text">ID: 3223</p>
+                <p class="card-text">Titulo: Implementacion de un sistema integrado para la empresa ABC.</p>
+                <p class="card-text">Autor: Juan Perez</p>
+                <p class="card-text">Año: 2021</p>
+                <p class="card-text">Abstract: Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam exercitationem veritatis eius natus quibusdam tempore! Ut repudiandae possimus tenetur doloribus labore ducimus, modi, ex, dignissimos aliquid porro iusto quaerat! Quae!</p>
+                <a href="#" class="btn btn-primary"><i class="fa fa-file"></i> Ver Archivo</a>
+            </div>
+        </div>
+        
 
+
+
+    </div>
+
+</div>
 {% endblock %}

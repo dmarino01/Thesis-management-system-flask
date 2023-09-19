@@ -52,13 +52,12 @@
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <!--<th scope="col"><input class="form-check-input" type="checkbox"></th>-->
                         <th scope="col">ID</th>
                         <th scope="col">Nombres y Apellidos</th>
                         <th scope="col">Codigo Estudiante</th>
                         <th scope="col">Email</th>
                         <th scope="col">Direccion</th>
-                        <th scope="col">Teléfono</th>                        
+                        <th scope="col">Teléfono</th>
                         <th scope="col">Acción</th>
                     </tr>
                 </thead>
@@ -71,7 +70,7 @@
                         <td>{{ autor.email }}</td>
                         <td>{{ autor.address }}</td>
                         <td>{{ autor.phone }}</td>
-                        <td>
+                        <td class="col-2">
                             <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ autor.author_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
                             <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ autor.author_id }}"
