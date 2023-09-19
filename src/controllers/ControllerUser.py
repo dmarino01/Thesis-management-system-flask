@@ -1,32 +1,34 @@
 from models.User import User
+from sqlalchemy import text
 
 class ControllerUser():
 
     @classmethod
     def login(cls, db, user):
         try:
-            cursor=db.connection.cursor()
-            sql="""SELECT id, username, email, password FROM user 
-                    WHERE username = '{}'""".format(user.username)
-            cursor.execute(sql)
-            row=cursor.fetchone()
-            if row != None:
-                user = User(row[0], row[1], row[2], User.check_password(row[3], user.password))
+            session = db.session()
+            sql = text("SELECT user_id, username, password, person_id FROM user "
+                       "WHERE username = :username")
+            result = session.execute(sql, {"username": user.username})
+            row = result.fetchone()
+            if row is not None:
+                user = User(row[0], row[1], User.check_password(row[2], user.password), row[3])
                 return user
             else:
                 return None
         except Exception as ex:
             raise Exception(ex)
+
         
     @classmethod
     def get_by_id(cls, db, id):
         try:
-            cursor=db.connection.cursor()
-            sql="SELECT id, username, email FROM user WHERE id = {}".format(id)
-            cursor.execute(sql)
-            row=cursor.fetchone()
-            if row != None:
-                return User(row[0], row[1], row[2], None) 
+            session = db.session()
+            sql = text("SELECT user_id, username FROM user WHERE user_id = :user_id")
+            result = session.execute(sql, {"user_id": id})
+            row = result.fetchone()
+            if row is not None:
+                return User(row[0], row[1], None, None)
             else:
                 return None
         except Exception as ex:

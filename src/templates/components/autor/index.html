@@ -54,25 +54,27 @@
                     <tr class="text-white">
                         <!--<th scope="col"><input class="form-check-input" type="checkbox"></th>-->
                         <th scope="col">ID</th>
-                        <th scope="col">Nombres</th>
-                        <th scope="col">Apellidos</th>
+                        <th scope="col">Nombres y Apellidos</th>
+                        <th scope="col">Codigo Estudiante</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Teléfono</th>
+                        <th scope="col">Direccion</th>
+                        <th scope="col">Teléfono</th>                        
                         <th scope="col">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for autor in autores %}
                     <tr>
-                        <td>{{ autor.id }}</td>
-                        <td>{{ autor.firstname }}</td>
-                        <td>{{ autor.lastname }}</td>
+                        <td>{{ autor.author_id }}</td>
+                        <td>{{ autor.firstname }} {{ autor.lastname }}</td>
+                        <td>{{ autor.student_code }}</td>
                         <td>{{ autor.email }}</td>
+                        <td>{{ autor.address }}</td>
                         <td>{{ autor.phone }}</td>
                         <td>
-                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ autor.id }}"><i
+                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ autor.author_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ autor.id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ autor.author_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>

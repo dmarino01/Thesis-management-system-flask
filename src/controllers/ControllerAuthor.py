@@ -1,21 +1,20 @@
-from models.Autor import Autor
-from flask_mysqldb import MySQL
+from models.Author import Author
+from models.Person import Person
+from sqlalchemy import text
 
-mysql = MySQL()
-
-class ControllerAutor():
+class ControllerAuthor():
 
     @classmethod
     def getAutors(cls, db):
         try:
-            cursor=db.connection.cursor()
-            sql="SELECT * FROM autor WHERE is_deleted = 0"
-            cursor.execute(sql)
-            rows=cursor.fetchall()
+            session = db.session()
+            sql = text("SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email FROM AUTHOR A INNER JOIN PERSON P ON A.person_id = P.person_id WHERE is_deleted = 0;")
+            result = session.execute(sql)
+            rows=result.fetchall()
             autores = []
             if rows != None:
                 for row in rows:
-                    autor = Autor(row[0], row[1], row[2], row[3], row[4])
+                    autor = Author(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
                     autores.append(autor)
                 return autores
             else:
@@ -26,12 +25,11 @@ class ControllerAutor():
     @classmethod    
     def createAutor(cls, db, firstname, lastname, email, phone):
         try:
-            cursor = db.connection.cursor()
-            # Assuming you have a MySQL table named 'autors'
-            cursor.execute("INSERT INTO autor (firstname, lastname, email, phone) VALUES (%s, %s, %s, %s)",
+            session = db.session()
+            sql = text("INSERT INTO autor (firstname, lastname, email, phone) VALUES (%s, %s, %s, %s)",
                         (firstname, lastname, email, phone))
-            db.connection.commit()
-            cursor.close()
+            session.execute(sql)
+            session.commit()
             return {'message': 'Autor created successfully'}, 201
         except Exception as ex:
             raise Exception(ex)
@@ -39,17 +37,20 @@ class ControllerAutor():
     @classmethod
     def get_autor_by_id(cls, db, id):
         try:
-            cursor = db.connection.cursor()
-            cursor.execute("SELECT * FROM autor WHERE id = %s", (id,))
-            row = cursor.fetchone()
-            cursor.close()
+            session = db.session()
+            sql = text("SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email FROM AUTHOR A INNER JOIN PERSON P ON A.person_id = P.person_id WHERE author_id = :id")
+            result = session.execute(sql, {"id": id})
+            row = result.fetchone()
             if row:
                 autor = {
-                    'id': row[0],
-                    'firstname': row[1],
-                    'lastname': row[2],
-                    'email': row[3],
-                    'phone': row[4],
+                    'student_code': row[0],
+                    'author_id': row[1],
+                    'person_id': row[2],
+                    'firstname': row[3],
+                    'lastname': row[4],
+                    'phone': row[5],
+                    'address': row[6],
+                    'email': row[7]
                 }
                 return autor
             else:

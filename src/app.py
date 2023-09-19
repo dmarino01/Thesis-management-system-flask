@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
-from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
-from email_validator import validate_email, EmailNotValidError
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 from config import config
 
-# Models:
+# Controller:
 from controllers.ControllerUser import ControllerUser
-from controllers.ControllerAutor import ControllerAutor
+from controllers.ControllerAuthor import ControllerAuthor
 #from controllers.ControllerTesis import ControllerTesis
 #from controllers.ControllerCritico import ControllerCritico
 #from controllers.ControllerRevision import ControllerRevision
@@ -16,21 +16,21 @@ from controllers.ControllerAutor import ControllerAutor
 
 # Entities:
 from models.User import User
-from models.Autor import Autor
+from models.Author import Author
 
 app = Flask(__name__)
-
-
 
 csrf = CSRFProtect()
 app.url_map.strict_slashes = False
 
-db = MySQL(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost:3306/thesis_management'
+db = SQLAlchemy(app)
+
 login_manager_app=LoginManager(app)
 
 @login_manager_app.user_loader
-def load_user(id):
-    return ControllerUser.get_by_id(db, id)
+def load_user(user_id):
+    return ControllerUser.get_by_id(db, user_id)
 
 @app.route('/')
 @app.route('/index')
@@ -48,9 +48,7 @@ def status_404(error):
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        #print(request.form['username'])
-        #print(request.form['password'])
-        user = User(0, request.form['username'], 0, request.form['password'])
+        user = User(0, request.form['username'], request.form['password'], 0)
         logged_user=ControllerUser.login(db,user)
         if logged_user != None:
             if logged_user.password:
@@ -113,7 +111,7 @@ def tesis():
 @app.route('/autor')
 @login_required
 def autor():
-    data = ControllerAutor.getAutors(db)
+    data = ControllerAuthor.getAutors(db)
     return render_template('components/autor/index.html', autores = data)
 
 @app.route('/create_autor_form', methods=['GET'])
@@ -137,16 +135,16 @@ def save_autor():
             flash('Form submitted successfully...', 'success')
 
 
-        ControllerAutor.createAutor(db, firstname, lastname, email, phone)  
+        ControllerAuthor.createAutor(db, firstname, lastname, email, phone)  
         flash ("Autor Creado Exitosamente...")
         return redirect(url_for('autor'))
     except Exception as ex:
         return redirect(url_for('create_autor_form'))    
 
-@app.route('/edit_autor_form/<int:id>', methods=['GET'])
+@app.route('/edit_autor_form/<int:author_id>', methods=['GET'])
 @login_required
-def edit_autor_form(id):
-    autor = ControllerAutor.get_autor_by_id(db, id)
+def edit_autor_form(author_id):
+    autor = ControllerAuthor.get_autor_by_id(db, author_id)
     return render_template('components/autor/edit.html', autor=autor)
 
 @app.route('/update_autor/<int:id>', methods=['POST'])
@@ -157,7 +155,7 @@ def update_autor(id):
         lastname = request.form['lastname']
         email = request.form['email']
         phone = request.form['phone']
-        ControllerAutor.update_autor(db, id, firstname, lastname, email, phone)
+        ControllerAuthor.update_autor(db, id, firstname, lastname, email, phone)
         flash ("Autor Actualizado Exitosamente...")
         return redirect(url_for('autor'))
     except Exception as ex:
@@ -167,13 +165,18 @@ def update_autor(id):
 @login_required
 def desactivate_autor(id):
     try:
-        autor = ControllerAutor.get_autor_by_id(db, id)
+        autor = ControllerAuthor.get_autor_by_id(db, id)
         if autor:
             # Set the is_deleted flag to 1
-            cursor = db.connection.cursor()
-            cursor.execute("UPDATE autor SET is_deleted = 1 WHERE id = %s", (id,))
-            db.connection.commit()
-            cursor.close()
+            session = db.session()
+            sql = text(
+                "UPDATE PERSON AS p "
+                "INNER JOIN AUTHOR AS a ON p.person_id = a.person_id "
+                "SET p.is_deleted = 1 "
+                "WHERE a.author_id = :id"
+            )
+            session.execute(sql, {"id": id})
+            session.commit()
             flash ("Autor Eliminado Exitosamente...")
             return redirect(url_for('autor'))
         else:
