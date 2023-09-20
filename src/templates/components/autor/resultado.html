@@ -17,17 +17,6 @@
         background-color: #fff;
         /* Adjust the color of the progress bar */
     }
-
-    .table-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .pagination-controls {
-        margin-right: auto; /* Push the controls to the left */
-    }
-
 </style>
 {% endblock %}
 
@@ -70,18 +59,6 @@
         {% endwith %}
 
         <div class="table-responsive">
-            <!-- Pagination Controls -->
-            <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
-                <label for="records-per-page">Registros Por Página: </label>
-                <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 3%;" class="form-control" id="records-per-page">
-                    <option value="1">1</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                </select>
-                <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i class="fa fa-arrow-left"></i></button>
-                <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
-            </div><br>
-
             <table class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
@@ -95,7 +72,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for autor in autores %}
+                    {% if filtered_autores %}
+                    {% for autor in filtered_autores %}
                     <tr>
                         <td>{{ autor.author_id }}</td>
                         <td>{{ autor.firstname }} {{ autor.lastname }}</td>
@@ -111,6 +89,10 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    {% else %}
+                    <!-- Display a message when no results are found -->
+                    <p>No resultados encontrados.</p>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -121,58 +103,6 @@
 
 
 {% block customJS %}
-<script>
-    const table = document.querySelector('.table');
-    const recordsPerPageSelect = document.getElementById('records-per-page');
-    const prevPageButton = document.getElementById('prev-page');
-    const nextPageButton = document.getElementById('next-page');
-    
-    let currentPage = 1;
-    let recordsPerPage = parseInt(recordsPerPageSelect.value);
-
-    // Update the table based on current page and records per page
-    function updateTable() {
-        const rows = table.querySelectorAll('tbody tr');
-        const startIndex = (currentPage - 1) * recordsPerPage;
-        const endIndex = startIndex + recordsPerPage;
-
-        rows.forEach((row, index) => {
-            if (index >= startIndex && index < endIndex) {
-                row.style.display = 'table-row';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-
-    // Event listeners for changing records per page and pagination
-    recordsPerPageSelect.addEventListener('change', () => {
-        recordsPerPage = parseInt(recordsPerPageSelect.value);
-        currentPage = 1;
-        updateTable();
-    });
-
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateTable();
-        }
-    });
-
-    nextPageButton.addEventListener('click', () => {
-        const rows = table.querySelectorAll('tbody tr');
-        const totalRows = rows.length;
-        const maxPage = Math.ceil(totalRows / recordsPerPage);
-
-        if (currentPage < maxPage) {
-            currentPage++;
-            updateTable();
-        }
-    });
-
-    // Initial table setup
-    updateTable();
-</script>
 <script>
     // Use JavaScript to automatically dismiss the alert after 5 seconds
     var alert = document.getElementById("myAlert");

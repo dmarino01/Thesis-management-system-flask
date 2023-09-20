@@ -114,6 +114,17 @@ def autor():
     data = ControllerAuthor.getAutors(db)
     return render_template('components/autor/index.html', autores = data)
 
+@app.route('/search_autores', methods=['POST'])
+@login_required
+def search():
+    #try:
+        name = request.form['keyname']
+        data = ControllerAuthor.getAutorsbyName(db, name)
+        return render_template('components/autor/resultado.html', filtered_autores=data)
+    #except Exception as ex:
+    #    print(ex)
+    #    return redirect(url_for('autor'))    
+
 @app.route('/create_autor_form', methods=['GET'])
 @login_required
 def create_autor_form():   
@@ -123,43 +134,40 @@ def create_autor_form():
 @login_required
 def save_autor():
     try:
+        student_code = request.form['student_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        email = request.form['email']
         phone = request.form['phone']
-
-        if not firstname.isalpha() or not lastname.isalpha():
-            flash('Nombres y Apellidos solo deben contener letras.', 'error')
-        else:
-            # Valid form submission
-            flash('Form submitted successfully...', 'success')
-
-
-        ControllerAuthor.createAutor(db, firstname, lastname, email, phone)  
+        address = request.form['address']
+        email = request.form['email']
+        ControllerAuthor.createAutor(db, student_code, firstname, lastname, phone, address, email)
         flash ("Autor Creado Exitosamente...")
         return redirect(url_for('autor'))
     except Exception as ex:
         return redirect(url_for('create_autor_form'))    
 
-@app.route('/edit_autor_form/<int:author_id>', methods=['GET'])
+@app.route('/edit_autor_form/<int:id>', methods=['GET'])
 @login_required
-def edit_autor_form(author_id):
-    autor = ControllerAuthor.get_autor_by_id(db, author_id)
+def edit_autor_form(id):
+    autor = ControllerAuthor.get_autor_by_id(db, id)
     return render_template('components/autor/edit.html', autor=autor)
 
 @app.route('/update_autor/<int:id>', methods=['POST'])
 @login_required
 def update_autor(id):
     try:
+        student_code = request.form['student_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        email = request.form['email']
         phone = request.form['phone']
-        ControllerAuthor.update_autor(db, id, firstname, lastname, email, phone)
+        address = request.form['address']
+        email = request.form['email']
+        ControllerAuthor.update_autor(db, id, student_code, firstname, lastname, phone, address, email)
         flash ("Autor Actualizado Exitosamente...")
         return redirect(url_for('autor'))
     except Exception as ex:
-        return redirect(url_for('create_autor_form'))
+        flash ("No se pudo editar el Autor...")
+        return redirect(url_for('edit_autor_form'))
 
 @app.route('/desactivate_autor/<int:id>')
 @login_required
@@ -168,15 +176,7 @@ def desactivate_autor(id):
         autor = ControllerAuthor.get_autor_by_id(db, id)
         if autor:
             # Set the is_deleted flag to 1
-            session = db.session()
-            sql = text(
-                "UPDATE PERSON AS p "
-                "INNER JOIN AUTHOR AS a ON p.person_id = a.person_id "
-                "SET p.is_deleted = 1 "
-                "WHERE a.author_id = :id"
-            )
-            session.execute(sql, {"id": id})
-            session.commit()
+            ControllerAuthor.desactivate_autor(db, id)
             flash ("Autor Eliminado Exitosamente...")
             return redirect(url_for('autor'))
         else:

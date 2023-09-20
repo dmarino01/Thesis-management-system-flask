@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 19, 2023 at 05:46 AM
+-- Generation Time: Sep 19, 2023 at 10:50 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `advisor` (
   `advisor_code` varchar(20) DEFAULT NULL,
   `institution` varchar(20) DEFAULT NULL,
   `person_id` int NOT NULL,
-  `advisor_id` int NOT NULL,
+  `advisor_id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`advisor_id`),
   KEY `R_46` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `advisor` (
 DROP TABLE IF EXISTS `author`;
 CREATE TABLE IF NOT EXISTS `author` (
   `student_code` varchar(20) DEFAULT NULL,
-  `author_id` int NOT NULL,
+  `author_id` int NOT NULL AUTO_INCREMENT,
   `person_id` int NOT NULL,
   PRIMARY KEY (`author_id`),
   KEY `R_45` (`person_id`)
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `author_thesis` (
 
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE IF NOT EXISTS `comment` (
-  `comment_id` int NOT NULL,
+  `comment_id` int NOT NULL AUTO_INCREMENT,
   `comment` longtext,
   PRIMARY KEY (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `comment_review` (
 
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE IF NOT EXISTS `permission` (
-  `permission_id` int NOT NULL,
+  `permission_id` int NOT NULL AUTO_INCREMENT,
   `permission` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `permission_role` (
 
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE IF NOT EXISTS `person` (
-  `person_id` int NOT NULL,
+  `person_id` int NOT NULL AUTO_INCREMENT,
   `firstname` varchar(50) DEFAULT NULL,
   `lastname` varchar(50) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
@@ -178,8 +178,8 @@ CREATE TABLE IF NOT EXISTS `person` (
 --
 
 INSERT INTO `person` (`person_id`, `firstname`, `lastname`, `phone`, `address`, `email`, `is_deleted`) VALUES
-(1, 'Diego Alejandro', 'Marino Ramos', '970501313', 'Calle...', 'dmarino@unitru.edu.pe', 0),
-(2, 'John', 'Doe', '987654321', '', 'jdoe@gmail.com', 0);
+(1, 'Diego Alejandro', 'Marino Ramos', '970501313', 'Calle...', 'dmarino@unitru.edu.pe', 1),
+(2, 'John', 'Doe', '987654321', '', 'jdoe@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -189,7 +189,7 @@ INSERT INTO `person` (`person_id`, `firstname`, `lastname`, `phone`, `address`, 
 
 DROP TABLE IF EXISTS `recommendation`;
 CREATE TABLE IF NOT EXISTS `recommendation` (
-  `recomendation_id` int NOT NULL,
+  `recomendation_id` int NOT NULL AUTO_INCREMENT,
   `recommendation_date` date DEFAULT NULL,
   `recommendation_text` longtext,
   `thesis_id` int NOT NULL,
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `recommendation` (
 
 DROP TABLE IF EXISTS `review`;
 CREATE TABLE IF NOT EXISTS `review` (
-  `review_id` int NOT NULL,
+  `review_id` int NOT NULL AUTO_INCREMENT,
   `thesis_id` int NOT NULL,
   `review_date` date DEFAULT NULL,
   `rating` int DEFAULT NULL,
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `reviewer` (
   `reviewer_code` varchar(20) DEFAULT NULL,
   `grade` char(2) DEFAULT NULL,
   `person_id` int DEFAULT NULL,
-  `reviewer_id` int NOT NULL,
+  `reviewer_id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`reviewer_id`),
   KEY `R_47` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `reviewer` (
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE IF NOT EXISTS `role` (
-  `role_id` int NOT NULL,
+  `role_id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -285,7 +285,7 @@ INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 
 DROP TABLE IF EXISTS `thesis`;
 CREATE TABLE IF NOT EXISTS `thesis` (
-  `thesis_id` int NOT NULL,
+  `thesis_id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(50) DEFAULT NULL,
   `abstract` longtext,
   `submission_date` date DEFAULT NULL,
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `thesis` (
 
 DROP TABLE IF EXISTS `thesis_status`;
 CREATE TABLE IF NOT EXISTS `thesis_status` (
-  `thesis_status_id` int NOT NULL,
+  `thesis_status_id` int NOT NULL AUTO_INCREMENT,
   `status` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`thesis_status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `thesis_status` (
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
-  `user_id` int NOT NULL,
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(20) DEFAULT NULL,
   `password` varchar(107) DEFAULT NULL,
   `person_id` int NOT NULL,
