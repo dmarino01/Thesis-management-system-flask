@@ -1,9 +1,216 @@
 {% extends "base.html" %}
 
-{% block title %} ASESORES {% endblock %}
+{% block customCSS %}
+<style>
+    .progress-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        /* Adjust the height of the progress bar */
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        /* Adjust the color of the progress bar */
+    }
+
+    .table-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .pagination-controls {
+        margin-right: auto;
+        /* Push the controls to the left */
+    }
+</style>
+{% endblock %}
+
+{% block title %} ASESOR {% endblock %}
 
 {% block content %}
 
-<h2>Mantenedor de Asesores</h2>
+<!-- Recent Sales Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="mb-0">Mantenedor de Asesores</h4>
+            <a class="btn btn-success" href="/create_advisor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO ASESOR</a>
+        </div>
+        <form action="/search_advisors" method="POST">
+            <div class="input-group mb-2" style="width: 25%;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="text" class="form-control" name="keyname" placeholder="Buscar asesor por nombre...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </form>
+        <br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+            id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+            <!-- Pagination Controls -->
+            <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
+                <label for="records-per-page">Registros Por Página: </label>
+                <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 3%;"
+                    class="form-control" id="records-per-page">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+                <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
+                        class="fa fa-arrow-left"></i></button>
+                <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
+            </div><br>
+
+            <table class="table table-hover text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombres y Apellidos</th>
+                        <th scope="col">Código</th>
+                        <th scope="col">Institución</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if advisors %}
+                    {% for advisor in advisors %}
+                    <tr>
+                        <td>{{ advisor.advisor_id }}</td>
+                        <td>{{ advisor.firstname }} {{ advisor.lastname }}</td>
+                        <td>{{ advisor.advisor_code }}</td>
+                        <td>{{ advisor.institution }}</td>
+                        <td>{{ advisor.email }}</td>
+                        <td>{{ advisor.address }}</td>
+                        <td>{{ advisor.phone }}</td>
+                        <td class="col-2">
+                            <a class="btn btn-sm btn-warning" href="/edit_advisor_form/{{ advisor.advisor_id }}"><i
+                                    class="fa fa-pen"></i> Editar</a>
+                            <a class="btn btn-sm btn-danger" href="/desactivate_advisor/{{ advisor.advisor_id }}"
+                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td class="text-center" colspan="8">No hay resultados encontrados.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Recent Sales End -->
+{% endblock %}
+
+
+{% block customJS %}
+<script>
+    const table = document.querySelector('.table');
+    const recordsPerPageSelect = document.getElementById('records-per-page');
+    const prevPageButton = document.getElementById('prev-page');
+    const nextPageButton = document.getElementById('next-page');
+
+    let currentPage = 1;
+    let recordsPerPage = parseInt(recordsPerPageSelect.value);
+
+    // Update the table based on current page and records per page
+    function updateTable() {
+        const rows = table.querySelectorAll('tbody tr');
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+
+        rows.forEach((row, index) => {
+            if (index >= startIndex && index < endIndex) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Event listeners for changing records per page and pagination
+    recordsPerPageSelect.addEventListener('change', () => {
+        recordsPerPage = parseInt(recordsPerPageSelect.value);
+        currentPage = 1;
+        updateTable();
+    });
+
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+        }
+    });
+
+    nextPageButton.addEventListener('click', () => {
+        const rows = table.querySelectorAll('tbody tr');
+        const totalRows = rows.length;
+        const maxPage = Math.ceil(totalRows / recordsPerPage);
+
+        if (currentPage < maxPage) {
+            currentPage++;
+            updateTable();
+        }
+    });
+
+    // Initial table setup
+    updateTable();
+</script>
+<script>
+    // Use JavaScript to automatically dismiss the alert after 5 seconds
+    var alert = document.getElementById("myAlert");
+    var progressBar = document.getElementById("myProgressBar");
+
+    setTimeout(function () {
+        alert.classList.add("fade"); // Add the "fade" class for the fade-out animation
+        alert.style.transition = "opacity 0.5s ease"; // Define the transition duration
+        setTimeout(function () {
+            alert.style.display = "none"; // Hide the alert after the transition
+        }, 500); // Adjust the timeout to match the transition duration
+    }, 5000); // Set the timeout for 5 seconds
+
+    // Update the progress bar as time elapses
+    var totalTime = 5000; // Total time in milliseconds (5 seconds)
+    var interval = 100; // Update interval in milliseconds
+    var increment = (interval / totalTime) * 100;
+    var currentWidth = 100;
+
+    var progressBarUpdate = setInterval(function () {
+        currentWidth -= increment;
+        progressBar.style.width = currentWidth + "%";
+    }, interval);
+
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar este Revisor?');
+    }
+
+</script>
+<!-- Include jQuery and Bootstrap JS -->
 
 {% endblock %}

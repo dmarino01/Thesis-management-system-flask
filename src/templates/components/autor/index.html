@@ -40,7 +40,7 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Autores</h4>
-            <a class="btn btn-sm btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+            <a class="btn btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
                 AUTOR</a>
         </div>
         <form action="/search_autores" method="POST">
@@ -74,7 +74,7 @@
             <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
                 <label for="records-per-page">Registros Por Página: </label>
                 <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 3%;" class="form-control" id="records-per-page">
-                    <option value="1">1</option>
+                    <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                 </select>
@@ -89,12 +89,13 @@
                         <th scope="col">Nombres y Apellidos</th>
                         <th scope="col">Código</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Direccion</th>
+                        <th scope="col">Dirección</th>
                         <th scope="col">Teléfono</th>
                         <th scope="col">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% if autores %}
                     {% for autor in autores %}
                     <tr>
                         <td>{{ autor.author_id }}</td>
@@ -111,6 +112,11 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td class="text-center" colspan="8">No hay resultados encontrados.</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>

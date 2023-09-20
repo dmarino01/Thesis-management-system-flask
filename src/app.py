@@ -1,14 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
-from flask_wtf.csrf import CSRFProtect
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
-
-from config import config
+from config import Config, db, csrf
 
 # Controller:
 from controllers.ControllerUser import ControllerUser
-from controllers.ControllerAuthor import ControllerAuthor
+
 #from controllers.ControllerTesis import ControllerTesis
 #from controllers.ControllerCritico import ControllerCritico
 #from controllers.ControllerRevision import ControllerRevision
@@ -16,15 +12,19 @@ from controllers.ControllerAuthor import ControllerAuthor
 
 # Entities:
 from models.User import User
-from models.Author import Author
+
+# Blueprints:
+from blueprints.author_blueprint import author_bp
 
 app = Flask(__name__)
 
-csrf = CSRFProtect()
+app.config.from_object(Config)
+
 app.url_map.strict_slashes = False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost:3306/thesis_management'
-db = SQLAlchemy(app)
+db.init_app(app)
+
+app.register_blueprint(author_bp)
 
 login_manager_app=LoginManager(app)
 
@@ -106,84 +106,6 @@ def libreria():
 def tesis():
     # Handle the library page logic here
     return render_template('components/tesis/index.html')
-
-# START AUTOR ROUTES
-@app.route('/autor')
-@login_required
-def autor():
-    data = ControllerAuthor.getAutors(db)
-    return render_template('components/autor/index.html', autores = data)
-
-@app.route('/search_autores', methods=['POST'])
-@login_required
-def search():
-    #try:
-        name = request.form['keyname']
-        data = ControllerAuthor.getAutorsbyName(db, name)
-        return render_template('components/autor/resultado.html', filtered_autores=data)
-    #except Exception as ex:
-    #    print(ex)
-    #    return redirect(url_for('autor'))    
-
-@app.route('/create_autor_form', methods=['GET'])
-@login_required
-def create_autor_form():   
-    return render_template('components/autor/create.html')
-
-@app.route('/save_autor', methods=['POST'])
-@login_required
-def save_autor():
-    try:
-        student_code = request.form['student_code']
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        phone = request.form['phone']
-        address = request.form['address']
-        email = request.form['email']
-        ControllerAuthor.createAutor(db, student_code, firstname, lastname, phone, address, email)
-        flash ("Autor Creado Exitosamente...")
-        return redirect(url_for('autor'))
-    except Exception as ex:
-        return redirect(url_for('create_autor_form'))    
-
-@app.route('/edit_autor_form/<int:id>', methods=['GET'])
-@login_required
-def edit_autor_form(id):
-    autor = ControllerAuthor.get_autor_by_id(db, id)
-    return render_template('components/autor/edit.html', autor=autor)
-
-@app.route('/update_autor/<int:id>', methods=['POST'])
-@login_required
-def update_autor(id):
-    try:
-        student_code = request.form['student_code']
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        phone = request.form['phone']
-        address = request.form['address']
-        email = request.form['email']
-        ControllerAuthor.update_autor(db, id, student_code, firstname, lastname, phone, address, email)
-        flash ("Autor Actualizado Exitosamente...")
-        return redirect(url_for('autor'))
-    except Exception as ex:
-        flash ("No se pudo editar el Autor...")
-        return redirect(url_for('edit_autor_form'))
-
-@app.route('/desactivate_autor/<int:id>')
-@login_required
-def desactivate_autor(id):
-    try:
-        autor = ControllerAuthor.get_autor_by_id(db, id)
-        if autor:
-            # Set the is_deleted flag to 1
-            ControllerAuthor.desactivate_autor(db, id)
-            flash ("Autor Eliminado Exitosamente...")
-            return redirect(url_for('autor'))
-        else:
-            flash ("No se pudo eliminar el Autor...")
-            return redirect(url_for('autor'))
-    except Exception as ex:
-        raise Exception(ex)
            
 # START ASESOR ROUTES
 @app.route('/asesor')
@@ -206,10 +128,7 @@ def reviewer():
 # END ROUTES COMPONENTS
 
 if __name__ == '__main__':
-    app.config.from_object(config['development'])
     csrf.init_app(app)
     app.register_error_handler(401,status_401)
     app.register_error_handler(404,status_404)
     app.run()
-
-
