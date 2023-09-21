@@ -26,7 +26,13 @@ class ControllerAuthor():
     def getAutorsbyName(cls, db, name):
         try:
             session = db.session()
-            sql = text("SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email FROM AUTHOR A INNER JOIN PERSON P ON A.person_id = P.person_id WHERE is_deleted = 0 AND firstname LIKE :name OR lastname LIKE :name")
+            sql = text(
+                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email "
+                "FROM AUTHOR A INNER JOIN PERSON P "
+                "ON A.person_id = P.person_id "
+                "WHERE is_deleted = 0 AND firstname "
+                "LIKE :name OR lastname LIKE :name"
+            )
             result = session.execute(sql, {'name': f'%{name}%'})
             rows=result.fetchall()
             autores = []
@@ -64,12 +70,18 @@ class ControllerAuthor():
             return {'message': 'Autor created successfully'}, 201
         except Exception as ex:
             raise Exception(ex)
-        
+    
+    #Get Author by ID
     @classmethod
     def get_autor_by_id(cls, db, id):
         try:
             session = db.session()
-            sql = text("SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email FROM AUTHOR A INNER JOIN PERSON P ON A.person_id = P.person_id WHERE author_id = :id")
+            sql = text(
+                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.phone, P.address, P.email "
+                "FROM AUTHOR A INNER JOIN PERSON P "
+                "ON A.person_id = P.person_id "
+                "WHERE author_id = :id"
+            )
             result = session.execute(sql, {"id": id})
             row = result.fetchone()
             if row:
@@ -89,6 +101,7 @@ class ControllerAuthor():
         except Exception as ex:
             raise Exception(ex)
 
+    #Update an author info
     @classmethod
     def update_autor(cls, db, id, student_code, firstname, lastname, phone, address, email):
         try:
@@ -96,7 +109,8 @@ class ControllerAuthor():
             sql = text(
                 "UPDATE AUTHOR SET student_code = :student_code WHERE author_id = :author_id; "
                 "SET @person_id = (SELECT person_id FROM AUTHOR WHERE author_id = :author_id); "
-                "UPDATE PERSON SET firstname = :firstname, lastname = :lastname, phone = :phone, address = :address, email = :email WHERE person_id = @person_id;"
+                "UPDATE PERSON SET firstname = :firstname, lastname = :lastname, phone = :phone, address = :address, email = :email "
+                "WHERE person_id = @person_id;"
             )
             params = {
                 'author_id': id,
@@ -113,14 +127,16 @@ class ControllerAuthor():
 
         except Exception as ex:
             raise Exception(ex)
-        
+    
+    #Logical deletion of an author
     @classmethod    
     def desactivate_autor(cls, db, id):
         try:
             session = db.session()
             sql = text(
                 "UPDATE PERSON AS p "
-                "INNER JOIN AUTHOR AS a ON p.person_id = a.person_id "
+                "INNER JOIN AUTHOR AS a "
+                "ON p.person_id = a.person_id "
                 "SET p.is_deleted = 1 "
                 "WHERE a.author_id = :id"
             )

@@ -5,16 +5,13 @@ from config import Config, db, csrf
 # Controller:
 from controllers.ControllerUser import ControllerUser
 
-#from controllers.ControllerTesis import ControllerTesis
-#from controllers.ControllerCritico import ControllerCritico
-#from controllers.ControllerRevision import ControllerRevision
-#from controllers.ControllerAsesor import ControllerAsesor
-
 # Entities:
 from models.User import User
 
 # Blueprints:
 from blueprints.author_blueprint import author_bp
+from blueprints.reviewer_blueprint import reviewer_bp
+from blueprints.advisor_blueprint import advisor_bp
 
 app = Flask(__name__)
 
@@ -25,6 +22,9 @@ app.url_map.strict_slashes = False
 db.init_app(app)
 
 app.register_blueprint(author_bp)
+app.register_blueprint(advisor_bp)
+app.register_blueprint(reviewer_bp)
+
 
 login_manager_app=LoginManager(app)
 
@@ -36,7 +36,6 @@ def load_user(user_id):
 @app.route('/index')
 @login_required
 def home():
-    #return redirect(url_for('login'))
     return render_template("home.html")
 
 def status_401(error):
@@ -106,25 +105,7 @@ def libreria():
 def tesis():
     # Handle the library page logic here
     return render_template('components/tesis/index.html')
-           
-# START ASESOR ROUTES
-@app.route('/asesor')
-@login_required
-def asesor():
-    # Handle the Authors page logic here
-    return render_template('components/asesor/index.html')
 
-@app.route('/review')
-@login_required
-def review():
-    # Handle the Authors page logic here
-    return render_template('components/review/index.html')
-
-@app.route('/reviewer')
-@login_required
-def reviewer():
-    # Handle the Authors page logic here
-    return render_template('components/reviewer/index.html')
 # END ROUTES COMPONENTS
 
 if __name__ == '__main__':

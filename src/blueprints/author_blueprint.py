@@ -6,7 +6,7 @@ from config import db
 
 author_bp = Blueprint('author', __name__)
 
-# List all authors
+# Author Index
 @author_bp.route('/autor')
 @login_required
 def autor():
@@ -80,7 +80,6 @@ def desactivate_autor(id):
     try:
         autor = ControllerAuthor.get_autor_by_id(db, id)
         if autor:
-            # Set the is_deleted flag to 1
             ControllerAuthor.desactivate_autor(db, id)
             flash("Autor Eliminado Exitosamente...")
             return redirect(url_for('author.autor'))

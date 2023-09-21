@@ -73,18 +73,18 @@
                 </thead>
                 <tbody>
                     {% if filtered_autores %}
-                    {% for autor in filtered_autores %}
+                    {% for item in filtered_autores %}
                     <tr>
-                        <td>{{ autor.author_id }}</td>
-                        <td>{{ autor.firstname }} {{ autor.lastname }}</td>
-                        <td>{{ autor.student_code }}</td>
-                        <td>{{ autor.email }}</td>
-                        <td>{{ autor.address }}</td>
-                        <td>{{ autor.phone }}</td>
+                        <td>{{ item.author_id }}</td>
+                        <td>{{ item.firstname }} {{ item.lastname }}</td>
+                        <td>{{ item.student_code }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.address }}</td>
+                        <td>{{ item.phone }}</td>
                         <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ autor.author_id }}"><i
+                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.author_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ autor.author_id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.author_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>

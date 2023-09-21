@@ -98,19 +98,19 @@
                 </thead>
                 <tbody>
                     {% if reviewers %}
-                    {% for reviewer in reviewers %}
+                    {% for item in reviewers %}
                     <tr>
-                        <td>{{ reviewer.reviewer_id }}</td>
-                        <td>{{ reviewer.firstname }} {{ reviewer.lastname }}</td>
-                        <td>{{ reviewer.reviewer_code }}</td>
-                        <td>{{ reviewer.grade }}</td>
-                        <td>{{ reviewer.email }}</td>
-                        <td>{{ reviewer.address }}</td>
-                        <td>{{ reviewer.phone }}</td>
+                        <td>{{ item.reviewer_id }}</td>
+                        <td>{{ item.firstname }} {{ item.lastname }}</td>
+                        <td>{{ item.reviewer_code }}</td>
+                        <td>{{ item.grade }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.address }}</td>
+                        <td>{{ item.phone }}</td>
                         <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_reviewer_form/{{ reviewer.reviewer_id }}"><i
+                            <a class="btn btn-sm btn-warning" href="/edit_reviewer_form/{{ item.reviewer_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_reviewer/{{ reviewer.reviewer_id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_reviewer/{{ item.reviewer_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
