@@ -10,8 +10,8 @@ advisor_bp = Blueprint('advisor', __name__)
 @advisor_bp.route('/advisor')
 @login_required
 def advisor():
-    # Handle the Advisor page logic here
-    return render_template('components/advisor/index.html')
+    data = ControllerAdvisor.getAdvisors(db)
+    return render_template('components/advisor/index.html', advisors = data)
 
 # Search for advisors by name
 @advisor_bp.route('/search_advisors', methods=['POST'])
@@ -32,23 +32,22 @@ def create_advisor_form():
     return render_template('components/advisor/create.html')
 
 # Save a new advisor
-@advisor_bp.route('/update_advisor/<int:id>', methods=['POST'])
+@advisor_bp.route('/save_advisor', methods=['POST'])
 @login_required
-def update_advisor(id):
+def save_advisor():
     try:
         advisor_code = request.form['advisor_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        grade = request.form['grade']
+        institution = request.form['institution']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAdvisor.update_advisor(db, id, advisor_code, firstname, lastname, grade, phone, address, email)
-        flash("Revisor Actualizado Exitosamente...")
+        ControllerAdvisor.createAdvisor(db, advisor_code, firstname, lastname, institution, phone, address, email)
+        flash("Asesor Creado Exitosamente...")
         return redirect(url_for('advisor.advisor'))
     except Exception as ex:
-        flash("No se pudo editar el Revisor...")
-        return redirect(url_for('advisor.edit_advisor_form', id=id))
+        return redirect(url_for('advisor.create_advisor_form'))
 
 # Display the edit advisor form
 @advisor_bp.route('/edit_advisor_form/<int:id>', methods=['GET'])
@@ -65,11 +64,11 @@ def update_advisor(id):
         advisor_code = request.form['advisor_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        grade = request.form['grade']
+        institution = request.form['institution']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAdvisor.update_advisor(db, id, advisor_code, firstname, lastname, grade, phone, address, email)
+        ControllerAdvisor.update_advisor(db, id, advisor_code, firstname, lastname, institution, phone, address, email)
         flash("Advisor Actualizado Exitosamente...")
         return redirect(url_for('advisor.advisor'))
     except Exception as ex:

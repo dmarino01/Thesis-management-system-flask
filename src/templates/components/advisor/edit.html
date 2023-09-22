@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %} Editar Asesor {% endblock %}
+
+{% block customCSS %}
+<style>
+    /* CSS for image container */
+    .img-container {
+        text-align: center;
+        /* Center the image horizontally */
+        margin-top: 20px;
+        /* Add margin for spacing */
+    }
+
+    /* CSS for the image */
+    .img-fluid {
+        max-width: 100%;
+        /* Make the image responsive within its container */
+        height: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Form Start -->
+<div class="container-fluid pt-4 px-4">
+    <h3>Editar Asesor</h3>
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Editar Registro</h6>
+                <form action="{{ url_for('advisor.update_advisor', id=advisor.advisor_id) }}" method="POST">
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingAdvisor_code"
+                            value="{{ advisor.advisor_code }}" name="advisor_code" placeholder="advisor_code" required>
+                        <label for="floatingAdvisor_code">Codigo de Estudiante</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingFirstname" value="{{ advisor.firstname }}"
+                            name="firstname" placeholder="firstname" required>
+                        <label for="floatingFirstname">Firstname</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingLastname" value="{{ advisor.lastname }}"
+                            name="lastname" placeholder="lastname" required>
+                        <label for="floatingLastname">Apellidos</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInstitution" value="{{ advisor.institution }}"
+                            name="institution" placeholder="institution" required>
+                        <label for="floatingInstitution">Institución</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="phone" class="form-control" id="floatingPhone" value="{{ advisor.phone }}"
+                            name="phone" placeholder="phone" required>
+                        <label for="floatingPhone">Teléfono</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingAddress" value="{{ advisor.address }}"
+                            name="address" placeholder="address">
+                        <label for="floatingPhone">Dirección (opcional)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingEmail" value="{{ advisor.email }}"
+                            name="email" placeholder="email" required>
+                        <label for="floatingEmail">Correo</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-warning" href="{{ url_for('advisor.advisor') }}" role="button"><i
+                                class="fa fa-arrow-left"></i> Volver</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+<!--
+        <div class="col-sm-12 col-md-6">
+            <div class="bg-secondary rounded h-100 p-4 d-flex flex-column justify-content-center align-items-center">
+                <h6 class="mb-4">Imagen del Asesor</h6>
+                 Add the advisor's image here 
+                <img src="{{ url_for('static', filename='img/usuarios/IMG_5151.jpg') }}" alt="advisor Image" class="img-fluid" style="max-width: 100%; width: 200px; height: auto;">
+                <div class="mt-4">
+                    <button class="btn btn-primary" id="changeImageButton">Cambiar Imagen</button>
+                </div>
+            </div>
+        </div>
+-->
+
+    </div>
+
+</div>
+<!-- Form End -->
+
+{% endblock %}

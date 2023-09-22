@@ -20,7 +20,7 @@
 </style>
 {% endblock %}
 
-{% block title %} REVISORES {% endblock %}
+{% block title %} ASESORES {% endblock %}
 
 {% block content %}
 
@@ -28,14 +28,14 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Revisores</h4>
-            <a class="btn btn-sm btn-success" href="/create_reviewer_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
-                REVISOR</a>
+            <h4 class="mb-0">Mantenedor de Asesores</h4>
+            <a class="btn btn-sm btn-success" href="/create_advisor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+                ASESOR</a>
         </div>
-        <form action="/search_reviewers" method="POST">
+        <form action="/search_advisors" method="POST">
             <div class="input-group mb-2" style="width: 25%;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="text" class="form-control" name="keyname" placeholder="Buscar revisor por nombre...">
+                <input type="text" class="form-control" name="keyname" placeholder="Buscar asesor por nombre...">
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
                 </div>
@@ -79,6 +79,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Nombres y Apellidos</th>
                         <th scope="col">Código</th>
+                        <th scope="col">Institución</th>
                         <th scope="col">Email</th>
                         <th scope="col">Direccion</th>
                         <th scope="col">Teléfono</th>
@@ -86,19 +87,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% if filtered_reviewers %}
-                    {% for item in filtered_reviewers %}
+                    {% if filtered_advisors %}
+                    {% for item in filtered_advisors %}
                     <tr>
-                        <td>{{ item.reviewer_id }}</td>
-                        <td>{{ item.grade }}. {{ item.firstname }} {{ item.lastname }}</td>
-                        <td>{{ item.reviewer_code }}</td>
+                        <td>{{ item.advisor_id }}</td>
+                        <td>{{ item.firstname }} {{ item.lastname }}</td>
+                        <td>{{ item.advisor_code }}</td>
+                        <td>{{ item.institution }}</td>
                         <td>{{ item.email }}</td>
                         <td>{{ item.address }}</td>
                         <td>{{ item.phone }}</td>
                         <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_reviewer_form/{{ item.reviewer_id }}"><i
+                            <a class="btn btn-sm btn-warning" href="/edit_advisor_form/{{ item.advisor_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_reviewer/{{ item.reviewer_id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_advisor/{{ item.advisor_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
@@ -197,7 +199,7 @@
     }, interval);
 
     function confirmDelete() {
-        return confirm('¿Seguro que quieres eliminar este Revisor?');
+        return confirm('¿Seguro que quieres eliminar este Asesor?');
     }
 
 </script>

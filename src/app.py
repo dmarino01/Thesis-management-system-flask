@@ -79,7 +79,6 @@ def registerUser():
 @app.route('/usuarios')
 @login_required
 def usuarios():
-    # Handle the usuarios page logic here
     return render_template('usuarios.html')
 
 @app.route('/perfil')
@@ -90,13 +89,11 @@ def perfil():
 @app.route('/temas')
 @login_required
 def temas():
-    # Handle the temas page logic here
     return render_template('temas.html')
 
 @app.route('/libreria')
 @login_required
 def libreria():
-    # Handle the librery page logic here
     return render_template('libreria.html')
 
 # START TESIS ROUTES
