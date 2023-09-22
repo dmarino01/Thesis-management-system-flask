@@ -12,6 +12,7 @@ from models.User import User
 from blueprints.author_blueprint import author_bp
 from blueprints.reviewer_blueprint import reviewer_bp
 from blueprints.advisor_blueprint import advisor_bp
+from blueprints.role_blueprint import role_bp
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ db.init_app(app)
 app.register_blueprint(author_bp)
 app.register_blueprint(advisor_bp)
 app.register_blueprint(reviewer_bp)
-
+app.register_blueprint(role_bp)
 
 login_manager_app=LoginManager(app)
 
