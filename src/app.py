@@ -13,6 +13,7 @@ from blueprints.author_blueprint import author_bp
 from blueprints.reviewer_blueprint import reviewer_bp
 from blueprints.advisor_blueprint import advisor_bp
 from blueprints.role_blueprint import role_bp
+from blueprints.permission_blueprint import permission_bp
 
 app = Flask(__name__)
 
@@ -26,6 +27,7 @@ app.register_blueprint(author_bp)
 app.register_blueprint(advisor_bp)
 app.register_blueprint(reviewer_bp)
 app.register_blueprint(role_bp)
+app.register_blueprint(permission_bp)
 
 login_manager_app=LoginManager(app)
 
@@ -74,7 +76,6 @@ def register():
 
 @app.route("/registerUser")
 def registerUser():
-    #Logic
     return redirect(url_for('login'))
 
 @app.route('/usuarios')
@@ -97,14 +98,10 @@ def temas():
 def libreria():
     return render_template('libreria.html')
 
-# START TESIS ROUTES
 @app.route('/tesis')
 @login_required
 def tesis():
-    # Handle the library page logic here
     return render_template('components/tesis/index.html')
-
-# END ROUTES COMPONENTS
 
 if __name__ == '__main__':
     csrf.init_app(app)

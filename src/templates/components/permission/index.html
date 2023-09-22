@@ -35,7 +35,7 @@
 </style>
 {% endblock %}
 
-{% block title %} ROLES {% endblock %}
+{% block title %} Permisos {% endblock %}
 
 {% block content %}
 
@@ -43,10 +43,10 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Roles</h4>
-            <a class="btn btn-success" href="/create_role_form"><i class="fa fa-plus"></i> AGREGAR NUEVO ROL</a>
+            <h4 class="mb-0">Mantenedor de Permisos</h4>
+            <a class="btn btn-success" href="/create_permission_form"><i class="fa fa-plus"></i> AGREGAR NUEVO PERMISO</a>
         </div>
-        <form action="/search_roles" method="POST">
+        <form action="/search_permissions" method="POST">
             <div class="input-group mb-2" style="width: 25%;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="text" class="form-control" name="keyname" placeholder="Buscar rol por nombre...">
@@ -91,30 +91,29 @@
                 <thead>
                     <tr class="text-white">
                         <th scope="col">ID</th>
-                        <th scope="col">Rol</th>
-                        <th scope="col-3">Acción</th>
+                        <th scope="col">Permiso</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% if roles %}
-                    {% for item in roles %}
+                    {% if permissions %}
+                    {% for item in permissions %}
                     <tr>
-                        <td>{{ item.role_id }}</td>
-                        <td>{{ item.role }}</td>
-                        <td class="col-3">
-                            <!--Permisos No Habilitados Por Ahora-->
-                            <a class="btn btn-sm btn-light" href="/assign_permission_form/{{ item.role_id }}"><i
-                                class="fa fa-cog"></i> Ver Permisos</a>
-                            <a class="btn btn-sm btn-warning" href="/edit_role_form/{{ item.role_id }}"><i
+                        <td>{{ item.permission_id }}</td>
+                        <td>{{ item.permission }}</td>
+                        <td>{{ item.description }}</td>
+                        <td class="col-2">
+                            <a class="btn btn-sm btn-warning" href="/edit_permission_form/{{ item.permission_id }}"><i
                                 class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_role/{{ item.role_id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_permission/{{ item.permission_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td class="text-center" colspan="8">No hay resultados encontrados.</td>
+                        <td class="text-center" colspan="4">No hay resultados encontrados.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -205,7 +204,7 @@
     }, interval);
 
     function confirmDelete() {
-        return confirm('¿Seguro que quieres eliminar este Rol?');
+        return confirm('¿Seguro que quieres eliminar este Permiso?');
     }
 
 </script>
