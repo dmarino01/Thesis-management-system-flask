@@ -60,7 +60,7 @@
 
 
     // Chart Global Color
-    Chart.defaults.color = "#6C7293";
+    Chart.defaults.color = "#a2a6bd";
     Chart.defaults.borderColor = "#000000";
 
 
