@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from controllers.ControllerRole import ControllerRole
 from flask_login import login_required
+from controllers.ControllerRole import ControllerRole
+from controllers.ControllerPermission import ControllerPermission
 
 from config import db
 
@@ -64,6 +65,26 @@ def update_role(id):
         flash("No se pudo editar el Role...")
         return redirect(url_for('role.edit_role_form', id=id))
     
+# Display the assign permission to roles form
+@role_bp.route('/assign_permission_form/<int:id>', methods=['GET'])
+@login_required
+def assign_permission_form(id):
+    role = ControllerRole.get_role_by_id(db, id)
+    permissions = ControllerPermission.getPermissions(db)
+    return render_template('components/role/assign.html', role=role, permissions =permissions)
+
+# Save the assigned permissions to the role
+@role_bp.route('/save_permissions_for_role/<int:id>', methods=['POST'])
+@login_required
+def save_permissions_for_role(id):
+    try:
+        permissions = ""
+        ControllerRole.assign_permissions(db, id, permissions)
+        flash("Permisos Asignados Correctamente...")
+        return redirect(url_for('role.role'))
+    except Exception as ex:
+        flash("No se guardos los roles...")
+        return redirect(url_for('role.assign_permission_form', id=id))
 
 # Deactivate a role
 @role_bp.route('/desactivate_role/<int:id>')

@@ -123,3 +123,18 @@ class ControllerRole():
             return {'message': 'Role created successfully'}, 200
         except Exception as ex:
             raise Exception(ex)
+        
+    #Assign permissions to a role
+    @classmethod
+    def assign_permissions(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "INSERT INTO permission_role (permission_id, role_id) "
+                "VALUES ('5', :role_id)"
+            )
+            session.execute(sql, {"role_id": id})
+            session.commit()
+            return {'message': 'Permissions assigned successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)

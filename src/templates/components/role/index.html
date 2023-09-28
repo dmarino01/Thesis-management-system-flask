@@ -30,7 +30,15 @@
     }
 
     .dark-modal-content {
-        background-color: #191C24; /* Dark background color */
+        background-color: #191C24;
+        /* Dark background color */
+    }
+
+    .disabled-button {
+        pointer-events: none;
+        background-color: gray;
+        color: #ccc;
+        /* You can adjust the text color as needed */
     }
 </style>
 {% endblock %}
@@ -44,7 +52,8 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Roles</h4>
-            <a class="btn btn-success" href="/create_role_form"><i class="fa fa-plus"></i> AGREGAR NUEVO ROL</a>
+            <a class="btn btn-success disabled-button" href="/create_role_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+                ROL</a>
         </div>
         <form action="/search_roles" method="POST">
             <div class="input-group mb-2" style="width: 25%;">
@@ -103,12 +112,12 @@
                         <td>{{ item.role }}</td>
                         <td class="col-3">
                             <!--Permisos No Habilitados Por Ahora-->
-                            <a class="btn btn-sm btn-light" href="/assign_permission_form/{{ item.role_id }}"><i
-                                class="fa fa-cog"></i> Ver Permisos</a>
-                            <a class="btn btn-sm btn-warning" href="/edit_role_form/{{ item.role_id }}"><i
-                                class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_role/{{ item.role_id }}"
-                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                            <a class="btn btn-sm btn-warning" href="/assign_permission_form/{{ item.role_id }}"><i
+                                    class="fa fa-cog"></i> Ver Permisos</a>
+                            <a class="btn btn-sm btn-warning disabled-button" href="/edit_role_form/{{ item.role_id }}" disabled><i
+                                    class="fa fa-pen"></i></a>
+                            <a class="btn btn-sm btn-danger disabled-button" href="/desactivate_role/{{ item.role_id }}"
+                                onclick="return confirmDelete();" disabled><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
