@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <h2>Mis Tesis</h2>
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="mb-0">Mantenedor de Tesis</h4>
+            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVA
+                TESIS</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">ID</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if thesis %}
+                    {% for item in thesis %}
+                    <tr>
+                        <td>{{ item.thesis_id }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.submission_date }}</td> 
+                        <td class="align-middle">
+                            {% if item.thesis_status_id == 1 %}
+                                <span class="badge bg-warning">EN PROCESO</span>
+                            {% elif item.thesis_status_id == 2 %}
+                                <span class="badge bg-success">APROBADO</span>
+                            {% elif item.thesis_status_id == 3 %}
+                                <span class="badge bg-primary">RECHAZADO</span>
+                            {% elif item.thesis_status_id == 4 %}
+                                <span class="badge bg-primary">EN REVISION</span>
+                            {% endif %}
+                            </span>
+                        </td>
+                        <td class="col-2">
+                            <a class="btn btn-sm btn-primary" href="/edit_thesis_form/{{ item.thesis_id }}"><i
+                                class="fa fa-eye"></i> Ver</a>
+                            <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}"><i
+                                class="fa fa-pen"></i> Editar</a>
+                            <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
+                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td class="text-center" colspan="5">No hay resultados encontrados.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

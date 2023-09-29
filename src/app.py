@@ -14,6 +14,7 @@ from blueprints.reviewer_blueprint import reviewer_bp
 from blueprints.advisor_blueprint import advisor_bp
 from blueprints.role_blueprint import role_bp
 from blueprints.permission_blueprint import permission_bp
+from blueprints.thesis_blueprint import thesis_bp
 
 app = Flask(__name__)
 
@@ -28,6 +29,7 @@ app.register_blueprint(advisor_bp)
 app.register_blueprint(reviewer_bp)
 app.register_blueprint(role_bp)
 app.register_blueprint(permission_bp)
+app.register_blueprint(thesis_bp)
 
 login_manager_app=LoginManager(app)
 

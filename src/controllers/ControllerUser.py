@@ -7,8 +7,11 @@ class ControllerUser():
     def login(cls, db, user):
         try:
             session = db.session()
-            sql = text("SELECT user_id, username, password, person_id FROM user "
-                       "WHERE username = :username")
+            sql = text(
+                "SELECT u.user_id, u.username, u.password, u.person_id FROM user u "
+                "INNER JOIN person p on p.person_id = u.person_id "
+                "WHERE p.is_deleted = 0 AND u.username = :username"
+            )
             result = session.execute(sql, {"username": user.username})
             row = result.fetchone()
             if row is not None:
