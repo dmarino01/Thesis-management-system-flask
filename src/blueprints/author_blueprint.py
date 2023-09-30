@@ -39,12 +39,24 @@ def save_autor():
         student_code = request.form['student_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAuthor.createAutor(db, student_code, firstname, lastname, phone, address, email)
-        flash("Autor Creado Exitosamente...")
-        return redirect(url_for('author.autor'))
+        username = request.form['username']
+        password = request.form['password']
+        verify_password = request.form['verify_password']
+        if student_code != "" and firstname != "" and lastname != "" and dni != "" and phone != "" and email != "" and username != "" and password != "" and verify_password != "":
+            if password == verify_password:
+                ControllerAuthor.createAutor(db, student_code, firstname, lastname, dni, phone, address, email, username, password)
+                flash("Autor Creado Exitosamente...")
+                return redirect(url_for('author.autor'))
+            else:
+                flash("Las contraseñas no coinciden...")
+                return redirect(url_for('author.create_autor_form'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('author.create_autor_form'))
     except Exception as ex:
         return redirect(url_for('author.create_autor_form'))
 
@@ -63,14 +75,19 @@ def update_autor(id):
         student_code = request.form['student_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAuthor.update_autor(db, id, student_code, firstname, lastname, phone, address, email)
-        flash("Autor Actualizado Exitosamente...")
-        return redirect(url_for('author.autor'))
+        username = request.form['username']
+        if student_code != "" and firstname != "" and lastname != "" and dni != "" and phone != "" and email != "" and username != "":
+            ControllerAuthor.update_autor(db, id, student_code, firstname, lastname, dni, phone, address, email, username)
+            flash("Autor Actualizado Exitosamente...")
+            return redirect(url_for('author.autor'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('author.edit_autor_form'))
     except Exception as ex:
-        flash("No se pudo editar el Autor...")
         return redirect(url_for('author.edit_autor_form', id=id))
 
 # Deactivate an author

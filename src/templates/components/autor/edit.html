@@ -32,26 +32,43 @@
                 <h6 class="mb-4">Editar Registro</h6>
                 <form action="{{ url_for('author.update_autor', id=autor.author_id) }}" method="POST">
 
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+                        <strong>{{ message }}</strong>
+                        <div class="progress-container">
+                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingStudent_code"
-                            value="{{ autor.student_code }}" name="student_code" placeholder="student_code" required>
+                            value="{{ autor.student_code }}" name="student_code" placeholder="student_code">
                         <label for="floatingStudent_code">Codigo de Estudiante</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingFirstname" value="{{ autor.firstname }}"
-                            name="firstname" placeholder="firstname" required>
+                            name="firstname" placeholder="firstname">
                         <label for="floatingFirstname">Firstname</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingLastname" value="{{ autor.lastname }}"
-                            name="lastname" placeholder="lastname" required>
+                            name="lastname" placeholder="lastname">
                         <label for="floatingLastname">Apellidos</label>
                     </div>
                     <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingDni" value="{{ autor.dni }}"
+                            name="dni" placeholder="dni">
+                        <label for="floatingDni">DNI</label>
+                    </div>
+                    <div class="form-floating mb-3">
                         <input type="phone" class="form-control" id="floatingPhone" value="{{ autor.phone }}"
-                            name="phone" placeholder="phone" required>
+                            name="phone" placeholder="phone">
                         <label for="floatingPhone">Teléfono</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -61,10 +78,14 @@
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingEmail" value="{{ autor.email }}"
-                            name="email" placeholder="email" required>
+                            name="email" placeholder="email">
                         <label for="floatingEmail">Correo</label>
                     </div>
-
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingUsername" value="{{ autor.username }}"
+                            name="username" placeholder="username">
+                        <label for="floatingUsername">Usuario</label>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <a class="btn btn-warning" href="{{ url_for('author.autor') }}" role="button"><i
                                 class="fa fa-arrow-left"></i> Volver</a>
