@@ -20,7 +20,7 @@ def search():
     try:
         name = request.form['keyname']
         data = ControllerAdvisor.getAdvisorsbyName(db, name)
-        return render_template('components/advisor/resultado.html', filtered_advisors=data)
+        return render_template('components/advisor/resultado.html', filtered_advisors = data)
     except Exception as ex:
         flash("Advisor No Encontrado...")
         return redirect(url_for('advisor.advisor'))
@@ -39,13 +39,25 @@ def save_advisor():
         advisor_code = request.form['advisor_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         institution = request.form['institution']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAdvisor.createAdvisor(db, advisor_code, firstname, lastname, institution, phone, address, email)
-        flash("Asesor Creado Exitosamente...")
-        return redirect(url_for('advisor.advisor'))
+        username = request.form['username']
+        password = request.form['password']
+        verify_password = request.form['verify_password']
+        if advisor_code != "" and firstname != "" and lastname != "" and dni != "" and phone != "" and email != "" and username != "" and password != "" and verify_password != "":
+            if password == verify_password:
+                ControllerAdvisor.createAdvisor(db, advisor_code, firstname, lastname, dni, institution, phone, address, email, username, password)
+                flash("Asesor Creado Exitosamente...")
+                return redirect(url_for('advisor.advisor'))
+            else:
+                flash("Las contraseñas no coinciden...")
+                return redirect(url_for('advisor.create_advisor_form'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('advisor.create_advisor_form'))
     except Exception as ex:
         return redirect(url_for('advisor.create_advisor_form'))
 
@@ -64,13 +76,19 @@ def update_advisor(id):
         advisor_code = request.form['advisor_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         institution = request.form['institution']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerAdvisor.update_advisor(db, id, advisor_code, firstname, lastname, institution, phone, address, email)
-        flash("Advisor Actualizado Exitosamente...")
-        return redirect(url_for('advisor.advisor'))
+        username = request.form['username']
+        if advisor_code != "" and firstname != "" and lastname != "" and dni != "" and phone != "" and email != "" and username != "":
+            ControllerAdvisor.update_advisor(db, id, advisor_code, firstname, lastname, dni, institution, phone, address, email, username)
+            flash("Advisor Actualizado Exitosamente...")
+            return redirect(url_for('advisor.advisor'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('advisor.create_advisor_form'))
     except Exception as ex:
         flash("No se pudo editar el Advisor...")
         return redirect(url_for('advisor.edit_advisor_form', id=id))

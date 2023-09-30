@@ -87,37 +87,41 @@
                 <thead>
                     <tr class="text-white">
                         <th scope="col">ID</th>
-                        <th scope="col">Nombres y Apellidos</th>
                         <th scope="col">Código</th>
+                        <th scope="col">Nombres y Apellidos</th>
+                        <th scope="col">DNI</th>
                         <th scope="col">Institución</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Dirección</th>
+                        <th scope="col">Usuario</th>
                         <th scope="col">Teléfono</th>
+                        <th scope="col">Dirección</th>
                         <th scope="col">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if advisors %}
-                    {% for advisor in advisors %}
+                    {% for item in advisors %}
                     <tr>
-                        <td>{{ advisor.advisor_id }}</td>
-                        <td>{{ advisor.firstname }} {{ advisor.lastname }}</td>
-                        <td>{{ advisor.advisor_code }}</td>
-                        <td>{{ advisor.institution }}</td>
-                        <td>{{ advisor.email }}</td>
-                        <td>{{ advisor.address }}</td>
-                        <td>{{ advisor.phone }}</td>
+                        <td>{{ item.advisor_id }}</td>
+                        <td>{{ item.advisor_code }}</td>
+                        <td>{{ item.firstname }} {{ item.lastname }}</td>
+                        <td>{{ item.dni }}</td>
+                        <td>{{ item.institution }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.username }}</td>
+                        <td>{{ item.phone }}</td>
+                        <td>{{ item.address }}</td>
                         <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_advisor_form/{{ advisor.advisor_id }}"><i
+                            <a class="btn btn-sm btn-warning" href="/edit_advisor_form/{{ item.advisor_id }}"><i
                                     class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_advisor/{{ advisor.advisor_id }}"
+                            <a class="btn btn-sm btn-danger" href="/desactivate_advisor/{{ item.advisor_id }}"
                                 onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td class="text-center" colspan="8">No hay resultados encontrados.</td>
+                        <td class="text-center" colspan="10">No hay resultados encontrados.</td>
                     </tr>
                     {% endif %}
                 </tbody>

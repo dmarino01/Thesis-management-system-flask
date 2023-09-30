@@ -12,7 +12,7 @@
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Ingrese los Datos del Nuevo Autor</h6>
+                <h6 class="mb-4">Ingrese los Datos del Autor</h6>
                 <form action="/save_autor" method="POST">
 
                     {% with messages = get_flashed_messages() %}
@@ -71,8 +71,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingAddress" name="address"
-                                    placeholder="address">
+                                <input type="text" class="form-control" id="floatingAddress" name="address" placeholder="address">
                                 <label for="floatingPhone">Dirección (opcional)</label>
                             </div>
                         </div>
@@ -83,18 +82,15 @@
                         <label for="floatingEmail">Correo</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingUsername" name="username"
-                            placeholder="username">
+                        <input type="text" class="form-control" id="floatingUsername" name="username" placeholder="username">
                         <label for="floatingUsername">Usuario</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" name="password"
-                            placeholder="password">
+                        <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="password">
                         <label for="floatingPassword">Contraseña</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingVerify_Password" name="verify_password"
-                            placeholder="password">
+                        <input type="password" class="form-control" id="floatingVerify_Password" name="verify_password" placeholder="password">
                         <label for="floatingVerify_Password">Verificar Contraseña</label>
                     </div>
 
