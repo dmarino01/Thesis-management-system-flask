@@ -1,7 +1,6 @@
 from models.Author import Author
-from models.Person import Person
 from sqlalchemy import text
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 
 class ControllerAuthor():
 
@@ -31,6 +30,7 @@ class ControllerAuthor():
         except Exception as ex:
             raise Exception(ex)
 
+    #Search Author
     @classmethod    
     def getAutorsbyName(cls, db, name):
         try:

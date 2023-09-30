@@ -39,15 +39,26 @@ def save_reviewer():
         reviewer_code = request.form['reviewer_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         grade = request.form['grade']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerReviewer.createReviewer(db, reviewer_code, firstname, lastname, grade, phone, address, email)
-        flash("Revisor Creado Exitosamente...")
-        return redirect(url_for('reviewer.reviewer'))
+        username = request.form['username']
+        password = request.form['password']
+        verify_password = request.form['verify_password']
+        if reviewer_code != "" and firstname != "" and lastname != "" and dni != "" and phone != "" and email != "" and username != "" and password != "" and verify_password != "":
+            if password == verify_password:    
+                ControllerReviewer.createReviewer(db, reviewer_code, firstname, lastname, dni, grade, phone, address, email, username, password)
+                flash("Revisor Creado Exitosamente...")
+                return redirect(url_for('reviewer.reviewer'))
+            else:
+                flash("Las contraseñas no coinciden...")
+                return redirect(url_for('reviewer.create_reviewer_form'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('reviewer.create_reviewer_form'))     
     except Exception as ex:
-        flash("Revisor No ha sido Creado...")
         return redirect(url_for('reviewer.create_reviewer_form'))
 
 # Display the edit reviewer form
@@ -65,15 +76,20 @@ def update_reviewer(id):
         reviewer_code = request.form['reviewer_code']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+        dni = request.form['dni']
         grade = request.form['grade']
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
-        ControllerReviewer.update_reviewer(db, id, reviewer_code, firstname, lastname, grade, phone, address, email)
-        flash("Revisor Actualizado Exitosamente...")
-        return redirect(url_for('reviewer.reviewer'))
+        username = request.form['username']
+        if reviewer_code != "" and firstname != "" and lastname != "" and dni != "" and grade != "" and phone != "" and email != "" and username != "":
+            ControllerReviewer.update_reviewer(db, id, reviewer_code, firstname, lastname, dni, grade, phone, address, email, username)
+            flash("Revisor Actualizado Exitosamente...")
+            return redirect(url_for('reviewer.reviewer'))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('reviewer.create_reviewer_form'))
     except Exception as ex:
-        flash("No se pudo editar el Revisor...")
         return redirect(url_for('reviewer.edit_reviewer_form', id=id))
   
 # Deactivate a reviewer

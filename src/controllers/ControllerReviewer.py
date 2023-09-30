@@ -1,6 +1,6 @@
 from models.Reviewer import Reviewer
-from models.Person import Person
 from sqlalchemy import text
+from werkzeug.security import generate_password_hash
 
 class ControllerReviewer():
 
@@ -9,9 +9,12 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.phone, P.address, P.email "
-                "FROM REVIEWER R INNER JOIN PERSON P "
+                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "FROM REVIEWER R "
+                "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
                 "WHERE is_deleted = 0;"
             )
             result = session.execute(sql)
@@ -19,7 +22,7 @@ class ControllerReviewer():
             reviewers = []
             if rows != None:
                 for row in rows:
-                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
                     reviewers.append(reviewer)
                 return reviewers
             else:
@@ -33,18 +36,21 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.phone, P.address, P.email "
-                "FROM REVIEWER R INNER JOIN PERSON P "
+                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "FROM REVIEWER R "
+                "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
-                "WHERE is_deleted = 0 AND firstname "
-                "LIKE :name OR lastname LIKE :name"
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
+                "WHERE is_deleted = 0 "
+                "AND P.firstname LIKE :name OR P.lastname LIKE :name"
             )
             result = session.execute(sql, {'name': f'%{name}%'})
             rows=result.fetchall()
             reviewers = []
             if rows != None:
                 for row in rows:
-                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
                     reviewers.append(reviewer)
                 return reviewers
             else:
@@ -54,24 +60,33 @@ class ControllerReviewer():
     
     #Create a New Reviewer
     @classmethod    
-    def createReviewer(cls, db, reviewer_code, firstname, lastname, grade, phone, address, email):
+    def createReviewer(cls, db, reviewer_code, firstname, lastname, dni, grade, phone, address, email, username, password):
         try:
+            hashed_password = generate_password_hash(password)
             session = db.session()
             sql = text(
-                "INSERT INTO PERSON (firstname, lastname, phone, address, email) "
-                "VALUES (:firstname, :lastname, :phone, :address, :email); "
+                "INSERT INTO PERSON (firstname, lastname, dni, phone, address, email) "
+                "VALUES (:firstname, :lastname, :dni, :phone, :address, :email); "
                 "SET @person_id = LAST_INSERT_ID(); "
                 "INSERT INTO REVIEWER (reviewer_code, grade, person_id) "
                 "VALUES (:reviewer_code, :grade, @person_id);"
+                "INSERT INTO USER (username, password, person_id) "
+                "VALUES (:username, :password, @person_id); "
+                "SET @user_id = LAST_INSERT_ID(); "
+                "INSERT INTO ROLE_USER (user_id, role_id) "
+                "VALUES (@user_id, 3);"
             )
             params = {
                 'reviewer_code': reviewer_code,
                 'firstname': firstname,
                 'lastname': lastname,
+                'dni': dni,
                 'grade': grade,
                 'phone': phone,
                 'address': address,
-                'email': email               
+                'email': email,
+                'username': username,
+                'password': hashed_password
             }
             session.execute(sql, params)
             session.commit()
@@ -85,10 +100,12 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.phone, P.address, P.email "
+                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
                 "FROM REVIEWER R " 
                 "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
                 "WHERE reviewer_id = :id"
             )
             result = session.execute(sql, {"id": id})
@@ -101,9 +118,11 @@ class ControllerReviewer():
                     'person_id': row[3],
                     'firstname': row[4],
                     'lastname': row[5],
-                    'phone': row[6],
-                    'address': row[7],
-                    'email': row[8]
+                    'dni': row[6],
+                    'phone': row[7],
+                    'address': row[8],
+                    'email': row[9],
+                    'username': row[10]
                 }
                 return reviewer
             else:
@@ -113,24 +132,28 @@ class ControllerReviewer():
 
     #Update an reviewer info
     @classmethod
-    def update_reviewer(cls, db, id, reviewer_code, firstname, lastname, grade, phone, address, email):
+    def update_reviewer(cls, db, id, reviewer_code, firstname, lastname, dni, grade, phone, address, email, username):
         try:
             session = db.session()
             sql = text(
                 "UPDATE REVIEWER SET reviewer_code = :reviewer_code, grade = :grade WHERE reviewer_id = :reviewer_id; "
                 "SET @person_id = (SELECT person_id FROM REVIEWER WHERE reviewer_id = :reviewer_id); "
-                "UPDATE PERSON SET firstname = :firstname, lastname = :lastname, phone = :phone, address = :address, email = :email "
+                "UPDATE PERSON SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email "
                 "WHERE person_id = @person_id;"
+                "UPDATE USER SET username = :username "
+                "WHERE person_id = @person_id; "
             )
             params = {
                 'reviewer_id': id,
-                'reviewer_code': reviewer_code,   
+                'reviewer_code': reviewer_code,
                 'firstname': firstname,
                 'lastname': lastname,
+                'dni': dni,
                 'grade': grade,
                 'phone': phone,
                 'address': address,
-                'email': email               
+                'email': email,
+                'username': username,
             }
             session.execute(sql, params)
             session.commit()
