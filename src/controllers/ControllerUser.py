@@ -15,7 +15,7 @@ class ControllerUser():
             result = session.execute(sql, {"username": user.username})
             row = result.fetchone()
             if row is not None:
-                user = User(row[0], row[1], User.check_password(row[2], user.password), row[3])
+                user = User(row[0], row[1], User.check_password(row[2], user.password), row[3], None)
                 return user
             else:
                 return None
@@ -27,11 +27,19 @@ class ControllerUser():
     def get_by_id(cls, db, id):
         try:
             session = db.session()
-            sql = text("SELECT user_id, username FROM user WHERE user_id = :user_id")
+            sql = text(
+                "SELECT U.user_id, U.username, U.password, U.person_id, R.role "
+                "FROM USER U "
+                "INNER JOIN ROLE_USER RU "
+                "ON RU.user_id = U.user_id "
+                "INNER JOIN ROLE R "
+                "ON RU.role_id = R.role_id "
+                "WHERE U.user_id = :user_id"
+            )
             result = session.execute(sql, {"user_id": id})
             row = result.fetchone()
             if row is not None:
-                return User(row[0], row[1], None, None)
+                return User(row[0], row[1], row[2], row[3], row[4])
             else:
                 return None
         except Exception as ex:

@@ -52,7 +52,7 @@ def status_404(error):
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User(0, request.form['username'], request.form['password'], 0)
+        user = User(0, request.form['username'], request.form['password'], 0, 0)
         logged_user=ControllerUser.login(db,user)
         if logged_user != None:
             if logged_user.password:
