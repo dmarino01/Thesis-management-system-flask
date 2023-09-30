@@ -36,6 +36,7 @@ class ControllerRole():
                 "WHERE is_deleted = 0 AND role LIKE :role"
             )
             result = session.execute(sql, {'name': f'%{name}%'})
+            session.commit()
             rows=result.fetchall()
             roles = []
             if rows != None:
@@ -77,6 +78,7 @@ class ControllerRole():
                 "WHERE role_id = :id"
             )
             result = session.execute(sql, {"id": id})
+            session.commit()
             row = result.fetchone()
             if row:
                 role = {

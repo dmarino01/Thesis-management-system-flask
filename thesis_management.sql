@@ -221,12 +221,12 @@ INSERT INTO `person` (`person_id`, `firstname`, `lastname`, `phone`, `address`, 
 
 DROP TABLE IF EXISTS `recommendation`;
 CREATE TABLE IF NOT EXISTS `recommendation` (
-  `recomendation_id` int NOT NULL AUTO_INCREMENT,
+  `recommendation_id` int NOT NULL AUTO_INCREMENT,
   `recommendation_date` date DEFAULT NULL,
   `recommendation_text` longtext,
   `thesis_id` int NOT NULL,
   `advisor_id` int DEFAULT NULL,
-  PRIMARY KEY (`recomendation_id`),
+  PRIMARY KEY (`recommendation_id`),
   KEY `R_25` (`thesis_id`),
   KEY `R_52` (`advisor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

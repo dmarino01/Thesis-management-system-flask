@@ -1,6 +1,5 @@
 class Person():
 
-
     def __init__(self, firstname, lastname, phone, address, email, is_deleted=False):
         self.firstname = firstname
         self.lastname = lastname

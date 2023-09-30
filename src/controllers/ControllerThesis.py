@@ -19,6 +19,7 @@ class ControllerThesis():
                 "WHERE T.is_deleted = 0 AND U.user_id = :user_id"
             )
             result = session.execute(sql, {"user_id": user_id})
+            session.commit()
             rows=result.fetchall()
             thesiss = []
             if rows != None:
@@ -26,6 +27,32 @@ class ControllerThesis():
                     thesis = Thesis(row[0], row[1], row[2], row[3], row[4])
                     thesiss.append(thesis)
                 return thesiss
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+    
+    @classmethod
+    def get_thesis_by_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, thesis_status_id "
+                "FROM THESIS T " 
+                "WHERE thesis_id = :id"
+            )
+            result = session.execute(sql, {"id": id})
+            session.commit()
+            row = result.fetchone()
+            if row:
+                thesis = {
+                    'thesis_id': row[0],
+                    'title': row[1],
+                    'abstract' : row[2],
+                    'submission_date' : row[3],
+                    'thesis_status_id': row[4]
+                }
+                return thesis
             else:
                 return None
         except Exception as ex:
