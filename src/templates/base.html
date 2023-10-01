@@ -78,6 +78,8 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="/index" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    
+                    {% if current_user.role == 'Admin' %}
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                                 class="fa fa-cog me-2"></i>Mantenedores</a>
@@ -87,13 +89,25 @@
                             <a href="/advisor" class="dropdown-item"><i class="fa fa-user-tie me-2"></i>Asesor</a>
                             <a href="/tesis" class="dropdown-item"><i class="fa fa-book me-2"></i>Tesis</a>
                             <a href="/review" class="dropdown-item"><i class="fa fa-star me-2"></i>Review</a>
-                            <a href="/status_thesis" class="dropdown-item"><i class="fa fa-check-circle me-2"></i>Estado
-                                Tesis</a>
-                            <a href="/role" class="dropdown-item"><i class="fa fa-users me-2"></i>Roles</a>
-                            <a href="/permission" class="dropdown-item"><i class="fa fa-lock me-2"></i>Permisos</a>
+                            <a href="/status_thesis" class="dropdown-item" hidden><i class="fa fa-check-circle me-2"></i>Estado Tesis</a>
+                            <a href="/role" class="dropdown-item" hidden><i class="fa fa-users me-2"></i>Roles</a>
+                            <a href="/permission" class="dropdown-item" hidden><i class="fa fa-lock me-2"></i>Permisos</a>
                         </div>
                     </div>
-                    <a href="/myThesis" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Mis Tesis</a>
+                    {% endif %}
+                    
+                    {% if current_user.role == 'Admin' or current_user.role == 'Autor' %}
+                    <a href="/myThesis" class="nav-item nav-link"><i class="fa fa-book me-2"></i>Mis Tesis</a>
+                    {% endif %}
+                    
+                    {% if current_user.role == 'Admin' or current_user.role == 'Asesor' %}
+                    <a href="#" class="nav-item nav-link"><i class="fa fa-bookmark me-2"></i>Tesis Asesoradas</a>
+                    {% endif %}
+
+                    {% if current_user.role == 'Admin' or current_user.role == 'Revisor' %}
+                    <a href="#" class="nav-item nav-link"><i class="fa fa-star me-2"></i>Tesis a Revisar</a>
+                    {% endif %}
+
                     <a href="/usuarios" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Usuarios</a>
                     <a href="/perfil" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Datos Personales</a>
                     <a href="/temas" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Lista de Temas</a>
@@ -225,8 +239,8 @@
                             &copy; <a href="#">SysThesis</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">-->
-                            <!-- /*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/ -->
-                            <!--Designed By <a href="https://htmlcodex.com">dmarino</a>
+            <!-- /*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/ -->
+            <!--Designed By <a href="https://htmlcodex.com">dmarino</a>
                             <br>Distributed By: <a href="https://themewagon.com" target="_blank">dmarino</a>
                         </div>
                     </div>
