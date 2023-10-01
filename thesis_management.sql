@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 29, 2023 at 05:30 PM
+-- Generation Time: Oct 01, 2023 at 01:37 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -35,14 +35,14 @@ CREATE TABLE IF NOT EXISTS `advisor` (
   `advisor_id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`advisor_id`),
   KEY `R_46` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `advisor`
 --
 
 INSERT INTO `advisor` (`advisor_code`, `institution`, `person_id`, `advisor_id`) VALUES
-('1008', 'UNT', 8, 1);
+('10021', 'UNT', 12, 2);
 
 -- --------------------------------------------------------
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `author` (
   `person_id` int NOT NULL,
   PRIMARY KEY (`author_id`),
   KEY `R_45` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `author`
@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS `author` (
 INSERT INTO `author` (`student_code`, `author_id`, `person_id`) VALUES
 ('11111', 1, 2),
 ('1212', 3, 4),
-('1000', 4, 5),
-('12345678', 5, 6);
+('A00000', 6, 9),
+('A000', 7, 10);
 
 -- --------------------------------------------------------
 
@@ -193,25 +193,26 @@ CREATE TABLE IF NOT EXISTS `person` (
   `person_id` int NOT NULL AUTO_INCREMENT,
   `firstname` varchar(50) DEFAULT NULL,
   `lastname` varchar(50) DEFAULT NULL,
+  `dni` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `address` varchar(50) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `person`
 --
 
-INSERT INTO `person` (`person_id`, `firstname`, `lastname`, `phone`, `address`, `email`, `is_deleted`) VALUES
-(1, 'Diego Alejandro', 'Marino Ramos', '970501313', 'Calle...', 'dmarino@unitru.edu.pe', 0),
-(2, 'John', 'Doe', '999 777 555', '', 'Jon@gmail.com', 0),
-(4, 'Leandro Felipe', 'Montoya Lujano', '(661) 435-9786', '37857 53rd St E, Palmdale, CA 93552-3811', 'leandromontoya@yahoo.com', 0),
-(5, 'Prueba', 'Test', '100100100', '', 'test@gmail.com', 0),
-(6, 'Juan', 'Perez', '91213123', '', 'jperez@gmail.com', 0),
-(7, 'test1', 'test1', '999 777 555', 'Calle XYZ', 'test1@email.com', 0),
-(8, 'test123', 'test321', '987654321', 'Calle dfam', 'test123@email.com', 0);
+INSERT INTO `person` (`person_id`, `firstname`, `lastname`, `dni`, `phone`, `address`, `email`, `is_deleted`) VALUES
+(1, 'Diego Alejandro', 'Marino Ramos', '', '970501313', 'Calle...', 'dmarino@unitru.edu.pe', 0),
+(2, 'John', 'Doe', '', '999 777 555', '', 'Jon@gmail.com', 0),
+(4, 'Leandro Felipe', 'Montoya Lujano', '', '(661) 435-9786', '37857 53rd St E, Palmdale, CA 93552-3811', 'leandromontoya@yahoo.com', 0),
+(9, 'Bruno Eduardo', 'Palomino Vigo', '74698776', '999999999', 'Av. Túpac Amaru 825, Trujillo 13001', 'bpalominov@unitru.edu.pe', 0),
+(10, 'Diego Alberto', 'Vega Baltodano', '74132385', '993 011 438', '', 't021400420@unitru.edu.pe', 0),
+(11, 'pepito', 'Reviewer1', '74698776', '999999999', '', 'reviewer1@unitru.edu.pe', 0),
+(12, 'Advisor1', 'Advisor1', '7777777', '970501313', '', 'advisor1@unitru.edu.pe', 0);
 
 -- --------------------------------------------------------
 
@@ -263,14 +264,14 @@ CREATE TABLE IF NOT EXISTS `reviewer` (
   `reviewer_id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`reviewer_id`),
   KEY `R_47` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `reviewer`
 --
 
 INSERT INTO `reviewer` (`reviewer_code`, `grade`, `person_id`, `reviewer_id`) VALUES
-('1000', 'DR', 7, 1);
+('0001', 'DR', 11, 2);
 
 -- --------------------------------------------------------
 
@@ -291,10 +292,10 @@ CREATE TABLE IF NOT EXISTS `role` (
 --
 
 INSERT INTO `role` (`role_id`, `role`, `is_deleted`) VALUES
-(1, 'ADMIN', 0),
-(2, 'AUTHOR', 0),
-(3, 'REVIEWER', 0),
-(4, 'ADVISOR', 0);
+(1, 'Admin', 0),
+(2, 'Autor', 0),
+(3, 'Revisor', 0),
+(4, 'Asesor', 0);
 
 -- --------------------------------------------------------
 
@@ -315,7 +316,12 @@ CREATE TABLE IF NOT EXISTS `role_user` (
 --
 
 INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
-(1, 1);
+(1, 1),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 4);
 
 -- --------------------------------------------------------
 
@@ -340,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `thesis` (
 --
 
 INSERT INTO `thesis` (`thesis_id`, `title`, `abstract`, `submission_date`, `thesis_status_id`, `is_deleted`) VALUES
-(1, 'Implementacion de Software', 'Lorem', '2023-09-15', 1, 0);
+(1, 'Implementacion de Software', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam exercitationem veritatis eius natus quibusdam tempore! Ut repudiandae possimus tenetur doloribus labore ducimus, modi, ex, dignissimos aliquid porro iusto quaerat! Quae!', '2023-09-15', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -379,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `person_id` int NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `R_38` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
@@ -387,7 +393,11 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`user_id`, `username`, `password`, `person_id`) VALUES
 (1, 'dmarino', 'pbkdf2:sha256:600000$R1Atgo6sr40eY2hY$85586c02cfa96acc1bbbc01bb3e8a4bc2d77be46ba737b62e3e513978aa924e3', 1),
-(2, 'scars 2 success', 'pbkdf2:sha256:600000$R1Atgo6sr40eY2hY$85586c02cfa96acc1bbbc01bb3e8a4bc2d77be46ba737b62e3e513978aa924e3', 4);
+(2, 'scars 2 success', 'pbkdf2:sha256:600000$R1Atgo6sr40eY2hY$85586c02cfa96acc1bbbc01bb3e8a4bc2d77be46ba737b62e3e513978aa924e3', 4),
+(3, 'bpalominov', 'pbkdf2:sha256:600000$naSDpTy1KkackUB7$0feb34b64a54b60e5624e1ab264ca0de18683c43db2d18b211c74b7dea4f441f', 9),
+(4, 'dvega', 'pbkdf2:sha256:600000$gJGuQveHWwtm4Vx6$b8ae2d6abee31535b3d732f43e6d6ab4358470a50574887df172c6026664f1de', 10),
+(5, 'pepito', 'pbkdf2:sha256:600000$mZbUCmuOwDESLM8p$f76748e1d5dd60de390dddc4fde137ad2e514d80c110e575c6af9b406aed86af', 11),
+(6, 'adv1', 'pbkdf2:sha256:600000$ggcfwOemMn8xOkxO$a18ef7d770628e65fbd0d0a46edcad67839facfad48a631463272ffb30148300', 12);
 
 --
 -- Constraints for dumped tables
@@ -397,13 +407,13 @@ INSERT INTO `user` (`user_id`, `username`, `password`, `person_id`) VALUES
 -- Constraints for table `advisor`
 --
 ALTER TABLE `advisor`
-  ADD CONSTRAINT `R_46` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
+  ADD CONSTRAINT `R_46` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `author`
 --
 ALTER TABLE `author`
-  ADD CONSTRAINT `R_45` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
+  ADD CONSTRAINT `R_45` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `author_advisor`
@@ -458,7 +468,7 @@ ALTER TABLE `review`
 -- Constraints for table `reviewer`
 --
 ALTER TABLE `reviewer`
-  ADD CONSTRAINT `R_47` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
+  ADD CONSTRAINT `R_47` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `role_user`
