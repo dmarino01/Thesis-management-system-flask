@@ -63,11 +63,6 @@ def registerUser():
 def usuarios():
     return render_template('usuarios.html')
 
-@app.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html')
-
 @app.route('/temas')
 @login_required
 def temas():

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
 {% block title %} PERFIL {% endblock %}
 
@@ -33,20 +33,50 @@
                     {% endfor %}
                     {% endwith %}
 
-
-
-
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingFirstname" value="{{ user.firstname }}" name="firstname" placeholder="firstname">
+                                <label for="floatingFirstname">Nombres</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingLastname" value="{{ user.lastname }}" name="lastname" placeholder="lastname">
+                                <label for="floatingLastname">Apellidos</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingPhone" value="{{ user.phone }}" name="phone" placeholder="phone">
+                                <label for="floatingPhone">Teléfono</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingAddress"value="{{ user.address }}" name="address" placeholder="address">
+                                <label for="floatingPhone">Dirección (opcional)</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingUsername"
-                            value="{{ current_user.username }}" name="username" placeholder="username">
+                        <input type="text" class="form-control" id="floatingUsername" value="{{ user.username }}" name="username" placeholder="username">
                         <label for="floatingUsername">Usuario</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" name="password"
-                            placeholder="password">
+                        <input type="email" class="form-control" id="floatingEmail" value="{{ user.email }}" name="email" placeholder="email">
+                        <label for="floatingEmail">Correo</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="password">
                         <label for="floatingPassword">Contraseña</label>
                     </div>
 

@@ -104,7 +104,7 @@ class ControllerAuthor():
                 "ON A.person_id = P.person_id "
                 "INNER JOIN USER U "
                 "ON U.person_id = P.person_id "
-                "WHERE author_id = :id"
+                "WHERE A.author_id = :id"
             )
             result = session.execute(sql, {"id": id})
             row = result.fetchone()
@@ -173,5 +173,40 @@ class ControllerAuthor():
             session.execute(sql, {"id": id})
             session.commit()
             return {'message': 'Autor created successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)
+        
+    #Get Author by person_id
+    @classmethod
+    def get_author_by_person_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "FROM AUTHOR A "
+                "INNER JOIN PERSON P "
+                "ON A.person_id = P.person_id "
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
+                "WHERE P.person_id = :id"
+            )
+            result = session.execute(sql, {"id": id})
+            row = result.fetchone()
+            if row:
+                autor = {
+                    'student_code': row[0],
+                    'author_id': row[1],
+                    'person_id': row[2],
+                    'firstname': row[3],
+                    'lastname': row[4],
+                    'dni': row[5],
+                    'phone': row[6],
+                    'address': row[7],
+                    'email': row[8],
+                    'username': row[9]
+                }
+                return autor
+            else:
+                return None
         except Exception as ex:
             raise Exception(ex)
