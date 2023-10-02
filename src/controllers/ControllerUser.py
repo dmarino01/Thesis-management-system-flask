@@ -1,5 +1,6 @@
 from models.User import User
 from sqlalchemy import text
+from werkzeug.security import generate_password_hash
 
 class ControllerUser():
 
@@ -44,3 +45,34 @@ class ControllerUser():
                 return None
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def update_user(cls, db, id, username, password):
+        try:
+            session = db.session()
+            if password == "":
+                sql = text(
+                "UPDATE USER SET username = :username "
+                "WHERE person_id = :person_id; "
+                )
+                params = {
+                    'person_id' : id,
+                    'username' : username
+                }
+            else:
+                hashed_password = generate_password_hash(password)
+                sql = text(
+                "UPDATE USER SET username = :username, password = :password "
+                "WHERE person_id = :person_id; " 
+                )
+                params = {
+                    'person_id' : id,
+                    'username' : username,
+                    'password' : hashed_password
+                }
+            session.execute(sql, params)
+            session.commit()
+            return {'message': 'User updated successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)
+

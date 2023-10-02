@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %} PERFIL {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h3>EDITAR PERFIL</h3>
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Edite su Usuario</h6>
+                <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post">
+
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    {% set alert_class = 'custom-primary-button alert alert-primary' %}
+
+                    {% if "Perfil Actualizado Exitosamente..." in message %}
+                    {% set alert_class = 'custom-primary-button alert alert-primary' %}
+                    {% elif "Las contraseñas no coinciden..." in message or "Usuario no debe estar vacio..." in message %}
+                    {% set alert_class = 'alert alert-primary' %}
+                    {% endif %}
+
+                    <div class="{{ alert_class }} alert-dismissible position-relative"
+                        role="alert" id="myAlert">
+                        <strong>{{ message }}</strong>
+                        <div class="progress-container">
+                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+
+
+
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingUsername"
+                            value="{{ current_user.username }}" name="username" placeholder="username">
+                        <label for="floatingUsername">Usuario</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" name="password"
+                            placeholder="password">
+                        <label for="floatingPassword">Contraseña</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingVerify_Password" name="verify_password"
+                            placeholder="password">
+                        <label for="floatingVerify_Password">Verificar Contraseña</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
