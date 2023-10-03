@@ -1,5 +1,7 @@
+import base64
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_required
+from jinja2 import Environment, FileSystemLoader
 from config import Config, db, csrf
 
 # Controller:
@@ -32,9 +34,14 @@ app.register_blueprint(user_bp)
 
 login_manager_app=LoginManager(app)
 
+env = Environment(loader=FileSystemLoader("templates"))
+
 @login_manager_app.user_loader
 def load_user(user_id):
-    return ControllerUser.get_by_id(db, user_id)
+    user = ControllerUser.get_by_id(db, user_id)
+    if user:
+        user.decoded_image = user.decode_image()  # Decode the image and store it in the user object
+    return user
 
 @app.route('/')
 @app.route('/index')
@@ -77,6 +84,12 @@ def libreria():
 @login_required
 def tesis():
     return render_template('components/tesis/index.html')
+
+@app.template_filter('b64encode')
+def b64encode_filter(data):
+    if data:
+        return base64.b64encode(data).decode('utf-8')
+    return ''
 
 if __name__ == '__main__':
     csrf.init_app(app)

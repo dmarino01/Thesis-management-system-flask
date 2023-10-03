@@ -9,7 +9,7 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM REVIEWER R "
                 "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
@@ -22,7 +22,7 @@ class ControllerReviewer():
             reviewers = []
             if rows != None:
                 for row in rows:
-                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     reviewers.append(reviewer)
                 return reviewers
             else:
@@ -36,7 +36,7 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT R.reviewer_code, R.reviewer_id, R.grade, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM REVIEWER R "
                 "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
@@ -50,7 +50,7 @@ class ControllerReviewer():
             reviewers = []
             if rows != None:
                 for row in rows:
-                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+                    reviewer = Reviewer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     reviewers.append(reviewer)
                 return reviewers
             else:
@@ -100,7 +100,7 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM REVIEWER R " 
                 "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
@@ -122,7 +122,8 @@ class ControllerReviewer():
                     'phone': row[7],
                     'address': row[8],
                     'email': row[9],
-                    'username': row[10]
+                    'image': row[10],
+                    'username': row[11]
                 }
                 return reviewer
             else:
@@ -186,7 +187,7 @@ class ControllerReviewer():
         try:
             session = db.session()
             sql = text(
-                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM REVIEWER R " 
                 "INNER JOIN PERSON P "
                 "ON R.person_id = P.person_id "
@@ -208,7 +209,8 @@ class ControllerReviewer():
                     'phone': row[7],
                     'address': row[8],
                     'email': row[9],
-                    'username': row[10]
+                    'image': row[10],
+                    'username': row[11]
                 }
                 return reviewer
             else:

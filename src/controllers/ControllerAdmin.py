@@ -9,7 +9,7 @@ class ControllerAdmin():
         try:
             session = db.session()
             sql = text(
-                "SELECT P.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT P.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM PERSON P "
                 "INNER JOIN USER U "
                 "ON U.person_id = P.person_id "
@@ -26,7 +26,8 @@ class ControllerAdmin():
                     'phone': row[4],
                     'address': row[5],
                     'email': row[6],
-                    'username': row[7]
+                    'image': row[7],
+                    'username': row[8]
                 }
                 return autor
             else:

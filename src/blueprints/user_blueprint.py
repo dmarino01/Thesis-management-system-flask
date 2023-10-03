@@ -1,3 +1,4 @@
+import base64
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from controllers.ControllerUser import ControllerUser
@@ -16,8 +17,7 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User(0, request.form['username'],
-                    request.form['password'], 0, 0)
+        user = User(0, request.form['username'], request.form['password'], 0, 0, 0)
         logged_user = ControllerUser.login(db, user)
         if logged_user != None:
             if logged_user.password:
@@ -55,14 +55,20 @@ def profile():
         data = ControllerAdvisor.get_advisor_by_person_id(db, id)
     elif current_user.role == "Revisor":
         data = ControllerReviewer.get_reviewer_by_person_id(db, id)
-    return render_template('profile.html', user=data)
+
+    # Encode the image data to base64
+    if data and data['image']:
+        image_data = base64.b64encode(data['image']).decode('utf-8')
+    else:
+        image_data = None
+    return render_template('profile.html', user=data, image_data=image_data)
 
 
 # Route to update user
 @user_bp.route('/edit_user/<int:id>', methods=['POST'])
 @login_required
 def edit_user(id):
-    try:
+
         student_code = ''
         advisor_code = ''
         reviewer_code = ''
@@ -94,5 +100,4 @@ def edit_user(id):
         else:
             flash("Usuario no debe estar vacio...")
             return redirect(url_for('user.profile'))
-    except:
-        return redirect(url_for('user.profile'))
+

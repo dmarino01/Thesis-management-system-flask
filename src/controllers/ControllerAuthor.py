@@ -1,6 +1,8 @@
+import base64
 from models.Author import Author
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
+
 
 class ControllerAuthor():
 
@@ -9,7 +11,7 @@ class ControllerAuthor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM AUTHOR A "
                 "INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
@@ -22,7 +24,7 @@ class ControllerAuthor():
             autores = []
             if rows != None:
                 for row in rows:
-                    autor = Author(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+                    autor = Author(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
                     autores.append(autor)
                 return autores
             else:
@@ -182,7 +184,7 @@ class ControllerAuthor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.student_code, A.author_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM AUTHOR A "
                 "INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
@@ -203,7 +205,8 @@ class ControllerAuthor():
                     'phone': row[6],
                     'address': row[7],
                     'email': row[8],
-                    'username': row[9]
+                    'image': row[9],
+                    'username': row[10]
                 }
                 return autor
             else:

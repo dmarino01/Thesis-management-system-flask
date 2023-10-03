@@ -1,3 +1,4 @@
+import base64
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
 
@@ -9,12 +10,13 @@ class User(UserMixin):
         self.password = password
         self.person_id = person_id
 
-    def __init__(self, user_id, username, password, person_id, role) -> None:
+    def __init__(self, user_id, username, password, person_id, role, image) -> None:
         self.user_id = user_id
         self.username = username
         self.password = password
         self.person_id = person_id
         self.role = role
+        self.image = image
 
     @classmethod
     def check_password(cls, hashed_password, password):
@@ -22,3 +24,11 @@ class User(UserMixin):
     
     def get_id(self):
         return str(self.user_id)
+    
+    def decode_image(self):
+        try:
+            if self.image:
+                return base64.b64decode(self.image)
+        except Exception as ex:
+            raise Exception(ex)
+        return None

@@ -5,11 +5,10 @@
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-    <h3>EDITAR PERFIL</h3>
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
+    <div class="row">
+        <div class="col-sm-16 col-md-8">
             <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Edite su Usuario</h6>
+                <h3>EDITAR PERFIL</h3>
                 <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post">
 
                     {% with messages = get_flashed_messages() %}
@@ -144,7 +143,28 @@
                 </form>
             </div>
         </div>
+        <div class="col-sm-12 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4 d-flex flex-column">
+                <h6 class="mb-4 text-left">Imagen del Perfil</h6>
+                <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                    {% if image_data %}
+                    <img src="data:image/jpeg;base64, {{ image_data }}" alt="User Image" class="img-fluid"
+                        style="max-width: 100%; width: auto; height: auto;">
+                    {% else %}
+                    <p>No image available</p>
+                    {% endif %}
+                </div>
+                <div class="mt-4 text-center">
+                    <button class="btn btn-primary" id="changeImageButton">Cambiar Imagen</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
+
+
+
 
 {% endblock %}

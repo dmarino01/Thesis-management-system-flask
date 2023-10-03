@@ -9,7 +9,7 @@ class ControllerAdvisor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM ADVISOR A INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
                 "INNER JOIN USER U "
@@ -21,7 +21,7 @@ class ControllerAdvisor():
             advisors = []
             if rows != None:
                 for row in rows:
-                    advisor = Advisor(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+                    advisor = Advisor(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     advisors.append(advisor)
                 return advisors
             else:
@@ -35,7 +35,7 @@ class ControllerAdvisor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM Advisor A INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
                 "INNER JOIN USER U "
@@ -48,7 +48,7 @@ class ControllerAdvisor():
             advisors = []
             if rows != None:
                 for row in rows:
-                    advisor = Advisor(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+                    advisor = Advisor(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     advisors.append(advisor)
                 return advisors
             else:
@@ -99,7 +99,7 @@ class ControllerAdvisor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM ADVISOR A " 
                 "INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
@@ -121,7 +121,8 @@ class ControllerAdvisor():
                     'phone': row[7],
                     'address': row[8],
                     'email': row[9],
-                    'username': row[10],
+                    'image': row[10],
+                    'username': row[11]
                 }
                 return advisor
             else:
@@ -185,7 +186,7 @@ class ControllerAdvisor():
         try:
             session = db.session()
             sql = text(
-                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
                 "FROM ADVISOR A " 
                 "INNER JOIN PERSON P "
                 "ON A.person_id = P.person_id "
@@ -207,7 +208,8 @@ class ControllerAdvisor():
                     'phone': row[7],
                     'address': row[8],
                     'email': row[9],
-                    'username': row[10],
+                    'image': row[10],
+                    'username': row[11]
                 }
                 return advisor
             else:

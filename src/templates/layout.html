@@ -59,14 +59,21 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="/index" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><img class="rounded-circle"
-                            src="{{ url_for('static', filename='img/favicon1.ico') }}" alt="logo-unt"
-                            style="width: 40px; height: 40px;">SysThesis</h3>
+                    <h3 class="text-primary">
+                        <img class="rounded-circle" src="{{ url_for('static', filename='img/favicon1.ico') }}"
+                            alt="logo-unt" style="width: 40px; height: 40px;">
+                        SysThesis
+                    </h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
+                        {% if current_user.image == None %}
                         <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
                             style="width: 40px; height: 40px;">
+                        {% else %}
+                        <img class="rounded-circle" src="data:image/png;base64,{{ current_user.image|b64encode }}"
+                            alt="" style="width: 40px; height: 40px;">
+                        {% endif %}
                         <div
                             class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
                         </div>
@@ -78,7 +85,7 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="/index" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    
+
                     {% if current_user.role == 'Admin' %}
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
@@ -89,17 +96,19 @@
                             <a href="/advisor" class="dropdown-item"><i class="fa fa-user-tie me-2"></i>Asesor</a>
                             <a href="/tesis" class="dropdown-item"><i class="fa fa-book me-2"></i>Tesis</a>
                             <a href="/review" class="dropdown-item"><i class="fa fa-star me-2"></i>Review</a>
-                            <a href="/status_thesis" class="dropdown-item" hidden><i class="fa fa-check-circle me-2"></i>Estado Tesis</a>
+                            <a href="/status_thesis" class="dropdown-item" hidden><i
+                                    class="fa fa-check-circle me-2"></i>Estado Tesis</a>
                             <a href="/role" class="dropdown-item" hidden><i class="fa fa-users me-2"></i>Roles</a>
-                            <a href="/permission" class="dropdown-item" hidden><i class="fa fa-lock me-2"></i>Permisos</a>
+                            <a href="/permission" class="dropdown-item" hidden><i
+                                    class="fa fa-lock me-2"></i>Permisos</a>
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if current_user.role == 'Admin' or current_user.role == 'Autor' %}
                     <a href="/myThesis" class="nav-item nav-link"><i class="fa fa-book me-2"></i>Mis Tesis</a>
                     {% endif %}
-                    
+
                     {% if current_user.role == 'Admin' or current_user.role == 'Asesor' %}
                     <a href="#" class="nav-item nav-link"><i class="fa fa-bookmark me-2"></i>Tesis Asesoradas</a>
                     {% endif %}
@@ -210,8 +219,13 @@
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ url_for('static', filename='img/user.jpg') }}"
+                            {% if current_user.image == None %}
+                            <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
+                                style="width: 40px; height: 40px;">
+                            {% else %}
+                            <img class="rounded-circle" src="data:image/png;base64,{{ current_user.image|b64encode }}"
                                 alt="" style="width: 40px; height: 40px;">
+                            {% endif %}
                             <span class="d-none d-lg-inline-flex">{{ current_user.username }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
