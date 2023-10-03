@@ -178,3 +178,39 @@ class ControllerAdvisor():
             return {'message': 'Advisor created successfully'}, 200
         except Exception as ex:
             raise Exception(ex)
+        
+    #Get Advisor by person_id
+    @classmethod
+    def get_advisor_by_person_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "FROM ADVISOR A " 
+                "INNER JOIN PERSON P "
+                "ON A.person_id = P.person_id "
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
+                "WHERE A.person_id = :id"
+            )
+            result = session.execute(sql, {"id": id})
+            row = result.fetchone()
+            if row:
+                advisor = {
+                    'advisor_code': row[0],
+                    'institution': row[1],
+                    'advisor_id': row[2],
+                    'person_id': row[3],
+                    'firstname': row[4],
+                    'lastname': row[5],
+                    'dni': row[6],
+                    'phone': row[7],
+                    'address': row[8],
+                    'email': row[9],
+                    'username': row[10],
+                }
+                return advisor
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)

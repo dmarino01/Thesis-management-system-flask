@@ -179,3 +179,39 @@ class ControllerReviewer():
             return {'message': 'Reviewer created successfully'}, 200
         except Exception as ex:
             raise Exception(ex)
+        
+    #Get Reviewer by ID
+    @classmethod
+    def get_reviewer_by_person_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "SELECT R.reviewer_code, R.grade, R.reviewer_id, R.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, U.username "
+                "FROM REVIEWER R " 
+                "INNER JOIN PERSON P "
+                "ON R.person_id = P.person_id "
+                "INNER JOIN USER U "
+                "ON U.person_id = P.person_id "
+                "WHERE r.person_id = :id"
+            )
+            result = session.execute(sql, {"id": id})
+            row = result.fetchone()
+            if row:
+                reviewer = {
+                    'reviewer_code': row[0],
+                    'grade': row[1],
+                    'reviewer_id': row[2],
+                    'person_id': row[3],
+                    'firstname': row[4],
+                    'lastname': row[5],
+                    'dni': row[6],
+                    'phone': row[7],
+                    'address': row[8],
+                    'email': row[9],
+                    'username': row[10]
+                }
+                return reviewer
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)

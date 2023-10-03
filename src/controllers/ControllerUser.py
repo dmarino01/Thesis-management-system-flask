@@ -47,29 +47,63 @@ class ControllerUser():
             raise Exception(ex)
         
     @classmethod
-    def update_user(cls, db, id, username, password):
+    def update_user(cls, db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, username, password):
         try:
             session = db.session()
-            if password == "":
+            hashed_password = generate_password_hash(password)
+
+            if student_code != '':
                 sql = text(
-                "UPDATE USER SET username = :username "
-                "WHERE person_id = :person_id; "
+                    "UPDATE PERSON "
+                    "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE USER "
+                    "SET username = :username, "
+                    "password = CASE WHEN :password <> '' THEN :password ELSE password END "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE AUTHOR SET student_code = :student_code "
+                    "WHERE person_id = :person_id;"
                 )
-                params = {
-                    'person_id' : id,
-                    'username' : username
-                }
-            else:
-                hashed_password = generate_password_hash(password)
+            elif advisor_code != '':
                 sql = text(
-                "UPDATE USER SET username = :username, password = :password "
-                "WHERE person_id = :person_id; " 
+                    "UPDATE PERSON "
+                    "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE USER "
+                    "SET username = :username, "
+                    "password = CASE WHEN :password <> '' THEN :password ELSE password END "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE ADVISOR SET advisor_code = :advisor_code "
+                    "WHERE person_id = :person_id;"
                 )
-                params = {
-                    'person_id' : id,
-                    'username' : username,
-                    'password' : hashed_password
-                }
+            elif reviewer_code != '':
+                sql = text(
+                    "UPDATE PERSON "
+                    "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE USER "
+                    "SET username = :username, "
+                    "password = CASE WHEN :password <> '' THEN :password ELSE password END "
+                    "WHERE person_id = :person_id; "
+                    "UPDATE reviewer SET reviewer_code = :reviewer_code, grade = :grade "
+                    "WHERE person_id = :person_id;"
+                )
+
+            params = {
+                'student_code': student_code,
+                'reviewer_code': reviewer_code,
+                'advisor_code': advisor_code,
+                'grade': grade,
+                'person_id': id,
+                'firstname': firstname,
+                'lastname': lastname,
+                'dni': dni,
+                'phone': phone,
+                'address': address,
+                'email': email,
+                'username': username,
+                'password': hashed_password
+            }
             session.execute(sql, params)
             session.commit()
             return {'message': 'User updated successfully'}, 200

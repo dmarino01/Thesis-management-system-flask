@@ -51,10 +51,10 @@ def profile():
         data = ControllerAdmin.get_admin_by_person_id(db, id)
     if current_user.role == "Autor":
         data = ControllerAuthor.get_author_by_person_id(db, id)
-    #elif current_user.role == "Asesor":
-    #    data = ControllerAdvisor.get_advisor_by_person_id(db, id)
-    #elif current_user.role == "Revisor":
-    #    data = ControllerReviewer.get_reviewer_by_person_id(db, id)
+    elif current_user.role == "Asesor":
+        data = ControllerAdvisor.get_advisor_by_person_id(db, id)
+    elif current_user.role == "Revisor":
+        data = ControllerReviewer.get_reviewer_by_person_id(db, id)
     return render_template('profile.html', user=data)
 
 
@@ -63,12 +63,29 @@ def profile():
 @login_required
 def edit_user(id):
     try:
+        student_code = ''
+        advisor_code = ''
+        reviewer_code = ''
+        grade = ''
+        if current_user.role == "Autor":
+            student_code = request.form['student_code']
+        elif current_user.role == "Asesor":
+            advisor_code = request.form['advisor_code']
+        elif current_user.role == "Revisor":
+            reviewer_code = request.form['reviewer_code']
+            grade = request.form['grade']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        dni = request.form['dni']
+        phone = request.form['phone']
+        address = request.form['address']
+        email = request.form['email']
         username = request.form['username']
         password = request.form['password']
         verify_password = request.form['verify_password']
         if username != "":
             if password == verify_password:
-                ControllerUser.update_user(db, id, username, password)
+                ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, username, password)
                 flash("Perfil Actualizado Exitosamente...")
                 return redirect(url_for('user.profile'))
             else:
