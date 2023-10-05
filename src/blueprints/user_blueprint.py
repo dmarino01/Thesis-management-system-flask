@@ -92,8 +92,20 @@ def edit_user(id):
         username = request.form['username']
         password = request.form['password']
         verify_password = request.form['verify_password']
-        image = request.files['image'].read()
-       
+
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file.filename != '':
+                # Validate the file extension
+                if not allowed_file(image_file.filename):
+                    flash("Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg).")
+                    return redirect(url_for('user.profile'))
+                image = image_file.read()
+            else:
+                image = None
+        else:
+            image = None
+
         if username != "":
             if password == verify_password:
                 ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password)
@@ -113,3 +125,8 @@ def remove_image_user(id):
     ControllerUser.remove_image_user(db, id)
     flash("Imagen Removida Exitosamente...")
     return redirect(url_for('user.profile'))
+
+#Function to check if the file extension is allowed
+def allowed_file(filename):
+    allowed_extensions = {'jpg', 'jpeg', 'png', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
