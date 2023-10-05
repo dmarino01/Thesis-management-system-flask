@@ -8,8 +8,9 @@
     <div class="row">
         <div class="col-sm-16 col-md-8">
             <div class="bg-secondary rounded h-100 p-4">
-                <h3>EDITAR PERFIL</h3>
-                <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post">
+                <h4>EDITAR PERFIL</h4><br>
+                <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post"
+                    enctype="multipart/form-data">
 
                     {% with messages = get_flashed_messages() %}
                     {% for message in messages %}
@@ -31,15 +32,15 @@
                     </div>
                     {% endfor %}
                     {% endwith %}
-
+                    
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     {% if current_user.role == "Autor" %}
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="floatingCode" value="{{ user.student_code }}"
                                 name="student_code" placeholder="student_code">
-                            <label for="floatingCode">Codigo de Estudiante</label>
+                            <label for="floatingCode">Código</label>
                         </div>
                     </div>
                     {% elif current_user.role == "Asesor" %}
@@ -47,7 +48,7 @@
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="floatingCode" value="{{ user.advisor_code }}"
                                 name="advisor_code" placeholder="advisor_code">
-                            <label for="floatingCode">Codigo de Asesor</label>
+                            <label for="floatingCode">Codigo</label>
                         </div>
                     </div>
                     {% elif current_user.role == "Revisor" %}
@@ -56,7 +57,7 @@
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="floatingCode"
                                     value="{{ user.reviewer_code }}" name="reviewer_code" placeholder="reviewer_code">
-                                <label for="floatingCode">Codigo Revisor</label>
+                                <label for="floatingCode">Codigo</label>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -110,55 +111,74 @@
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingUsername" value="{{ user.username }}"
-                            name="username" placeholder="username">
-                        <label for="floatingUsername">Usuario</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingUsername"
+                                    value="{{ user.username }}" name="username" placeholder="username">
+                                <label for="floatingUsername">Usuario</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="floatingEmail" value="{{ user.email }}"
+                                    name="email" placeholder="email">
+                                <label for="floatingEmail">Correo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="floatingPassword" name="password"
+                                    placeholder="password">
+                                <label for="floatingPassword">Contraseña</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="floatingVerify_Password"
+                                    name="verify_password" placeholder="password">
+                                <label for="floatingVerify_Password">Verificar Contraseña</label>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingEmail" value="{{ user.email }}"
-                            name="email" placeholder="email">
-                        <label for="floatingEmail">Correo</label>
-                    </div>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Editar foto de perfil (opcional)</label>
+                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile" name="image"
+                            accept="image/*">
+                    </div><br>
 
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" name="password"
-                            placeholder="password">
-                        <label for="floatingPassword">Contraseña</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
+                        </div>
                     </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingVerify_Password" name="verify_password"
-                            placeholder="password">
-                        <label for="floatingVerify_Password">Verificar Contraseña</label>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save"></i> Guardar
-                        </button>
-                    </div>
-
                 </form>
             </div>
         </div>
         <div class="col-sm-12 col-xl-4">
             <div class="bg-secondary rounded h-100 p-4 d-flex flex-column">
-                <h6 class="mb-4 text-left">Imagen del Perfil</h6>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-left">Imagen del Perfil</h5>
+                    <a class="btn btn-danger btn-sm align-self-start"
+                        href="{{ url_for('user.remove_image_user', id=current_user.person_id)}}"><i
+                            class="fa fa-trash"></i> Quitar Imagen</a>
+                </div><br>
                 <div class="d-flex justify-content-center align-items-center flex-grow-1">
                     {% if image_data %}
                     <img src="data:image/jpeg;base64, {{ image_data }}" alt="User Image" class="img-fluid"
-                        style="max-width: 100%; width: auto; height: auto;">
+                        style="max-width: 90%; width: auto; height: auto;">
                     {% else %}
-                    <p>No image available</p>
+                    <p>No hay imagen disponible.</p>
                     {% endif %}
-                </div>
-                <div class="mt-4 text-center">
-                    <button class="btn btn-primary" id="changeImageButton">Cambiar Imagen</button>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

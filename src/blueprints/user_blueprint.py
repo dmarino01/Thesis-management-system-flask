@@ -1,4 +1,5 @@
 import base64
+from tkinter import Image
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from controllers.ControllerUser import ControllerUser
@@ -73,6 +74,7 @@ def edit_user(id):
         advisor_code = ''
         reviewer_code = ''
         grade = ''
+
         if current_user.role == "Autor":
             student_code = request.form['student_code']
         elif current_user.role == "Asesor":
@@ -80,6 +82,7 @@ def edit_user(id):
         elif current_user.role == "Revisor":
             reviewer_code = request.form['reviewer_code']
             grade = request.form['grade']
+
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         dni = request.form['dni']
@@ -89,9 +92,11 @@ def edit_user(id):
         username = request.form['username']
         password = request.form['password']
         verify_password = request.form['verify_password']
+        image = request.files['image'].read()
+       
         if username != "":
             if password == verify_password:
-                ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, username, password)
+                ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password)
                 flash("Perfil Actualizado Exitosamente...")
                 return redirect(url_for('user.profile'))
             else:
@@ -101,3 +106,10 @@ def edit_user(id):
             flash("Usuario no debe estar vacio...")
             return redirect(url_for('user.profile'))
 
+# Route to remove image user
+@user_bp.route('/remove_image_user/<int:id>')
+@login_required
+def remove_image_user(id):
+    ControllerUser.remove_image_user(db, id)
+    flash("Imagen Removida Exitosamente...")
+    return redirect(url_for('user.profile'))

@@ -51,7 +51,7 @@ class ControllerUser():
         
     #Update User
     @classmethod
-    def update_user(cls, db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, username, password):
+    def update_user(cls, db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password):
         try:
             session = db.session()
 
@@ -61,7 +61,8 @@ class ControllerUser():
 
             common_sql = text(
                 "UPDATE PERSON "
-                "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email "
+                "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email, "
+                "image = CASE WHEN :image <> b'' THEN :image ELSE image END "
                 "WHERE person_id = :person_id; "
                 "UPDATE USER "
                 "SET username = :username, "
@@ -96,6 +97,7 @@ class ControllerUser():
                 'phone': phone,
                 'address': address,
                 'email': email,
+                'image': image,
                 'username': username,
                 'password': hashed_password,
                 'student_code': student_code,
@@ -109,3 +111,22 @@ class ControllerUser():
         except Exception as ex:
             raise Exception(ex)
 
+
+    #Update User
+    @classmethod
+    def remove_image_user(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "UPDATE PERSON "
+                "SET image = NULL "
+                "WHERE person_id = :person_id"
+            )
+            params = {
+                'person_id': id
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {'message': 'Image removed successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)
