@@ -9,5 +9,5 @@ recommendation_bp = Blueprint('recommendation', __name__)
 @recommendation_bp.route('/recommendation')
 @login_required
 def recommendation_thesis():
-    data = ControllerRecommendation.getThesis_by_Author_Advisor(db)
+    data = ControllerRecommendation.get_thesis_by_author_advisor(db, 2)
     return render_template('recommendation/index.html', thesis=data)

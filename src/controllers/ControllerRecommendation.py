@@ -9,18 +9,18 @@ class ControllerRecommendation():
     def get_thesis_by_author_advisor(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "CALL GetThesisByAdvisor(:id);"
-            )
-            params
-            result = session.execute(sql)
+            sql = text("CALL GetThesisByAdvisor(:advisor_id);")
+            params = {
+                'advisor_id' : id 
+            }
+            result = session.execute(sql, params)
             rows=result.fetchall()
-            thesis = []
+            thesiss = []
             if rows != None:
                 for row in rows:
-                    thesi = Thesis(row[0], row[1], row[2], row[3], row[4])
-                    thesis.append(thesi)
-                return thesis
+                    thesis = Thesis(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+                    thesiss.append(thesis)
+                return thesiss
             else:
                 return None
         except Exception as ex:
