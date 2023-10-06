@@ -8,6 +8,21 @@
             <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVA
                 TESIS</a>
         </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+            id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <div class="table-responsive">
             <table class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
@@ -57,4 +72,12 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar esta Tesis?');
+    }
+</script>
 {% endblock %}

@@ -20,6 +20,9 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 
+UPLOAD_FOLDER = '/static/file/thesis/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.url_map.strict_slashes = False
 
 db.init_app(app)

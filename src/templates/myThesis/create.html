@@ -3,42 +3,61 @@
 {% block title %} Subir Tesis {% endblock %}
 
 {% block customCSS %}
-
 {% endblock %}
 
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
     <h3>Subir Tesis</h3>
-    <div class="bg-secondary rounded p-4">
-        <h6 class="mb-4">Ingrese los Datos de la Tesis</h6>
-        <form action="/save_thesis" method="POST">
-            {% with messages = get_flashed_messages() %}
-            {% for message in messages %}
-            <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                <strong>{{ message }}</strong>
-                <div class="progress-container">
-                    <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endwith %}
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded p-4">
+                <h6 class="mb-4">Ingrese los Datos de la Tesis</h6>
+                <form action="/save_thesis" method="POST" enctype="multipart/form-data">
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+                        <strong>{{ message }}</strong>
+                        <div class="progress-container">
+                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div class="mb-3">
-                <label for="formFile" class="form-label">Subir Archivo</label>
-                <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile" name="image" accept=".pdf">
-            </div><br>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingTitle" name="title" placeholder="title">
+                        <label for="floatingTitle">Título</label>
+                    </div>
+     
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" style="height: 150px;" id="floatingTitle" name="abstract" placeholder="abstract"></textarea>
+                        <label for="floatingTitle">Abstract</label>
+                    </div>
 
-            <div class="d-flex justify-content-between align-items-center">
-                <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                        class="fa fa-arrow-left"></i> Volver</a>
-                <button type="submit" class="btn btn-success">
-                    <i class="fa fa-save"></i> Guardar
-                </button>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Subir Archivo</label>
+                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile"
+                            name="pdf_file" accept=".pdf">
+                    </div><br>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
+                                class="fa fa-arrow-left"></i> Volver</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
+{% endblock %}
+
+{% block CustomJS %}
+
 {% endblock %}

@@ -70,43 +70,50 @@ def profile():
 @login_required
 def edit_user(id):
 
-        student_code = ''
-        advisor_code = ''
-        reviewer_code = ''
-        grade = ''
+    student_code = ''
+    advisor_code = ''
+    reviewer_code = ''
+    grade = ''
 
-        if current_user.role == "Autor":
-            student_code = request.form['student_code']
-        elif current_user.role == "Asesor":
-            advisor_code = request.form['advisor_code']
-        elif current_user.role == "Revisor":
-            reviewer_code = request.form['reviewer_code']
-            grade = request.form['grade']
+    if current_user.role == "Autor":
+        student_code = request.form['student_code']
+    elif current_user.role == "Asesor":
+        advisor_code = request.form['advisor_code']
+    elif current_user.role == "Revisor":
+        reviewer_code = request.form['reviewer_code']
+        grade = request.form['grade']
 
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        dni = request.form['dni']
-        phone = request.form['phone']
-        address = request.form['address']
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        verify_password = request.form['verify_password']
+    firstname = request.form['firstname']
+    lastname = request.form['lastname']
+    dni = request.form['dni']
+    phone = request.form['phone']
+    address = request.form['address']
+    email = request.form['email']
+    username = request.form['username']
+    password = request.form['password']
+    verify_password = request.form['verify_password']
 
-        if 'image' in request.files:
-            image_file = request.files['image']
-            if image_file.filename != '':
-                # Validate the file extension
-                if not allowed_file(image_file.filename):
-                    flash("Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg).")
-                    return redirect(url_for('user.profile'))
-                image = image_file.read()
-            else:
-                image = None
+    if 'image' in request.files:
+        image_file = request.files['image']
+        if image_file.filename != '':
+            # Validate the file extension
+            if not allowed_file(image_file.filename):
+                flash("Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg).")
+                return redirect(url_for('user.profile'))
+            image = image_file.read()
         else:
             image = None
+    else:
+        image = None
 
-        if username != "":
+    
+
+    if (current_user.role == "Admin" or
+        (current_user.role == "Autor" and student_code != "") or
+        (current_user.role == "Asesor" and advisor_code != "") or
+        (current_user.role == "Revisor" and reviewer_code != "" and grade != "")):
+        
+        if firstname != "" and lastname != "" and dni != "" and email != "" and username != "":
             if password == verify_password:
                 ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password)
                 flash("Perfil Actualizado Exitosamente...")
@@ -117,6 +124,9 @@ def edit_user(id):
         else:
             flash("Usuario no debe estar vacio...")
             return redirect(url_for('user.profile'))
+    else:
+        flash("Campo de código/grado faltante(s)...")
+        return redirect(url_for('user.profile'))
 
 # Route to remove image user
 @user_bp.route('/remove_image_user/<int:id>')
