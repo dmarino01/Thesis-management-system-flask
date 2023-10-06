@@ -15,6 +15,8 @@ from blueprints.role_blueprint import role_bp
 from blueprints.permission_blueprint import permission_bp
 from blueprints.thesis_blueprint import thesis_bp
 from blueprints.user_blueprint import user_bp
+from blueprints.review_blueprint import review_bp
+from blueprints.recommendation import recommendation_bp
 
 app = Flask(__name__)
 
@@ -34,6 +36,8 @@ app.register_blueprint(role_bp)
 app.register_blueprint(permission_bp)
 app.register_blueprint(thesis_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(review_bp)
+app.register_blueprint(recommendation_bp)
 
 login_manager_app=LoginManager(app)
 
@@ -57,8 +61,6 @@ def status_401(error):
 
 def status_404(error):
     return render_template("404.html")
-
-
 
 @app.route("/register")
 def register():

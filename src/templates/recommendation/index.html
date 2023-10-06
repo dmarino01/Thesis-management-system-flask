@@ -1,31 +1,15 @@
 {% extends "layout.html" %}
 
-{% block title %} Mis Tesis {% endblock %}
+{% block title %} Tesis Asesoradas {% endblock %}
 
 {% block content %}
 <div class="container-fluid pt-4 px-4">
-    <h2>Mis Tesis</h2>
+    <h2>Recomendar Tesis</h2>
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Tesis</h4>
-            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVA
-                TESIS</a>
         </div>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <br />
-        {% for message in messages %}
-        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-            id="myAlert">
-            <strong>{{ message }}</strong>
-            <div class="progress-container">
-                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+
         <div class="table-responsive">
             <table class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
@@ -58,10 +42,6 @@
                         <td class="col-2">
                             <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
                                 class="fa fa-eye"></i> Ver</a>
-                            <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}"><i
-                                class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
-                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -78,9 +58,5 @@
 {% endblock %}
 
 {% block customJS %}
-<script>
-    function confirmDelete() {
-        return confirm('¿Seguro que quieres eliminar esta Tesis?');
-    }
-</script>
+
 {% endblock %}

@@ -113,11 +113,11 @@
                     {% endif %}
 
                     {% if current_user.role == 'Admin' or current_user.role == 'Asesor' %}
-                    <a href="#" class="nav-item nav-link"><i class="fa fa-bookmark me-2"></i>Tesis Asesoradas</a>
+                    <a href="/recommendation" class="nav-item nav-link"><i class="fa fa-bookmark me-2"></i>Tesis Asesoradas</a>
                     {% endif %}
 
                     {% if current_user.role == 'Admin' or current_user.role == 'Revisor' %}
-                    <a href="#" class="nav-item nav-link"><i class="fa fa-star me-2"></i>Tesis a Revisar</a>
+                    <a href="/review" class="nav-item nav-link"><i class="fa fa-star me-2"></i>Tesis a Revisar</a>
                     {% endif %}
 
                     <a href="/usuarios" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Usuarios</a>
