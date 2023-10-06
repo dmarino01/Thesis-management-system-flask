@@ -8,14 +8,7 @@ class ControllerAdvisor():
     def getAdvisors(cls, db):
         try:
             session = db.session()
-            sql = text(
-                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
-                "FROM ADVISOR A INNER JOIN PERSON P "
-                "ON A.person_id = P.person_id "
-                "INNER JOIN USER U "
-                "ON U.person_id = P.person_id "
-                "WHERE is_deleted = 0;"
-            )
+            sql = text("CALL GetAllAdvisors()")
             result = session.execute(sql)
             rows=result.fetchall()
             advisors = []
@@ -34,15 +27,7 @@ class ControllerAdvisor():
     def getAdvisorsbyName(cls, db, name):
         try:
             session = db.session()
-            sql = text(
-                "SELECT A.advisor_code, A.institution, A.person_id, A.advisor_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
-                "FROM Advisor A INNER JOIN PERSON P "
-                "ON A.person_id = P.person_id "
-                "INNER JOIN USER U "
-                "ON U.person_id = P.person_id "
-                "WHERE is_deleted = 0 "
-                "AND P.firstname LIKE :name OR P.lastname LIKE :name"
-            )
+            sql = text("CALL GetAdvisorsByName(:name)")
             result = session.execute(sql, {'name': f'%{name}%'})
             rows=result.fetchall()
             advisors = []
@@ -98,18 +83,11 @@ class ControllerAdvisor():
     def get_advisor_by_id(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "SELECT A.advisor_code, A.institution, A.advisor_id, A.person_id, P.firstname, P.lastname, P.dni, P.phone, P.address, P.email, P.image, U.username "
-                "FROM ADVISOR A " 
-                "INNER JOIN PERSON P "
-                "ON A.person_id = P.person_id "
-                "INNER JOIN USER U "
-                "ON U.person_id = P.person_id "
-                "WHERE advisor_id = :id"
-            )
-            result = session.execute(sql, {"id": id})
-            row = result.fetchone()
-            if row:
+            sql = text("CALL GetAdvisorById(:advisor_id)")
+            result = session.execute(sql, {"advisor_id": id})
+            rows = result.fetchall()
+            if rows:
+                row = rows[0]
                 advisor = {
                     'advisor_code': row[0],
                     'institution': row[1],
@@ -167,14 +145,8 @@ class ControllerAdvisor():
     def desactivate_advisor(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "UPDATE PERSON AS p "
-                "INNER JOIN ADVISOR AS A "
-                "ON p.person_id = a.person_id "
-                "SET p.is_deleted = 1 "
-                "WHERE a.advisor_id = :id"
-            )
-            session.execute(sql, {"id": id})
+            sql = text("CALL DesactivateAdvisor(:advisor_id)")
+            session.execute(sql, {"advisor_id": id})
             session.commit()
             return {'message': 'Advisor created successfully'}, 200
         except Exception as ex:

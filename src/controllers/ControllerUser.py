@@ -9,11 +9,7 @@ class ControllerUser():
     def login(cls, db, user):
         try:
             session = db.session()
-            sql = text(
-                "SELECT u.user_id, u.username, u.password, u.person_id FROM user u "
-                "INNER JOIN person p on p.person_id = u.person_id "
-                "WHERE p.is_deleted = 0 AND u.username = :username"
-            )
+            sql = text("CALL Login(:username);")
             result = session.execute(sql, {"username": user.username})
             row = result.fetchone()
             if row is not None:
@@ -29,25 +25,21 @@ class ControllerUser():
     def get_by_id(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "SELECT U.user_id, U.username, U.password, U.person_id, R.role, P.image "
-                "FROM USER U "
-                "INNER JOIN PERSON P "
-                "ON U.person_id = P.person_id "
-                "INNER JOIN ROLE_USER RU "
-                "ON RU.user_id = U.user_id "
-                "INNER JOIN ROLE R "
-                "ON RU.role_id = R.role_id "
-                "WHERE U.user_id = :user_id"
-            )
-            result = session.execute(sql, {"user_id": id})
-            row = result.fetchone()
-            if row is not None:
+            sql = text("CALL GetUserById(:user_id);")
+            params = {"user_id": id}
+            result = session.execute(sql, params)
+            rows = result.fetchall()
+            session.close()
+
+            if rows:
+                row = rows[0]
                 return User(row[0], row[1], row[2], row[3], row[4], row[5])
             else:
                 return None
         except Exception as ex:
             raise Exception(ex)
+
+
         
     #Update User
     @classmethod
@@ -117,14 +109,8 @@ class ControllerUser():
     def remove_image_user(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "UPDATE PERSON "
-                "SET image = NULL "
-                "WHERE person_id = :person_id"
-            )
-            params = {
-                'person_id': id
-            }
+            sql = text("CALL RemoveImageUser(:person_id);")
+            params = {'person_id': id}
             session.execute(sql, params)
             session.commit()
             return {'message': 'Image removed successfully'}, 200

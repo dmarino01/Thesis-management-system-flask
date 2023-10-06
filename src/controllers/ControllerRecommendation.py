@@ -10,9 +10,7 @@ class ControllerRecommendation():
         try:
             session = db.session()
             sql = text("CALL GetThesisByAdvisor(:advisor_id);")
-            params = {
-                'advisor_id' : id 
-            }
+            params = {'advisor_id' : id}
             result = session.execute(sql, params)
             rows=result.fetchall()
             thesiss = []
@@ -25,9 +23,6 @@ class ControllerRecommendation():
                 return None
         except Exception as ex:
             raise Exception(ex)
-
-        except Exception as ex:
-            raise 
 
     @classmethod
     def get_recommendation_by_thesis_id(cls, db, id):
