@@ -11,8 +11,9 @@ class ControllerUser():
             session = db.session()
             sql = text("CALL Login(:username);")
             result = session.execute(sql, {"username": user.username})
-            row = result.fetchone()
-            if row is not None:
+            rows = result.fetchall()
+            if rows:
+                row = rows[0]
                 user = User(row[0], row[1], User.check_password(row[2], user.password), row[3], None, None)
                 return user
             else:
@@ -43,44 +44,13 @@ class ControllerUser():
         
     #Update User
     @classmethod
-    def update_user(cls, db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password):
+    def update_user(cls, db, id, student_code, reviewer_code, advisor_code, institution, grade, firstname, lastname, dni, phone, address, email, image, username, password):
         try:
             session = db.session()
-
             hashed_password = ''
             if password != '':
                 hashed_password = generate_password_hash(password)  
-
-            common_sql = text(
-                "UPDATE PERSON "
-                "SET firstname = :firstname, lastname = :lastname, dni = :dni, phone = :phone, address = :address, email = :email, "
-                "image = CASE WHEN :image <> b'' THEN :image ELSE image END "
-                "WHERE person_id = :person_id; "
-                "UPDATE USER "
-                "SET username = :username, "
-                "password = CASE WHEN :password <> '' THEN :password ELSE password END "
-                "WHERE person_id = :person_id; "
-            )       
-            specific_sql = ''
-            if student_code != '':
-                specific_sql = text(
-                    "UPDATE AUTHOR SET student_code = :student_code "
-                    "WHERE person_id = :person_id;"
-                )
-            elif advisor_code != '':
-                specific_sql = text(
-                    "UPDATE ADVISOR SET advisor_code = :advisor_code "
-                    "WHERE person_id = :person_id;"
-                )
-            elif reviewer_code != '':
-                specific_sql = text(
-                    "UPDATE REVIEWER SET reviewer_code = :reviewer_code, grade = :grade "
-                    "WHERE person_id = :person_id;"
-                )
-            if specific_sql == '':
-                sql = common_sql
-            else:
-                sql = text(common_sql.text + specific_sql.text)
+            sql = text("CALL UpdateUser(:person_id, :firstname, :lastname, :dni, :phone, :address, :email, :image, :username, :password, :student_code, :advisor_code, :institution, :reviewer_code, :grade)")
             params = {
                 'person_id': id,
                 'firstname': firstname,
@@ -94,6 +64,7 @@ class ControllerUser():
                 'password': hashed_password,
                 'student_code': student_code,
                 'advisor_code': advisor_code,
+                'institution': institution,
                 'reviewer_code': reviewer_code,
                 'grade': grade,
             }

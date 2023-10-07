@@ -32,7 +32,7 @@
                     </div>
                     {% endfor %}
                     {% endwith %}
-                    
+
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     {% if current_user.role == "Autor" %}
@@ -44,11 +44,20 @@
                         </div>
                     </div>
                     {% elif current_user.role == "Asesor" %}
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingCode" value="{{ user.advisor_code }}"
-                                name="advisor_code" placeholder="advisor_code">
-                            <label for="floatingCode">Codigo</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingCode"
+                                    value="{{ user.advisor_code }}" name="advisor_code" placeholder="advisor_code">
+                                <label for="floatingCode">Codigo</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInstitution" value="{{ user.institution }}"
+                                    name="institution" placeholder="institution">
+                                <label for="floatingInstitution">Institucion</label>
+                            </div>
                         </div>
                     </div>
                     {% elif current_user.role == "Revisor" %}
@@ -146,7 +155,8 @@
 
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Editar foto de perfil (opcional)</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile" name="image" accept=".jpg, .jpeg, .png, .gif">
+                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile" name="image"
+                            accept=".jpg, .jpeg, .png, .gif">
                     </div><br>
 
                     <div class="col-md-3">
@@ -163,9 +173,11 @@
             <div class="bg-secondary rounded h-100 p-4 d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 text-left">FOTO</h4>
+                    {% if current_user.image is not none %}
                     <a class="btn btn-danger btn-sm align-self-start"
                         href="{{ url_for('user.remove_image_user', id=current_user.person_id)}}"><i
                             class="fa fa-trash"></i> Quitar Imagen</a>
+                    {% endif %}
                 </div><br>
                 <div class="d-flex justify-content-center align-items-center flex-grow-1">
                     {% if image_data %}

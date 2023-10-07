@@ -74,11 +74,13 @@ def edit_user(id):
     advisor_code = ''
     reviewer_code = ''
     grade = ''
+    institution = ''
 
     if current_user.role == "Autor":
         student_code = request.form['student_code']
     elif current_user.role == "Asesor":
         advisor_code = request.form['advisor_code']
+        institution = request.form['institution']
     elif current_user.role == "Revisor":
         reviewer_code = request.form['reviewer_code']
         grade = request.form['grade']
@@ -106,8 +108,6 @@ def edit_user(id):
     else:
         image = None
 
-    
-
     if (current_user.role == "Admin" or
         (current_user.role == "Autor" and student_code != "") or
         (current_user.role == "Asesor" and advisor_code != "") or
@@ -115,7 +115,7 @@ def edit_user(id):
         
         if firstname != "" and lastname != "" and dni != "" and email != "" and username != "":
             if password == verify_password:
-                ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, grade, firstname, lastname, dni, phone, address, email, image, username, password)
+                ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, institution, grade, firstname, lastname, dni, phone, address, email, image, username, password)
                 flash("Perfil Actualizado Exitosamente...")
                 return redirect(url_for('user.profile'))
             else:
