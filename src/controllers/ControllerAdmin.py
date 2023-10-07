@@ -6,8 +6,8 @@ class ControllerAdmin():
     def get_admin_by_person_id(cls, db, id):
         try:
             session = db.session()
-            sql = text("CALL GetAdminByPersonId(:person_id)")
-            result = session.execute(sql, {"person_id": id})
+            sql = text("CALL GetAdminByPersonId(:id)")
+            result = session.execute(sql, {"id": id})
             rows = result.fetchall()
             if rows:
                 row = rows[0]

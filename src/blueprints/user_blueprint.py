@@ -53,7 +53,7 @@ def profile():
     if current_user.role == "Autor":
         data = ControllerAuthor.get_author_by_person_id(db, id)
     elif current_user.role == "Asesor":
-        data = ControllerAdvisor.get_advisor_by_person_id(db, id)
+        data = ControllerAdvisor.get_advisor_by_id(db, id)
     elif current_user.role == "Revisor":
         data = ControllerReviewer.get_reviewer_by_person_id(db, id)
 
