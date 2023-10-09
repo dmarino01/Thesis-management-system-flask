@@ -22,8 +22,7 @@ def search():
         data = ControllerAuthor.getAutorsbyName(db, name)
         return render_template('components/autor/resultado.html', filtered_autores=data)
     except Exception as ex:
-        flash("Autor No Encontrado...")
-        return redirect(url_for('author.autor'))
+        raise Exception(ex)
 
 # Display the create author form
 @author_bp.route('/create_autor_form', methods=['GET'])
