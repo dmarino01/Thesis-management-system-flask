@@ -55,7 +55,7 @@ def profile():
     elif current_user.role == "Asesor":
         data = ControllerAdvisor.get_advisor_by_id(db, id)
     elif current_user.role == "Revisor":
-        data = ControllerReviewer.get_reviewer_by_person_id(db, id)
+        data = ControllerReviewer.get_reviewer_by_id(db, id)
 
     # Encode the image data to base64
     if data and data['image']:
