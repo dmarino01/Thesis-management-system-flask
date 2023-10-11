@@ -40,7 +40,7 @@ def save_reviewer():
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         dni = request.form['dni']
-        grade = request.form['grade']
+        grade = request.form['grade'].upper()
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
@@ -77,7 +77,7 @@ def update_reviewer(id):
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         dni = request.form['dni']
-        grade = request.form['grade']
+        grade = request.form['grade'].upper()
         phone = request.form['phone']
         address = request.form['address']
         email = request.form['email']
