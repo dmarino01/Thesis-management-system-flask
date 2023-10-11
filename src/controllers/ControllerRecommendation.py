@@ -25,27 +25,47 @@ class ControllerRecommendation():
             raise Exception(ex)
 
     @classmethod
-    def get_recommendation_by_thesis_id(cls, db, id):
+    def get_recommendations_by_thesis_id(cls, db, id):
         try:
             session = db.session()
             sql = text(
-                "SELECT recommendation_id, recommendation_date, recommendation_text, thesis_id, advisor_id "
-                "FROM RECOMMENDATION "
-                "WHERE thesis_id = :id"
+                "SELECT R.recommendation_id, R.recommendation_date, R.recommendation_text, R.thesis_id, R.advisor_id, P.firstname, P.lastname, P.image "
+                "FROM RECOMMENDATION R "
+                "INNER JOIN ADVISOR A ON R.advisor_id = A.advisor_id "
+                "INNER JOIN PERSON P ON P.person_id = A.person_id "
+                "WHERE R.thesis_id = :id;"
             )
             result = session.execute(sql, {"id": id})
             session.commit()
-            row = result.fetchone()
-            if row:
-                recommendation = {
-                    'recommendation_id': row[0],
-                    'recommendation_date': row[1],
-                    'recommendation_text' : row[2],
-                    'thesis_id' : row[3],
-                    'advisor_id': row[4]
-                }
-                return recommendation
+            rows = result.fetchall()
+            recommendations = []
+            if rows != None:
+                for row in rows:
+                    recommendation = Recommendation(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+                    recommendations.append(recommendation)
+                return recommendations
             else:
                 return None
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def createRecommendation(cls, db, recommendation_text, date, thesis_id, person_id):
+        try:
+            session = db.session()
+            sql = text(
+                "SET @advisor_id = (select advisor_id from advisor where person_id = :person_id); "
+                "INSERT INTO RECOMMENDATION (recommendation_date, recommendation_text, thesis_id, advisor_id) "
+                "VALUES (:date, :recommendation_text, :thesis_id, @advisor_id)"
+            )
+            params = {
+                'recommendation_text': recommendation_text,
+                'date': date,
+                'thesis_id': thesis_id,
+                'person_id': person_id
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {'message': 'Autor created successfully'}, 201
         except Exception as ex:
             raise Exception(ex)

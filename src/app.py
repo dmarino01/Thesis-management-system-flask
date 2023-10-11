@@ -16,7 +16,7 @@ from blueprints.permission_blueprint import permission_bp
 from blueprints.thesis_blueprint import thesis_bp
 from blueprints.user_blueprint import user_bp
 from blueprints.review_blueprint import review_bp
-from blueprints.recommendation import recommendation_bp
+from blueprints.recommendation_blueprint import recommendation_bp
 
 app = Flask(__name__)
 

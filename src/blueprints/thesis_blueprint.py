@@ -22,8 +22,8 @@ def myThesis():
 def view_thesis_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     
-    recommendation = ControllerRecommendation.get_recommendation_by_thesis_id(db, id)
-    return render_template("myThesis/detail.html", thesis=thesis, recommendation = recommendation)
+    recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
+    return render_template("myThesis/detail.html", thesis=thesis, recommendations = recommendations)
 
 #Thesis Create Form
 @thesis_bp.route('/create_thesis_form')
