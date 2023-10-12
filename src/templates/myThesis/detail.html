@@ -64,17 +64,15 @@
                                 </div>
                                 <div class="d-flex w-100 justify-content-between align-items-center">
                                     <span>{{ item.recommendation_text }}</span>
-                                    <a class="btn btn-sm btn-danger" href="/desactivate_recommendation/{{ item.recommendation_id }}"
-                                        onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
+
+                                    {% if current_user.role == 'Asesor' %}
+                                    <a class="btn btn-sm btn-danger" href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
+                                       onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
+                                    {% endif %}                                    
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
-                        
-                        
-                        
-                        
-
                         {% else %}
                         <p>No hay resultados encontrados.</p>
                         {% endif %}

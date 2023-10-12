@@ -22,7 +22,15 @@ def save_recommendation(id):
         thesis_id = id
         person_id = current_user.person_id
         ControllerRecommendation.createRecommendation(db, recommendation_text, date, thesis_id, person_id)
-        flash("Recomendación Guardada correctamente...")
         return redirect(url_for('thesis.view_thesis_page', id=id))
+    except Exception as ex:
+        raise Exception(ex)
+    
+@recommendation_bp.route('/desactivate_recommendation/<int:id>/<int:thesis_id>')
+@login_required
+def desactivate_recommendation(id, thesis_id):
+    try:
+        ControllerRecommendation.desactivate_recommendation(db, id)
+        return redirect(url_for('thesis.view_thesis_page', id=thesis_id))
     except Exception as ex:
         raise Exception(ex)

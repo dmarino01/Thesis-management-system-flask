@@ -33,7 +33,7 @@ class ControllerRecommendation():
                 "FROM RECOMMENDATION R "
                 "INNER JOIN ADVISOR A ON R.advisor_id = A.advisor_id "
                 "INNER JOIN PERSON P ON P.person_id = A.person_id "
-                "WHERE R.thesis_id = :id;"
+                "WHERE R.is_deleted = 0 AND R.thesis_id = :id;"
             )
             result = session.execute(sql, {"id": id})
             session.commit()
@@ -67,5 +67,23 @@ class ControllerRecommendation():
             session.execute(sql, params)
             session.commit()
             return {'message': 'Autor created successfully'}, 201
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def desactivate_recommendation(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "UPDATE RECOMMENDATION "
+                "SET is_deleted = '1' "
+                "WHERE recommendation_id = :id;"
+            )
+            params = {
+                'id': id
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {'message': 'Recommendation deleted successfully'}, 200
         except Exception as ex:
             raise Exception(ex)
