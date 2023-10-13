@@ -7,11 +7,14 @@ from config import db
 
 recommendation_bp = Blueprint('recommendation', __name__)
 
-@recommendation_bp.route('/recommendation')
+@recommendation_bp.route('/recommendation/<int:id>', methods=['GET'])
 @login_required
-def recommendation_thesis():
-    data = ControllerRecommendation.get_thesis_by_author_advisor(db, 2)
-    return render_template('recommendation/index.html', thesis=data)
+def recommendation_thesis(id):
+    try:
+        data = ControllerRecommendation.get_thesis_by_author_advisor(db, id)
+        return render_template('recommendation/index.html', thesis=data)
+    except Exception as ex:
+        raise Exception(ex)
 
 @recommendation_bp.route('/save_recommendation/<int:id>', methods=['POST'])
 @login_required

@@ -15,6 +15,7 @@
                 <thead>
                     <tr class="text-white">
                         <th scope="col">ID</th>
+                        <th scope="col">Autor</th>
                         <th scope="col">Titulo</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Estado</th>
@@ -26,6 +27,7 @@
                     {% for item in thesis %}
                     <tr>
                         <td>{{ item.thesis_id }}</td>
+                        <td>{{ item.firstname }} {{ item.lastname }}</td>
                         <td>{{ item.title }}</td>
                         <td>{{ item.submission_date }}</td> 
                         <td class="align-middle">

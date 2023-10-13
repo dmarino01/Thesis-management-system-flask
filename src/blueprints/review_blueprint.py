@@ -6,7 +6,9 @@ from config import db
 
 review_bp = Blueprint('review', __name__)
 
-@review_bp.route('/review')
+@review_bp.route('/review/<int:id>', methods=['GET'])
 @login_required
-def review_thesis():
-    return render_template('review/index.html')
+def review_thesis(id):
+    data = ControllerReview.get_thesis_by_author_reviewer(db, id)
+    return render_template('review/index.html', thesis=data)
+

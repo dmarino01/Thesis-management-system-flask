@@ -9,8 +9,8 @@ class ControllerRecommendation():
     def get_thesis_by_author_advisor(cls, db, id):
         try:
             session = db.session()
-            sql = text("CALL GetThesisByAdvisor(:advisor_id);")
-            params = {'advisor_id' : id}
+            sql = text("CALL GetThesisByAdvisor(:person_id);")
+            params = {'person_id' : id}
             result = session.execute(sql, params)
             rows=result.fetchall()
             thesiss = []
