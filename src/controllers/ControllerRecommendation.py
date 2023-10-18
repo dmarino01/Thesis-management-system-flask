@@ -28,15 +28,8 @@ class ControllerRecommendation():
     def get_recommendations_by_thesis_id(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "SELECT R.recommendation_id, R.recommendation_date, R.recommendation_text, R.thesis_id, R.advisor_id, P.firstname, P.lastname, P.image "
-                "FROM RECOMMENDATION R "
-                "INNER JOIN ADVISOR A ON R.advisor_id = A.advisor_id "
-                "INNER JOIN PERSON P ON P.person_id = A.person_id "
-                "WHERE R.is_deleted = 0 AND R.thesis_id = :id;"
-            )
+            sql = text("CALL GetRecommendationsById(:id)")
             result = session.execute(sql, {"id": id})
-            session.commit()
             rows = result.fetchall()
             recommendations = []
             if rows != None:
@@ -53,11 +46,7 @@ class ControllerRecommendation():
     def createRecommendation(cls, db, recommendation_text, date, thesis_id, person_id):
         try:
             session = db.session()
-            sql = text(
-                "SET @advisor_id = (select advisor_id from advisor where person_id = :person_id); "
-                "INSERT INTO RECOMMENDATION (recommendation_date, recommendation_text, thesis_id, advisor_id) "
-                "VALUES (:date, :recommendation_text, :thesis_id, @advisor_id)"
-            )
+            sql = text("CALL CreateRecommendation(:date, :recommendation_text, :thesis_id, :person_id)")    
             params = {
                 'recommendation_text': recommendation_text,
                 'date': date,
@@ -74,11 +63,7 @@ class ControllerRecommendation():
     def desactivate_recommendation(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "UPDATE RECOMMENDATION "
-                "SET is_deleted = '1' "
-                "WHERE recommendation_id = :id;"
-            )
+            sql = text("CALL DesactivateRecommendation(:id)")
             params = {
                 'id': id
             }
