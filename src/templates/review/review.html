@@ -31,9 +31,11 @@
                         <p class="card-text">Abstract: {{ thesis.abstract }}</p>
                         <a href="#" class="btn btn-primary"><i class="fa fa-file"></i> Revisión de Tesis</a>
                     </div>
-                </div><br>
+                </div>
 
-                <form action="#" method="POST">
+                {% if thesis.thesis_status_id == 1 %}
+                <br>
+                <form action="{{url_for('review.save_review', id=thesis.thesis_id)}}" method="POST">
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <h4>Colocar Calificacion</h4>
@@ -43,9 +45,9 @@
                         <label for="nota">Nota</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" style="height: 100px;" id="text" name="text"
+                        <textarea class="form-control" style="height: 100px;" id="comentario" name="comentario"
                             placeholder="abstract"></textarea>
-                        <label for="text">Comentarios (Opcional)</label>
+                        <label for="comentario">Comentarios (Opcional)</label>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <button type="submit" class="btn btn-success">
@@ -53,6 +55,7 @@
                         </button>
                     </div><br>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>
