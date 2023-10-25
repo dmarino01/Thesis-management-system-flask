@@ -21,7 +21,6 @@ def myThesis():
 @login_required
 def view_thesis_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
-    
     recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
     return render_template("myThesis/detail.html", thesis=thesis, recommendations = recommendations)
 
