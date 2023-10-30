@@ -104,3 +104,25 @@ def desactivate_autor(id):
             return redirect(url_for('author.autor'))
     except Exception as ex:
         raise Exception(ex)
+    
+
+# Upload Autores by csv file
+@author_bp.route('/upload_autores', methods=['POST'])
+@login_required
+def upload_autores():
+    try:
+        if 'csv_file' not in request.files:
+            return "No file part"  
+
+        csv_file = request.files['csv_file']
+        separator = request.form['Select_separator']
+
+        if csv_file.filename == '':
+            return "No selected file"
+    
+        if csv_file:
+            
+            data = ControllerAuthor.process_csv(db, separator, csv_file)
+            return redirect(url_for('author.create_autor_form'))
+    except Exception as ex:
+        raise Exception(ex)

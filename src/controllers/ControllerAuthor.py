@@ -1,4 +1,3 @@
-import base64
 from models.Author import Author
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
@@ -127,6 +126,33 @@ class ControllerAuthor():
             sql = text("CALL DesactivateAuthor(:id)")
             session.execute(sql, {"id": id})
             session.commit()
-            return {'message': 'Autor created successfully'}, 200
+            return {'message': 'Author created successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)
+        
+    #Uploading authores by csv file
+    @classmethod
+    def process_csv(cls, db, separator, csv_file):
+        try:
+            lines = csv_file.read().decode('utf-8', errors='replace').splitlines()
+            with db.session() as session:
+                for line in lines:
+                    values = line.split(f'{separator}')
+                    hashed_password = generate_password_hash(values[8])
+                    sql = text("CALL CreateAuthor(:student_code, :firstname, :lastname, :dni, :phone, :address, :email, :username, :password)")                 
+                    params = {
+                        'student_code': values[0],
+                        'firstname': values[1],
+                        'lastname': values[2],
+                        'dni': values[3],
+                        'phone': values[4],
+                        'address': values[5],
+                        'email': values[6],
+                        'username': values[7],
+                        'password' : hashed_password
+                    }
+                    session.execute(sql, params)
+                    session.commit()
+                return {'message': 'Authors upload successfully'}, 200                 
         except Exception as ex:
             raise Exception(ex)
