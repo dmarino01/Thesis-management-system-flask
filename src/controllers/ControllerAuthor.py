@@ -136,7 +136,11 @@ class ControllerAuthor():
         try:
             lines = csv_file.read().decode('utf-8', errors='replace').splitlines()
             with db.session() as session:
+                first_line = True
                 for line in lines:
+                    if first_line:
+                        first_line = False
+                        continue
                     values = line.split(f'{separator}')
                     hashed_password = generate_password_hash(values[8])
                     sql = text("CALL CreateAuthor(:student_code, :firstname, :lastname, :dni, :phone, :address, :email, :username, :password)")                 

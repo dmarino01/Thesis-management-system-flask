@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, send_from_directory
 from flask_login import LoginManager, login_required
 from jinja2 import Environment, FileSystemLoader
 from config import Config, db, csrf
@@ -95,6 +95,12 @@ def b64encode_filter(data):
     if data:
         return base64.b64encode(data).decode('utf-8')
     return ''
+
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    static_folder = 'static'
+    return send_from_directory(static_folder, filename, as_attachment=True)
+
 
 if __name__ == '__main__':
     csrf.init_app(app)

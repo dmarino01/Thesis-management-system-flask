@@ -40,7 +40,7 @@
                         <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
                         <p class="card-text">Año: {{ thesis.submission_date }}</p>
                         <p class="card-text">Abstract: {{ thesis.abstract }}</p>
-                        <a href="#" class="btn btn-primary"><i class="fa fa-file"></i> Revisión de Tesis</a>
+                        <a href="{{ url_for('download_file', filename='file/thesis/test.pdf') }}" class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
                     </div>
                 </div><br>         
                 {% if current_user.role != "Revisor" %}
