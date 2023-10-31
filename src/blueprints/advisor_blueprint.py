@@ -119,16 +119,16 @@ def upload_advisors():
     try:
         if "csv_file" not in request.files:
             flash("No file part...")
-            return redirect(url_for("advisor.create_autor_form"))
+            return redirect(url_for("advisor.create_advisor_form"))
         csv_file = request.files["csv_file"]
         separator = request.form["Select_separator"]
         codificator = request.form["Select_codificator"]
         if csv_file.filename == "":
             flash("Sin archivo seleccionado...")
-            return redirect(url_for("advisor.create_autor_form"))
+            return redirect(url_for("advisor.create_advisor_form"))
         if csv_file:
             data = ControllerAdvisor.process_csv(db, separator, codificator, csv_file)
             flash("Revisores Subidos Exitosamente...")
-            return redirect(url_for("advisor.create_autor_form"))
+            return redirect(url_for("advisor.create_advisor_form"))
     except Exception as ex:
         raise Exception(ex)
