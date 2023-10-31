@@ -132,3 +132,35 @@ class ControllerReviewer():
             return {'message': 'Reviewer created successfully'}, 200
         except Exception as ex:
             raise Exception(ex)
+        
+    #Uploading reviewers by csv file
+    @classmethod
+    def process_csv(cls, db, separator, codificator, csv_file):
+        try:
+            lines = csv_file.read().decode(f'{codificator}', errors='replace').splitlines()
+            with db.session() as session:
+                first_line = True
+                for line in lines:
+                    if first_line:
+                        first_line = False
+                        continue
+                    values = line.split(f'{separator}')
+                    hashed_password = generate_password_hash(values[9])
+                    sql = text("CALL CreateReviewer(:reviewer_code, :firstname, :lastname, :dni, :grade, :phone, :address, :email, :username, :password);")               
+                    params = {
+                        'reviewer_code': values[0],
+                        'firstname': values[1],
+                        'lastname': values[2],
+                        'dni': values[3],
+                        'grade': values[4],
+                        'phone': values[5],
+                        'address': values[6],
+                        'email': values[7],
+                        'username': values[8],
+                        'password' : hashed_password
+                    }
+                    session.execute(sql, params)
+                    session.commit()
+                return {'message': 'Reviewers uploaded successfully'}, 200                 
+        except Exception as ex:
+            raise Exception(ex)

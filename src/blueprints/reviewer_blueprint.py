@@ -110,3 +110,24 @@ def desactivate_reviewer(id):
             return redirect(url_for('reviewer.reviewer'))
     except Exception as ex:
         raise Exception(ex)
+    
+# Upload Reviewers by csv file
+@reviewer_bp.route("/upload_reviewers", methods=["POST"])
+@login_required
+def upload_reviewers():
+    try:
+        if "csv_file" not in request.files:
+            flash("No file part...")
+            return redirect(url_for("reviewer.create_autor_form"))
+        csv_file = request.files["csv_file"]
+        separator = request.form["Select_separator"]
+        codificator = request.form["Select_codificator"]
+        if csv_file.filename == "":
+            flash("Sin archivo seleccionado...")
+            return redirect(url_for("reviewer.create_autor_form"))
+        if csv_file:
+            data = ControllerReviewer.process_csv(db, separator, codificator, csv_file)
+            flash("Revisores Subidos Exitosamente...")
+            return redirect(url_for("reviewer.create_autor_form"))
+    except Exception as ex:
+        raise Exception(ex)

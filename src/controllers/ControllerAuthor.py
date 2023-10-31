@@ -130,11 +130,11 @@ class ControllerAuthor():
         except Exception as ex:
             raise Exception(ex)
         
-    #Uploading authores by csv file
+    #Uploading authors by csv file
     @classmethod
-    def process_csv(cls, db, separator, csv_file):
+    def process_csv(cls, db, separator, codificator, csv_file):
         try:
-            lines = csv_file.read().decode('utf-8', errors='replace').splitlines()
+            lines = csv_file.read().decode(f'{codificator}', errors='replace').splitlines()
             with db.session() as session:
                 first_line = True
                 for line in lines:
@@ -157,6 +157,6 @@ class ControllerAuthor():
                     }
                     session.execute(sql, params)
                     session.commit()
-                return {'message': 'Authors upload successfully'}, 200                 
+                return {'message': 'Authors uploaded successfully'}, 200                 
         except Exception as ex:
             raise Exception(ex)

@@ -93,7 +93,6 @@ def update_advisor(id):
         flash("No se pudo editar el Advisor...")
         return redirect(url_for('advisor.edit_advisor_form', id=id))
 
-
 # Deactivate an advisor
 @advisor_bp.route('/desactivate_advisor/<int:id>')
 @login_required
@@ -110,5 +109,26 @@ def desactivate_advisor(id):
         else:
             flash("No se pudo eliminar el Asesor...")
             return redirect(url_for('advisor.advisor'))
+    except Exception as ex:
+        raise Exception(ex)
+    
+# Upload Advisors by csv file
+@advisor_bp.route("/upload_advisors", methods=["POST"])
+@login_required
+def upload_advisors():
+    try:
+        if "csv_file" not in request.files:
+            flash("No file part...")
+            return redirect(url_for("advisor.create_autor_form"))
+        csv_file = request.files["csv_file"]
+        separator = request.form["Select_separator"]
+        codificator = request.form["Select_codificator"]
+        if csv_file.filename == "":
+            flash("Sin archivo seleccionado...")
+            return redirect(url_for("advisor.create_autor_form"))
+        if csv_file:
+            data = ControllerAdvisor.process_csv(db, separator, codificator, csv_file)
+            flash("Revisores Subidos Exitosamente...")
+            return redirect(url_for("advisor.create_autor_form"))
     except Exception as ex:
         raise Exception(ex)
