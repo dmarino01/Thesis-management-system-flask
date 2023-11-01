@@ -162,3 +162,26 @@ class ControllerAdvisor():
                 return {'message': 'Advisors uploaded successfully'}, 200                 
         except Exception as ex:
             raise Exception(ex)
+        
+    #Uploading authors - advisors relation by csv file
+    @classmethod
+    def process_relations_csv(cls, db, separator, codificator, csv_file):
+        try:
+            lines = csv_file.read().decode(f'{codificator}', errors='replace').splitlines()
+            with db.session() as session:
+                first_line = True
+                for line in lines:
+                    if first_line:
+                        first_line = False
+                        continue
+                    values = line.split(f'{separator}')
+                    sql = text("CALL AssignAuthorWithAdvisorByCodes(:student_code, :advisor_code);")               
+                    params = {
+                        'student_code': values[0],
+                        'advisor_code': values[1],
+                    }
+                    session.execute(sql, params)
+                    session.commit()
+                return {'message': 'Relations uploaded successfully'}, 200                 
+        except Exception as ex:
+            raise Exception(ex)

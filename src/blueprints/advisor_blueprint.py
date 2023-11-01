@@ -31,6 +31,12 @@ def search():
 def create_advisor_form():
     return render_template('components/advisor/create.html')
 
+# Display the assign author-advisor form
+@advisor_bp.route('/assign_author_advisor_form', methods=['GET'])
+@login_required
+def assign_author_advisor_form():
+    return render_template('components/advisor/assign.html')
+
 # Save a new advisor
 @advisor_bp.route('/save_advisor', methods=['POST'])
 @login_required
@@ -132,3 +138,25 @@ def upload_advisors():
             return redirect(url_for("advisor.create_advisor_form"))
     except Exception as ex:
         raise Exception(ex)
+    
+# Upload Advisors by csv file
+@advisor_bp.route("/upload_assignations", methods=["POST"])
+@login_required
+def upload_assignations():
+    try:
+        if "csv_file" not in request.files:
+            flash("No file part...")
+            return redirect(url_for("advisor.assign_author_advisor_form"))
+        csv_file = request.files["csv_file"]
+        separator = request.form["Select_separator"]
+        codificator = request.form["Select_codificator"]
+        if csv_file.filename == "":
+            flash("Sin archivo seleccionado...")
+            return redirect(url_for("advisor.assign_author_advisor_form"))
+        if csv_file:
+            data = ControllerAdvisor.process_relations_csv(db, separator, codificator, csv_file)
+            flash("Relaciones Subidas Exitosamente...")
+            return redirect(url_for("advisor.assign_author_advisor_form"))
+    except Exception as ex:
+        flash("Error, duplicado o campo invalido...")
+        return redirect(url_for("advisor.assign_author_advisor_form"))

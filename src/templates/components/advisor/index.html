@@ -40,7 +40,13 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Asesores</h4>
-            <a class="btn btn-success" href="/create_advisor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO ASESOR</a>
+            <div class="btn-group">
+                <a class="btn btn-primary" href="/assign_author_advisor_form"><i class="fa fa-plus"></i> ASIGNAR
+                    ASESORANDOS AL ASESOR</a>
+                <span class="mx-2"></span>
+                <a class="btn btn-success" href="/create_advisor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+                    ASESOR</a>
+            </div>
         </div>
         <form action="/search_advisors" method="POST">
             <div class="input-group mb-2" style="width: 25%;">
