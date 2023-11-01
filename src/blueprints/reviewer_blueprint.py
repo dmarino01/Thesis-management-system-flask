@@ -31,6 +31,12 @@ def search():
 def create_reviewer_form():
     return render_template('components/reviewer/create.html')
 
+# Display the assign author-reviewer form
+@reviewer_bp.route('/assign_author_reviewer_form', methods=['GET'])
+@login_required
+def assign_author_reviewer_form():
+    return render_template('components/reviewer/assign.html')
+
 # Save a new reviewer
 @reviewer_bp.route('/save_reviewer', methods=['POST'])
 @login_required
@@ -126,8 +132,29 @@ def upload_reviewers():
             flash("Sin archivo seleccionado...")
             return redirect(url_for("reviewer.create_reviewer_form"))
         if csv_file:
-            data = ControllerReviewer.process_csv(db, separator, codificator, csv_file)
+            data = ControllerReviewer.process_reviewer_csv(db, separator, codificator, csv_file)
             flash("Revisores Subidos Exitosamente...")
             return redirect(url_for("reviewer.create_reviewer_form"))
+    except Exception as ex:
+        raise Exception(ex)
+    
+# Upload Reviewers by csv file
+@reviewer_bp.route("/upload_assignations", methods=["POST"])
+@login_required
+def upload_assignations():
+    try:
+        if "csv_file" not in request.files:
+            flash("No file part...")
+            return redirect(url_for("reviewer.assign_author_reviewer_form"))
+        csv_file = request.files["csv_file"]
+        separator = request.form["Select_separator"]
+        codificator = request.form["Select_codificator"]
+        if csv_file.filename == "":
+            flash("Sin archivo seleccionado...")
+            return redirect(url_for("reviewer.assign_author_reviewer_form"))
+        if csv_file:
+            data = ControllerReviewer.process_relations_csv(db, separator, codificator, csv_file)
+            flash("Relaciones Subidas Exitosamente...")
+            return redirect(url_for("reviewer.assign_author_reviewer_form"))
     except Exception as ex:
         raise Exception(ex)
