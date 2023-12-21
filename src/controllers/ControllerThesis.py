@@ -96,6 +96,27 @@ class ControllerThesis():
             return {'message': 'Thesis created successfully'}, 201
         except Exception as ex:
             raise Exception(ex)
+    
+    #Method to update thesis
+    @classmethod
+    def updateThesis(cls, db, id, title, abstract):
+        try:
+            session = db.session()
+            sql = text(
+                "UPDATE thesis "
+                "SET title = :title, abstract = :abstract "
+                "WHERE  thesis_id = :id; "
+            )
+            params = {
+                'id': id,
+                'title': title,
+                'abstract': abstract
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {'message': 'Thesis updated successfully'}, 200
+        except Exception as ex:
+            raise Exception(ex)
         
     #Logical deletion of an thesis
     @classmethod    

@@ -40,9 +40,10 @@
                         <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
                         <p class="card-text">Año: {{ thesis.submission_date }}</p>
                         <p class="card-text">Abstract: {{ thesis.abstract }}</p>
-                        <a href="{{ url_for('download_file', filename='file/thesis/test.pdf') }}" class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
+                        <a href="{{ url_for('download_file', filename='file/thesis/test.pdf') }}"
+                            class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
                     </div>
-                </div><br>         
+                </div><br>
                 {% if current_user.role != "Revisor" %}
                 <br>
                 <h4>Recomendaciones del Asesor</h4>
@@ -112,10 +113,15 @@
                         </object>
                     </div>
                 </div>
+                <br>
                 <div class="card bg-dark text-white">
                     <div class="card-body">
                         <h4 style="display: inline; margin-right: 10px;">Calificación: </h4>
+                        {% if thesis.rating is none %}
+                        <h5 style="display: inline;">Por Calificar...</h5>
+                        {% else %}
                         <h5 style="display: inline;">{{ thesis.rating }}</h5>
+                        {% endif %}
                     </div>
                 </div>
             </div>

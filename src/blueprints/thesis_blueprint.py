@@ -16,7 +16,7 @@ def myThesis():
     data = ControllerThesis.getThesis(db)
     return render_template("myThesis/index.html", thesis=data)
 
-#View Thesis
+#View Thesis Page
 @thesis_bp.route('/view_thesis_page/<int:id>', methods=['GET'])
 @login_required
 def view_thesis_page(id):
@@ -24,11 +24,36 @@ def view_thesis_page(id):
     recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
     return render_template("myThesis/detail.html", thesis=thesis, recommendations = recommendations)
 
+#Edit Thesis Form
+@thesis_bp.route('/edit_thesis_form/<int:id>', methods=['GET'])
+@login_required
+def edit_thesis_form(id):
+    thesis = ControllerThesis.get_thesis_by_id(db, id)
+    return render_template("myThesis/edit.html", thesis=thesis)
+
 #Thesis Create Form
 @thesis_bp.route('/create_thesis_form')
 @login_required
 def create_thesis_form():
     return render_template("myThesis/create.html")
+
+#Update Thesis Route
+@thesis_bp.route('/update_thesis/<int:id>', methods=['POST'])
+@login_required
+def update_thesis(id):
+    try:
+        title = request.form['title']
+        abstract = request.form['abstract']
+
+        if (title != '' and abstract != ''):
+            ControllerThesis.updateThesis(db, id, title, abstract)
+            return redirect(url_for('thesis.edit_thesis_form', id=id))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for('thesis.edit_thesis_form', id=id))
+    except Exception as ex:
+        flash(f"Error updating thesis: {str(ex)}")
+        return redirect(url_for('thesis.edit_thesis_form', id=id))
 
 #Save Thesis Route
 @thesis_bp.route('/save_thesis', methods=['POST'])
