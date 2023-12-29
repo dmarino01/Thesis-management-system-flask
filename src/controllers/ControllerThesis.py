@@ -11,7 +11,7 @@ class ControllerThesis():
             user_id = current_user.user_id
             session = db.session()
             sql = text(
-                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, R.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, R.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
@@ -26,7 +26,7 @@ class ControllerThesis():
             thesiss = []
             if rows != None:
                 for row in rows:
-                    thesis = Thesis(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+                    thesis = Thesis(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     thesiss.append(thesis)
                 return thesiss
             else:

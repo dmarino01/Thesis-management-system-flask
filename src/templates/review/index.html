@@ -17,7 +17,8 @@
                         <th scope="col">ID</th>
                         <th scope="col">Autor</th>
                         <th scope="col">Titulo</th>
-                        <th scope="col">Fecha</th>
+                        <th scope="col">Fecha de Inicio de Proyecto</th>
+                        <th scope="col">Fecha de Termino de Proyecto</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Acción</th>
                     </tr>
@@ -29,7 +30,8 @@
                         <td>{{ item.thesis_id }}</td>
                         <td>{{ item.firstname }} {{ item.lastname }}</td>
                         <td>{{ item.title }}</td>
-                        <td>{{ item.submission_date }}</td> 
+                        <td>{{ item.submission_date }}</td>
+                        <td>{{ item.expiration_date }}</td>
                         <td class="align-middle">
                             {% if item.thesis_status_id == 1 %}
                                 <span class="badge bg-warning">EN PROCESO</span>

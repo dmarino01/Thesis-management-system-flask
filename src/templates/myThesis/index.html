@@ -8,8 +8,7 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Tesis</h4>
-            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVA
-                TESIS</a>
+            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVO PROYECTO DE TESIS</a>
         </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -32,7 +31,8 @@
                     <tr class="text-white">
                         <th scope="col">ID</th>
                         <th scope="col">Titulo</th>
-                        <th scope="col">Fecha</th>
+                        <th scope="col">Fecha de Inicio del Proyecto</th>
+                        <th scope="col">Fecha de Termino del Proyecto</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Nota</th>
                         <th scope="col">Acción</th>
@@ -45,6 +45,7 @@
                         <td>{{ item.thesis_id }}</td>
                         <td>{{ item.title }}</td>
                         <td>{{ item.submission_date }}</td> 
+                        <td>{{ item.expiration_date }}</td> 
                         <td class="align-middle">
                             {% if item.thesis_status_id == 1 %}
                                 <span class="badge bg-warning">EN PROCESO</span>

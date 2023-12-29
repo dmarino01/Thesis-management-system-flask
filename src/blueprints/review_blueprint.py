@@ -11,7 +11,7 @@ review_bp = Blueprint('review', __name__)
 @review_bp.route('/review/<int:id>', methods=['GET'])
 @login_required
 def review_thesis(id):
-    data = ControllerReview.get_thesis_by_author_reviewer(db, id)
+    data = ControllerReview.get_thesis_by_review_reviewer(db, id)
     return render_template('review/index.html', thesis=data)
 
 @review_bp.route('/review_thesis_page/<int:id>', methods=['GET'])

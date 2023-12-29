@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Subir Tesis {% endblock %}
+{% block title %} Registrar Proyecto de Tesis {% endblock %}
 
 {% block customCSS %}
 {% endblock %}
@@ -8,11 +8,11 @@
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-    <h3>Subir Tesis</h3>
+    <h3>Registrar Proyecto de Tesis</h3>
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded p-4">
-                <h6 class="mb-4">Ingrese los Datos de la Tesis</h6>
+                <h6 class="mb-4">Ingrese los Datos del Proyecto Tesis</h6>
                 <form action="/save_thesis" method="POST" enctype="multipart/form-data">
                     {% with messages = get_flashed_messages() %}
                     {% for message in messages %}

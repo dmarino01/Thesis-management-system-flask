@@ -6,7 +6,7 @@ from sqlalchemy import text
 class ControllerReview():
 
     @classmethod
-    def get_thesis_by_author_reviewer(cls, db, id):
+    def get_thesis_by_review_reviewer(cls, db, id):
         try:
             session = db.session()
             sql = text("CALL GetThesisByReviewer(:person_id);")
@@ -16,7 +16,7 @@ class ControllerReview():
             thesiss = []
             if rows != None:
                 for row in rows:
-                    thesis = Thesis(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+                    thesis = Thesis(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11])
                     thesiss.append(thesis)
                 return thesiss
             else:
