@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
-{% block title %} Asignar Revisor a Autores {% endblock %}
+{% block title %} Asignar Revisores a Tesis {% endblock %}
 
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-    <h3>Asignar Autor a Revisor</h3>
+    <h3>Asignar Revisores a Tesis</h3>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br />
@@ -30,7 +30,7 @@
                     <h6 style="display: inline;">Archivo de ejemplo</h6>
                     <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_autor-revisor.csv') }}"
                         style="display: inline; margin-left: 20px;" download>
-                        plantilla_relacion_autor-revisor.csv</a>
+                        plantilla_relacion_revisores-tesis.csv</a>
                 </div><br><br>
 
                 <form method="POST" action="/upload_assignations" enctype="multipart/form-data">

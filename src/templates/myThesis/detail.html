@@ -18,11 +18,11 @@
 
 <!-- Recent Sales Start -->
 <div class="container-fluid pt-4 px-4">
-    <h3>Ver Tesis</h3>
+    <h3>Ver Proyecto de Tesis</h3>
     <div class="bg-secondary rounded p-4">
         <div class="row">
             <div class="col-md-6">
-                <h4>Detalles de la Tesis</h4>
+                <h4>Detalles del Proyecto de Tesis</h4>
                 <div class="card bg-dark text-white">
                     <div class="card-body">
                         <p class="card-text">Título: {{ thesis.title }}</p>
@@ -38,7 +38,14 @@
                             {% endif %}
                         </p>
                         <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
-                        <p class="card-text">Año: {{ thesis.submission_date }}</p>
+                        <p class="card-text">Año de Inicio del Proyecto:
+                            <span id="submissionDate"> {{ thesis.submission_date }}</span>
+                            <span id="submission_daysOld"></span>
+                        </p>
+                        <p class="card-text">Ultima actualización del Proyecto:
+                            <span id="last_updateDate"> {{ thesis.last_update_date }}</span>
+                            <span id="last_update_daysOld"></span>
+                        </p>
                         <p class="card-text">Abstract: {{ thesis.abstract }}</p>
                         <a href="{{ url_for('download_file', filename='file/thesis/test.pdf') }}"
                             class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
@@ -50,35 +57,47 @@
                 <div class="card bg-dark text-white">
                     <div class="card-body">
                         {% if recommendations %}
-                        {% for item in recommendations %}
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            {% if item.image == None %}
-                            <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
-                                style="width: 40px; height: 40px;">
-                            {% else %}
-                            <img class="rounded-circle flex-shrink-0"
-                                src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
-                                style="width: 40px; height: 40px;">
-                            {% endif %}
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">{{ item.firstname }} {{ item.lastname }}</h6>
-                                    <small class="recommendation-date">{{ item.recommendation_date }}</small>
-                                </div>
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <span>{{ item.recommendation_text }}</span>
-
-                                    {% if current_user.role == 'Asesor' %}
-                                    <a class="btn btn-sm btn-danger"
-                                        href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
-                                        onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
+                            {% for item in recommendations %}
+                                <div class="d-flex align-items-center border-bottom py-3">
+                                    {% if item.image == None %}
+                                    <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
+                                        style="width: 40px; height: 40px;">
+                                    {% else %}
+                                    <img class="rounded-circle flex-shrink-0"
+                                        src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
+                                        style="width: 40px; height: 40px;">
                                     {% endif %}
+                                    <div class="w-100 ms-3">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-0">{{ item.firstname }} {{ item.lastname }}</h6>
+                                            <small class="recommendation-date">{{ item.recommendation_date }} <span
+                                                    class="recommendation_daysOld_{{ loop.index }}"></span></small>
+                                        </div>
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <span>{{ item.recommendation_text }}</span>
+
+                                            {% if current_user.role == 'Asesor' %}
+                                            <a class="btn btn-sm btn-danger"
+                                                href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
+                                                onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        {% else %}
-                        <p>No hay resultados encontrados.</p>
+                                <script>
+                                    // Get the recommendation date from the template and convert it to a Date object
+                                    var recommendationDate = new Date("{{ item.recommendation_date | safe }}");
+                                    var today = new Date();
+                                    // Calculate the difference in milliseconds
+                                    var differenceInTime = today - recommendationDate;
+                                    // Calculate days difference
+                                    var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+                                    // Display the number of days
+                                    document.querySelector(".recommendation_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
+                                </script>
+                            {% endfor %}
+                            {% else %}
+                                <p>No hay resultados encontrados.</p>
                         {% endif %}
                     </div>
                 </div> <br>
@@ -128,4 +147,37 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    // Get the submission date from the template (assuming it's in YYYY-MM-DD format)
+    var submissionDate = new Date("{{ thesis.submission_date }}");
+    var last_updateDate = new Date("{{ thesis.last_update_date }}");
+    // Calculate days difference
+    var today = new Date();
+    var differenceInTime = today.getTime() - submissionDate.getTime();
+    var differenceInTime1 = today.getTime() - last_updateDate.getTime();
+    var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    var differenceInDays1 = Math.floor(differenceInTime1 / (1000 * 3600 * 24));
+    // Display the number of days
+    document.getElementById("submission_daysOld").innerText = "(hace " + differenceInDays + " días)";
+    document.getElementById("last_update_daysOld").innerText = "(hace " + differenceInDays1 + " días)";
+</script>
+
+<script>
+    // Get the submission date from the template (assuming it's in YYYY-MM-DD format)
+    var submissionDateStr = "{{ thesis.submission_date }}";
+    var last_updateDateStr = "{{ thesis.last_update_date }}";
+    var months = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+        "Augosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    var submissionDate = new Date(submissionDateStr);
+    var Last_updateDate = new Date(last_updateDateStr);
+    var formattedDate = submissionDate.getDate() + " de " + months[submissionDate.getMonth()] + " de " + submissionDate.getFullYear();
+    var formattedDate1 = last_updateDate.getDate() + " de " + months[last_updateDate.getMonth()] + " de " + last_updateDate.getFullYear();
+    document.getElementById("submissionDate").innerText = formattedDate;
+    document.getElementById("last_updateDate").innerText = formattedDate1;
+</script>
 {% endblock %}
