@@ -35,7 +35,7 @@
                         <th scope="col">Fecha de Termino del Proyecto</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Nota</th>
-                        <th scope="col">Acción</th>
+                        <th class="text-center" scope="col">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,14 +58,14 @@
                             {% endif %}
                         </td>
                         <td>{{ item.rating }}</td>
-                        <td class="col-2">
-                            <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
-                                class="fa fa-eye"></i> Ver</a>
-                            <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}"><i
-                                class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
-                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                        <td class="text-center col-2">
+                            <div class="d-flex flex-column flex-sm-row">
+                                <a class="btn btn-sm btn-primary mb-1 mb-sm-0 mr-sm-1" href="/view_thesis_page/{{ item.thesis_id }}"><i class="fa fa-eye"></i> Ver</a>
+                                <a class="btn btn-sm btn-warning mb-1 mb-sm-0 mr-sm-1" href="/edit_thesis_form/{{ item.thesis_id }}"><i class="fa fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}" onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                            </div>
                         </td>
+                        
                     </tr>
                     {% endfor %}
                     {% else %}

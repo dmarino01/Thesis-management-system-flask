@@ -117,15 +117,20 @@ class ControllerThesis:
 
     # Method to update thesis
     @classmethod
-    def updateThesis(cls, db, id, title, abstract):
+    def updateThesis(cls, db, id, title, abstract, new_filename):
         try:
             session = db.session()
             sql = text(
                 "UPDATE thesis "
-                "SET title = :title, abstract = :abstract "
+                "SET title = :title, abstract = :abstract, pdf_link = :new_filename "
                 "WHERE  thesis_id = :id; "
             )
-            params = {"id": id, "title": title, "abstract": abstract}
+            params = {
+                "id": id,
+                "title": title,
+                "abstract": abstract,
+                "new_filename": new_filename
+            }
             session.execute(sql, params)
             session.commit()
             return {"message": "Thesis updated successfully"}, 200

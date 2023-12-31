@@ -5,6 +5,7 @@ from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+import uuid
 from config import db
 
 thesis_bp = Blueprint("thesis", __name__)
@@ -25,11 +26,16 @@ def myThesis():
 def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
-        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations)
-    except Exception as ex:   
+        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
+            db, id
+        )
+        return render_template(
+            "myThesis/detail.html", thesis=thesis, recommendations=recommendations
+        )
+    except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
+
 
 # Edit Thesis Form
 @thesis_bp.route("/edit_thesis_form/<int:id>", methods=["GET"])
@@ -52,11 +58,37 @@ def create_thesis_form():
 @login_required
 def update_thesis(id):
     try:
+        # Catch info from the forms
         title = request.form["title"]
         abstract = request.form["abstract"]
+        old_pdf_link = request.form["old_pdf_link"]    
+        pdf_file = request.files["pdf_file"]
+        
+        if pdf_file and pdf_file.filename != "":
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            
+            # Delete old pdf
+            file_path = os.path.join(UPLOAD_FOLDER, old_pdf_link)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            else:
+                print("File does not exist:", file_path)
 
-        if title != "" and abstract != "":
-            ControllerThesis.updateThesis(db, id, title, abstract)
+            # Generate a unique identifier
+            unique_id = str(uuid.uuid4().hex[:8])
+
+            # Create the unique filename
+            filename = secure_filename(pdf_file.filename)
+            filename_without_extension, extension = os.path.splitext(filename)
+            new_filename = f"{unique_id}_{filename_without_extension}{extension}"
+            # Save path and file
+            pdf_path = os.path.join(UPLOAD_FOLDER, new_filename)
+            pdf_file.save(pdf_path)
+        else:
+            new_filename = old_pdf_link
+             
+        if title and abstract:
+            ControllerThesis.updateThesis(db, id, title, abstract, new_filename)
             return redirect(url_for("thesis.edit_thesis_form", id=id))
         else:
             flash("No deben haber campos vacios...")
@@ -77,10 +109,16 @@ def save_thesis():
         if title and abstract and pdf_file:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             if pdf_file and allowed_file(pdf_file.filename):
+                # Generate a unique identifier
+                unique_id = str(uuid.uuid4().hex[:8])
+                # Create the unique filename
                 filename = secure_filename(pdf_file.filename)
-                pdf_path = os.path.join(UPLOAD_FOLDER, filename)
+                filename_without_extension, extension = os.path.splitext(filename)
+                new_filename = f"{unique_id}_{filename_without_extension}{extension}"
+                # Save path and file
+                pdf_path = os.path.join(UPLOAD_FOLDER, new_filename)
                 pdf_file.save(pdf_path)
-                ControllerThesis.createProjectThesis(db, title, abstract, filename)
+                ControllerThesis.createProjectThesis(db, title, abstract, new_filename)
                 return redirect(url_for("thesis.myThesis"))
             else:
                 flash("Invalid file format. Please upload a PDF file.")

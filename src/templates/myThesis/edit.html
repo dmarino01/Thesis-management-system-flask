@@ -13,10 +13,8 @@
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded p-4">
-
-        
                     <h4>Detalles de la Tesis</h4>
-                    <form action="{{ url_for('thesis.update_thesis', id=thesis.thesis_id) }}" method="POST">
+                    <form action="{{ url_for('thesis.update_thesis', id=thesis.thesis_id) }}" method="POST" enctype="multipart/form-data">
                         {% with messages = get_flashed_messages() %}
                         {% for message in messages %}
                         <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
@@ -42,9 +40,11 @@
                             <label for="abstract">Abstract</label>
                         </div>
 
+                        <input class="form-control" type="hidden" name="old_pdf_link" value="{{ thesis.pdf_link }}">
+
                         <div class="mb-3">
-                            <label for="formFile" class="form-label">Subir Archivo Actualizado</label>
-                            <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile"
+                            <label for="pdf_file" class="form-label">Subir Archivo Actualizado</label>
+                            <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_file"
                                 name="pdf_file" accept=".pdf">
                         </div><br>
 
