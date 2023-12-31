@@ -240,11 +240,11 @@ class ControllerReviewer:
                         continue
                     values = line.split(f"{separator}")
                     sql = text(
-                        "CALL AssignAuthorWithReviewerByCodes(:student_code, :reviewer_code);"
+                        "CALL AssignReviewersToThesisByCodes(:reviewer_code, :thesis_id);"
                     )
                     params = {
-                        "student_code": values[0],
-                        "reviewer_code": values[1],
+                        "reviewer_code": values[0],
+                        "thesis_id": values[1],
                     }
                     session.execute(sql, params)
                     session.commit()

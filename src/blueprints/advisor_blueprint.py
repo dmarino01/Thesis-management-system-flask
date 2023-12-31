@@ -140,9 +140,9 @@ def upload_advisors():
         raise Exception(ex)
     
 # Upload Advisors by csv file
-@advisor_bp.route("/upload_assignations", methods=["POST"])
+@advisor_bp.route("/upload_advisor_assignations", methods=["POST"])
 @login_required
-def upload_assignations():
+def upload_advisor_assignations():
     try:
         if "csv_file" not in request.files:
             flash("No file part...")

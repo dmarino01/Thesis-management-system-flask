@@ -33,7 +33,7 @@
                         plantilla_relacion_autor-asesor.csv</a>
                 </div><br><br>
 
-                <form method="POST" action="/upload_assignations" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('advisor.upload_advisor_assignations') }}" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="input-group">
                         <input class="form-control bg-dark" type="file" name="csv_file" accept=".csv" required>

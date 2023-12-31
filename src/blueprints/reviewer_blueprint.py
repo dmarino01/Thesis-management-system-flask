@@ -37,10 +37,10 @@ def create_reviewer_form():
     return render_template("components/reviewer/create.html")
 
 
-# Display the assign author-reviewer form
-@reviewer_bp.route("/assign_author_reviewer_form", methods=["GET"])
+# Display the assign reviewer-thesis form
+@reviewer_bp.route("/assign_reviewer_thesis_form", methods=["GET"])
 @login_required
-def assign_author_reviewer_form():
+def assign_reviewer_thesis_form():
     return render_template("components/reviewer/assign.html")
 
 
@@ -196,25 +196,29 @@ def upload_reviewers():
 
 
 # Upload Reviewers by csv file
-@reviewer_bp.route("/upload_assignations", methods=["POST"])
+@reviewer_bp.route("/upload_reviewer_assignations", methods=["POST"])
 @login_required
-def upload_assignations():
+def upload_reviewer_assignations():
     try:
         if "csv_file" not in request.files:
             flash("No file part...")
-            return redirect(url_for("reviewer.assign_author_reviewer_form"))
+            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+        
         csv_file = request.files["csv_file"]
         separator = request.form["Select_separator"]
         codificator = request.form["Select_codificator"]
+
         if csv_file.filename == "":
             flash("Sin archivo seleccionado...")
-            return redirect(url_for("reviewer.assign_author_reviewer_form"))
+            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+        
         if csv_file:
             data = ControllerReviewer.process_relations_csv(
                 db, separator, codificator, csv_file
             )
             flash("Relaciones Subidas Exitosamente...")
-            return redirect(url_for("reviewer.assign_author_reviewer_form"))
-    except Exception as ex:
+            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+        
+    except Exception as ex:   
         flash("Error, duplicado o campo invalido...")
-        return redirect(url_for("reviewer.assign_author_reviewer_form"))
+        return redirect(url_for("reviewer.assign_reviewer_thesis_form"))

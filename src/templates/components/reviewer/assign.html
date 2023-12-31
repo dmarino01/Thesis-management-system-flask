@@ -28,12 +28,12 @@
 
                 <div style="display: inline-block;">
                     <h6 style="display: inline;">Archivo de ejemplo</h6>
-                    <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_autor-revisor.csv') }}"
+                    <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_revisores-tesis.csv') }}"
                         style="display: inline; margin-left: 20px;" download>
                         plantilla_relacion_revisores-tesis.csv</a>
                 </div><br><br>
 
-                <form method="POST" action="/upload_assignations" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="input-group">
                         <input class="form-control bg-dark" type="file" name="csv_file" accept=".csv" required>
