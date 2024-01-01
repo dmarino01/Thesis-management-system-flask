@@ -19,6 +19,7 @@
                         <th scope="col">Titulo</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Estado</th>
+                        <th scope="col">Nota</th>
                         <th scope="col">Acción</th>
                     </tr>
                 </thead>
@@ -41,6 +42,13 @@
                                 <span class="badge bg-primary">EN REVISION</span>
                             {% endif %}
                         </td>
+                        <td>
+                            {% if item.rating is not none %}
+                                {{ item.rating }}
+                            {% else %}
+                            <span class="badge bg-warning">SIN NOTA</span>
+                            {% endif %}
+                        </td>
                         <td class="col-2">
                             <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
                                 class="fa fa-eye"></i> Ver</a>
@@ -49,7 +57,7 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td class="text-center" colspan="5">No hay resultados encontrados.</td>
+                        <td class="text-center" colspan="7">No hay resultados encontrados.</td>
                     </tr>
                     {% endif %}
                 </tbody>

@@ -11,14 +11,14 @@ class ControllerThesis:
             user_id = current_user.user_id
             session = db.session()
             sql = text(
-                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, R.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
                 "INNER JOIN PERSON P ON P.person_id = A.person_id "
                 "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
                 "INNER JOIN USER U ON U.person_id = P.person_id "
-                "WHERE T.is_deleted = 0 AND U.user_id = :user_id"
+                "WHERE T.is_deleted = 0 AND U.user_id = :user_id LIMIT 1"
             )
             result = session.execute(sql, {"user_id": user_id})
             session.commit()
@@ -53,7 +53,7 @@ class ControllerThesis:
         try:
             session = db.session()
             sql = text(
-                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, R.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.thesis_status_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "

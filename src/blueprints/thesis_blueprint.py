@@ -26,12 +26,8 @@ def myThesis():
 def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
-            db, id
-        )
-        return render_template(
-            "myThesis/detail.html", thesis=thesis, recommendations=recommendations
-        )
+        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
+        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations)
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -42,7 +38,6 @@ def view_thesis_page(id):
 @login_required
 def edit_thesis_form(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
-
     return render_template("myThesis/edit.html", thesis=thesis)
 
 
@@ -61,12 +56,12 @@ def update_thesis(id):
         # Catch info from the forms
         title = request.form["title"]
         abstract = request.form["abstract"]
-        old_pdf_link = request.form["old_pdf_link"]    
+        old_pdf_link = request.form["old_pdf_link"]
         pdf_file = request.files["pdf_file"]
-        
+
         if pdf_file and pdf_file.filename != "":
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            
+
             # Delete old pdf
             file_path = os.path.join(UPLOAD_FOLDER, old_pdf_link)
             if os.path.exists(file_path):
@@ -86,7 +81,7 @@ def update_thesis(id):
             pdf_file.save(pdf_path)
         else:
             new_filename = old_pdf_link
-             
+
         if title and abstract:
             ControllerThesis.updateThesis(db, id, title, abstract, new_filename)
             return redirect(url_for("thesis.edit_thesis_form", id=id))

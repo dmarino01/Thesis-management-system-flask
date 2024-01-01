@@ -2,13 +2,26 @@
 
 {% block title %} Mis Tesis {% endblock %}
 
+{% block CustomCSS %}
+
+<style>
+    /* CSS for separating button borders */
+    .btn-container {
+        display: flex;
+        gap: 5px; /* Adjust this value to increase/decrease separation */
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid pt-4 px-4">
     <h2>Mis Tesis</h2>
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Mantenedor de Tesis</h4>
-            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVO PROYECTO DE TESIS</a>
+            <a class="btn btn-sm btn-success" href="/create_thesis_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+                PROYECTO DE TESIS</a>
         </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -44,33 +57,48 @@
                     <tr>
                         <td>{{ item.thesis_id }}</td>
                         <td>{{ item.title }}</td>
-                        <td>{{ item.submission_date }}</td> 
-                        <td>{{ item.expiration_date }}</td> 
+                        <td>{{ item.submission_date }}</td>
+                        <td>{{ item.expiration_date }}</td>
                         <td class="align-middle">
                             {% if item.thesis_status_id == 1 %}
-                                <span class="badge bg-warning">EN PROCESO</span>
+                            <span class="badge bg-warning">EN PROCESO</span>
                             {% elif item.thesis_status_id == 2 %}
-                                <span class="badge bg-success">APROBADO</span>
+                            <span class="badge bg-success">APROBADO</span>
                             {% elif item.thesis_status_id == 3 %}
-                                <span class="badge bg-primary">RECHAZADO</span>
+                            <span class="badge bg-primary">RECHAZADO</span>
                             {% elif item.thesis_status_id == 4 %}
-                                <span class="badge bg-primary">EN REVISION</span>
+                            <span class="badge bg-primary">EN REVISION</span>
                             {% endif %}
                         </td>
-                        <td>{{ item.rating }}</td>
+                        <td>
+                            {% if item.rating is not none %}
+                            {{ item.rating }}
+                            {% else %}
+                            <span class="badge bg-warning">SIN NOTA</span>
+                            {% endif %}
+                        </td>
                         <td class="text-center col-2">
-                            <div class="d-flex flex-column flex-sm-row">
-                                <a class="btn btn-sm btn-primary mb-1 mb-sm-0 mr-sm-1" href="/view_thesis_page/{{ item.thesis_id }}"><i class="fa fa-eye"></i> Ver</a>
-                                <a class="btn btn-sm btn-warning mb-1 mb-sm-0 mr-sm-1" href="/edit_thesis_form/{{ item.thesis_id }}"><i class="fa fa-pen"></i> Editar</a>
-                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}" onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                            <div class="btn-container">
+                                {% if item.thesis_status_id != 1 %}
+                                <a class="btn btn-sm btn-success" href="/view_thesis_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-graduation-cap"></i> Sustentación</a>
+                                {% endif %}
+                                <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-eye"></i> Ver</a>
+                                {% if item.thesis_status_id == 1 %}
+                                <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}">
+                                    <i class="fa fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}" onclick="return confirmDelete();">
+                                    <i class="fa fa-trash"></i> Eliminar</a>
+                                {% endif %}
                             </div>
                         </td>
-                        
+
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td class="text-center" colspan="5">No hay resultados encontrados.</td>
+                        <td class="text-center" colspan="7">No hay resultados encontrados.</td>
                     </tr>
                     {% endif %}
                 </tbody>
