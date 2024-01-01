@@ -17,8 +17,11 @@ def review_thesis(id):
 @review_bp.route('/review_thesis_page/<int:id>', methods=['GET'])
 @login_required
 def review_thesis_page(id):
+    person_id = current_user.person_id
     data = ControllerThesis.get_thesis_by_id(db, id)
-    return render_template('review/review.html', thesis=data)
+    # IF review_exists THEN HTML review form will be deactivated
+    review_exists = ControllerReview.check_review_exists(db, id, person_id)
+    return render_template('review/review.html', thesis=data, review_exists = review_exists)
 
 @review_bp.route('/save_review/<int:id>', methods=['GET', 'POST'])
 @login_required
