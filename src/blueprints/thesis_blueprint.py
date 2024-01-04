@@ -4,7 +4,6 @@ from flask_login import login_required
 from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
 import uuid
 from config import db
 
@@ -27,7 +26,26 @@ def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
         recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
-        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations)
+        return render_template(
+            "myThesis/detail.html", thesis=thesis, recommendations=recommendations
+        )
+    except Exception as ex:
+        print(f"Error: {ex}")
+        raise Exception(ex)
+
+
+# View Thesis Dissertation Thesis Page
+@thesis_bp.route("/view_dissertation_page/<int:id>", methods=["GET"])
+@login_required
+def view_dissertation_page(id):
+    try:
+        thesis = ControllerThesis.get_thesis_by_id(db, id)
+        dissertation_exists = ControllerThesis.check_dissertation_exists(db, id)
+        return render_template(
+            "myThesis/dissertation.html",
+            thesis=thesis,
+            dissertation_exists=dissertation_exists,
+        )
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -101,6 +119,13 @@ def save_thesis():
         title = request.form["title"]
         abstract = request.form["abstract"]
         pdf_file = request.files["pdf_file"]
+        project_id = request.form.get("project_id")
+        expiration_date = request.form.get("expiration_date")
+        if not project_id:
+            project_id = 0
+        else:
+            project_id = int(project_id)
+
         if title and abstract and pdf_file:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             if pdf_file and allowed_file(pdf_file.filename):
@@ -113,14 +138,14 @@ def save_thesis():
                 # Save path and file
                 pdf_path = os.path.join(UPLOAD_FOLDER, new_filename)
                 pdf_file.save(pdf_path)
-                ControllerThesis.createProjectThesis(db, title, abstract, new_filename)
+                ControllerThesis.createProjectThesis(db, title, abstract, project_id, new_filename, expiration_date)
                 return redirect(url_for("thesis.myThesis"))
             else:
                 flash("Invalid file format. Please upload a PDF file.")
-                return redirect(url_for("thesis.create_thesis_form"))
+                return redirect(url_for("thesis.myThesis"))
         else:
             flash("No deben haber campos vacios...")
-            return redirect(url_for("thesis.create_thesis_form"))
+            return redirect(url_for("thesis.myThesis"))
     except Exception as ex:
         raise Exception(ex)
 

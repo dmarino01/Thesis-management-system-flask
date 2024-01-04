@@ -44,8 +44,8 @@
                     <tr class="text-white">
                         <th scope="col">ID</th>
                         <th scope="col">Titulo</th>
-                        <th scope="col">Fecha de Inicio del Proyecto</th>
-                        <th scope="col">Fecha de Termino del Proyecto</th>
+                        <th scope="col">Fecha de Inicio</th>
+                        <th scope="col">Fecha de Termino</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Nota</th>
                         <th class="text-center" scope="col">Acción</th>
@@ -56,7 +56,11 @@
                     {% for item in thesis %}
                     <tr>
                         <td>{{ item.thesis_id }}</td>
-                        <td>{{ item.title }}</td>
+                        {% if item.project_id == 0 %}
+                            <td><strong>PROJECTO: </strong>{{ item.title }}</td>
+                        {% else %}
+                            <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
+                        {% endif %}
                         <td>{{ item.submission_date }}</td>
                         <td>{{ item.expiration_date }}</td>
                         <td class="align-middle">
@@ -80,7 +84,7 @@
                         <td class="text-center col-2">
                             <div class="btn-container">
                                 {% if item.thesis_status_id != 1 %}
-                                <a class="btn btn-sm btn-success" href="/view_thesis_page/{{ item.thesis_id }}">
+                                <a class="btn btn-sm btn-success" href="/view_dissertation_page/{{ item.thesis_id }}">
                                     <i class="fa fa-graduation-cap"></i> Sustentación</a>
                                 {% endif %}
                                 <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}">
