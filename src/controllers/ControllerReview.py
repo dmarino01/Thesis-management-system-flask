@@ -29,6 +29,9 @@ class ControllerReview:
                         row[9],
                         row[10],
                         row[11],
+                        row[12],
+                        row[13],
+                        row[14],
                     )
                     thesiss.append(thesis)
                 return thesiss

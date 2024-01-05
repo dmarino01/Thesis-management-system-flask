@@ -57,6 +57,14 @@
                         <p class="card-text">Abstract: {{ thesis.abstract }}</p>
                         <a href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}"
                             class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
+                        {% if thesis.turnitin_link is not none %}
+                        <a href="{{ url_for('download_file', filename='file/turnitin/' + thesis.turnitin_link) }}"
+                            class="btn btn-danger" download><i class="fa fa-download"></i> Descargar Reporte Turnitín</a>
+                        {% endif %}
+                        {% if thesis.article_link is not none %}
+                        <a href="{{ url_for('download_file', filename='file/article/' + thesis.article_link) }}"
+                            class="btn btn-success" download><i class="fa fa-download"></i> Descargar Artículo de Revisión</a>
+                        {% endif %}
                     </div>
                 </div><br>
                 {% if current_user.role != "Revisor" %}

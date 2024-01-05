@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
@@ -9,7 +10,7 @@ from config import db
 
 thesis_bp = Blueprint("thesis", __name__)
 UPLOAD_FOLDER = os.path.join("src", "static", "file", "thesis")
-
+UPLOAD_FOLDER_TURNITIN = os.path.join("src", "static", "file", "turnitin")
 
 # Thesis Index
 @thesis_bp.route("/myThesis")
@@ -63,7 +64,8 @@ def edit_thesis_form(id):
 @thesis_bp.route("/create_thesis_form")
 @login_required
 def create_thesis_form():
-    return render_template("myThesis/create.html")
+    current_date = datetime.now().date()
+    return render_template("myThesis/create.html", current_date=current_date)
 
 
 # Update Thesis Route
@@ -75,21 +77,21 @@ def update_thesis(id):
         title = request.form["title"]
         abstract = request.form["abstract"]
         old_pdf_link = request.form["old_pdf_link"]
+        old_turnitin_link = request.form["old_turnitin_link"]
         pdf_file = request.files["pdf_file"]
+        pdf_turnitin = request.files["pdf_turnitin"]
+        project_creation_date = request.form["project_creation_date"]
 
         if pdf_file and pdf_file.filename != "":
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
             # Delete old pdf
             file_path = os.path.join(UPLOAD_FOLDER, old_pdf_link)
             if os.path.exists(file_path):
                 os.remove(file_path)
             else:
                 print("File does not exist:", file_path)
-
             # Generate a unique identifier
             unique_id = str(uuid.uuid4().hex[:8])
-
             # Create the unique filename
             filename = secure_filename(pdf_file.filename)
             filename_without_extension, extension = os.path.splitext(filename)
@@ -100,8 +102,28 @@ def update_thesis(id):
         else:
             new_filename = old_pdf_link
 
+        if pdf_turnitin and pdf_turnitin.filename != "":
+            os.makedirs(UPLOAD_FOLDER_TURNITIN, exist_ok=True)
+            # Delete old pdf
+            file_path1 = os.path.join(UPLOAD_FOLDER_TURNITIN, old_turnitin_link)
+            if os.path.exists(file_path1):
+                os.remove(file_path1)
+            else:
+                print("File does not exist:", file_path1)
+            # Generate a unique identifier
+            unique_id = str(uuid.uuid4().hex[:8])
+            # Create the unique filename
+            filename_turnitin = secure_filename(pdf_turnitin.filename)
+            filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
+            new_filename_turnitin = f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+            # Save path and file
+            pdf_path1 = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+            pdf_turnitin.save(pdf_path1)
+        else:
+            new_filename_turnitin = old_turnitin_link
+
         if title and abstract:
-            ControllerThesis.updateThesis(db, id, title, abstract, new_filename)
+            ControllerThesis.updateThesis(db, id, title, abstract, new_filename, new_filename_turnitin)
             return redirect(url_for("thesis.edit_thesis_form", id=id))
         else:
             flash("No deben haber campos vacios...")
@@ -119,26 +141,38 @@ def save_thesis():
         title = request.form["title"]
         abstract = request.form["abstract"]
         pdf_file = request.files["pdf_file"]
+        pdf_turnitin = request.files["pdf_turnitin"]
         project_id = request.form.get("project_id")
         expiration_date = request.form.get("expiration_date")
+        project_creation_date = request.form["project_creation_date"]
+
         if not project_id:
             project_id = 0
         else:
             project_id = int(project_id)
 
-        if title and abstract and pdf_file:
+        if title and abstract and pdf_file and pdf_turnitin:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            if pdf_file and allowed_file(pdf_file.filename):
+            if allowed_file(pdf_file.filename) and allowed_file(pdf_turnitin.filename):
                 # Generate a unique identifier
                 unique_id = str(uuid.uuid4().hex[:8])
                 # Create the unique filename
-                filename = secure_filename(pdf_file.filename)
-                filename_without_extension, extension = os.path.splitext(filename)
-                new_filename = f"{unique_id}_{filename_without_extension}{extension}"
+                filename_pdf = secure_filename(pdf_file.filename)
+                filename_turnitin = secure_filename(pdf_turnitin.filename)
+
+                filename_pdf_without_extension, extension = os.path.splitext(filename_pdf)
+                filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
+
+                new_filename_pdf = f"{unique_id}_{filename_pdf_without_extension}{extension}"
+                new_filename_turnitin = f"{unique_id}_{filename_turnitin_without_extension}{extension}"
                 # Save path and file
-                pdf_path = os.path.join(UPLOAD_FOLDER, new_filename)
+                pdf_path = os.path.join(UPLOAD_FOLDER, new_filename_pdf)
+                turnitin_path = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+
                 pdf_file.save(pdf_path)
-                ControllerThesis.createProjectThesis(db, title, abstract, project_id, new_filename, expiration_date)
+                pdf_turnitin.save(turnitin_path)
+
+                ControllerThesis.createProjectThesis(db, title, abstract, project_id, new_filename_pdf, new_filename_turnitin, expiration_date, project_creation_date)
                 return redirect(url_for("thesis.myThesis"))
             else:
                 flash("Invalid file format. Please upload a PDF file.")

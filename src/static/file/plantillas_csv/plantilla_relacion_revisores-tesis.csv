@@ -1,4 +1,11 @@
-reviewer_code;thesis_id
-00Y1;1
-00Y2;1
-8011;1
+reviewer_code;thesis_id;reviewer_role_id
+00Y1;1;
+00Y2;1;
+8011;1;
+;;
+;;
+Roles ID;Nombre;
+1;PRESIDENTE;
+2;SECRETARIO;
+3;VOCAL;
+4;ACCESATARIO;

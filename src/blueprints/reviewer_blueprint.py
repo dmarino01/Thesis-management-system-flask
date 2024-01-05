@@ -213,12 +213,11 @@ def upload_reviewer_assignations():
             return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
         
         if csv_file:
-            data = ControllerReviewer.process_relations_csv(
-                db, separator, codificator, csv_file
-            )
+            data = ControllerReviewer.process_relations_csv(db, separator, codificator, csv_file)
             flash("Relaciones Subidas Exitosamente...")
-            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
-        
-    except Exception as ex:   
-        flash("Error, duplicado o campo invalido...")
-        return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))       
+    except Exception as ex:  
+        raise Exception(ex)
+        ##error_message = f"Error, {str(ex)}"
+        ##flash(error_message)
+        ##return redirect(url_for("reviewer.assign_reviewer_thesis_form"))

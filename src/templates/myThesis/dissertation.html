@@ -44,7 +44,6 @@
                     <input type="date" name="expiration_date" value="{{ thesis.expiration_date }}">
 
                     <div class="mb-3">
-
                         <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_file"
                             name="pdf_file" accept=".pdf">
                     </div><br>
@@ -61,7 +60,7 @@
 
                 {% else %}
                 Sustentación Creada <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                    class="fa fa-arrow-left"></i> Volver</a>
+                        class="fa fa-arrow-left"></i> Volver</a>
                 {% endif %}
             </div>
         </div>

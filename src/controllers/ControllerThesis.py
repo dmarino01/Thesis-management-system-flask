@@ -11,7 +11,7 @@ class ControllerThesis:
             user_id = current_user.user_id
             session = db.session()
             sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
@@ -40,6 +40,8 @@ class ControllerThesis:
                         row[10],
                         row[11],
                         row[12],
+                        row[13],
+                        row[14],
                     )
                     thesiss.append(thesis)
                 return thesiss
@@ -54,7 +56,7 @@ class ControllerThesis:
         try:
             session = db.session()
             sql = text(
-                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
@@ -76,11 +78,13 @@ class ControllerThesis:
                     "last_update_date": row[5],
                     "rating": row[6],
                     "pdf_link": row[7],
-                    "thesis_status_id": row[8],
-                    "project_id": row[9],
-                    "author_id": row[10],
-                    "firstname": row[11],
-                    "lastname": row[12],
+                    "turnitin_link": row[8],
+                    "article_link": row[9],
+                    "thesis_status_id": row[10],
+                    "project_id": row[11],
+                    "author_id": row[12],
+                    "firstname": row[13],
+                    "lastname": row[14],
                 }
                 return thesis
             else:
@@ -90,21 +94,31 @@ class ControllerThesis:
 
     # Method to save thesis project
     @classmethod
-    def createProjectThesis(cls, db, title, abstract, project_id, pdf_link, expiration_date):
+    def createProjectThesis(
+        cls,
+        db,
+        title,
+        abstract,
+        project_id,
+        pdf_link,
+        turnitin_link,
+        expiration_date,
+        project_creation_date,
+    ):
         try:
             person_id = current_user.person_id
             session = db.session()
             print(expiration_date)
             sql = text(
-                "INSERT INTO THESIS (title, abstract, submission_date, expiration_date, last_update_date, pdf_link, thesis_status_id, project_id) "
+                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, thesis_status_id, project_id) "
                 "VALUES ( "
-                "    :title, :abstract, CURDATE(), "
+                "    :title, :abstract, :project_creation_date, CURDATE(), "
                 "    CASE "
                 "        WHEN :expiration_date IS NOT NULL AND :expiration_date != '' THEN :expiration_date "
                 "        ELSE DATE_ADD(CURDATE(), INTERVAL 2 YEAR) "
                 "    END, "
                 "    CURDATE(), "
-                "    :pdf_link, 1, :project_id "
+                "    :pdf_link, :turnitin_link, 1, :project_id "
                 "    ); "
                 "SET @thesis_id = LAST_INSERT_ID(); "
                 "SET @author_id = (SELECT author_id FROM author where person_id = :person_id); "
@@ -116,8 +130,10 @@ class ControllerThesis:
                 "abstract": abstract,
                 "project_id": project_id,
                 "pdf_link": pdf_link,
+                "turnitin_link": turnitin_link,
                 "expiration_date": expiration_date,
                 "person_id": person_id,
+                "project_creation_date": project_creation_date,
             }
             session.execute(sql, params)
             session.commit()
@@ -127,19 +143,20 @@ class ControllerThesis:
 
     # Method to update thesis
     @classmethod
-    def updateThesis(cls, db, id, title, abstract, new_filename):
+    def updateThesis(cls, db, id, title, abstract, new_filename, new_filename_turnitin):
         try:
             session = db.session()
             sql = text(
                 "UPDATE thesis "
-                "SET title = :title, abstract = :abstract, pdf_link = :new_filename "
+                "SET title = :title, abstract = :abstract, pdf_link = :new_filename, turnitin_link = :new_filename_turnitin "
                 "WHERE  thesis_id = :id; "
             )
             params = {
                 "id": id,
                 "title": title,
                 "abstract": abstract,
-                "new_filename": new_filename
+                "new_filename": new_filename,
+                "new_filename_turnitin": new_filename_turnitin,
             }
             session.execute(sql, params)
             session.commit()
@@ -158,20 +175,17 @@ class ControllerThesis:
             return {"message": "Thesis created successfully"}, 200
         except Exception as ex:
             raise Exception(ex)
-        
-    
+
     @classmethod
     def check_dissertation_exists(cls, db, id):
         try:
             session = db.session()
-            sql = text(
-                "select * from thesis where project_id = :id"
-            )
+            sql = text("select * from thesis where project_id = :id")
             params = {
                 "id": id,
             }
             dissertation_result = session.execute(sql, params)
             dissertation_exists = dissertation_result.fetchone() is not None
-            return dissertation_exists 
+            return dissertation_exists
         except Exception as ex:
             raise Exception(ex)

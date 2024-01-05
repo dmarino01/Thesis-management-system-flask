@@ -1,3 +1,6 @@
+import csv
+from datetime import date, datetime
+from io import StringIO
 from models.Reviewer import Reviewer
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
@@ -229,25 +232,39 @@ class ControllerReviewer:
     @classmethod
     def process_relations_csv(cls, db, separator, codificator, csv_file):
         try:
+            assignation_date = date.today().strftime('%Y-%m-%d')
             lines = (
-                csv_file.read().decode(f"{codificator}", errors="replace").splitlines()
+                csv_file.read().decode(f'{codificator}', errors='replace').splitlines()
             )
             with db.session() as session:
-                first_line = True
-                for line in lines:
-                    if first_line:
-                        first_line = False
+                for line_number, line in enumerate(lines, start=1):
+                    if line_number == 1:  # Skip the header line
                         continue
-                    values = line.split(f"{separator}")
+                    
+                    if not line.strip():  # Skip empty lines
+                        continue
+                    
+                    values = line.split(separator)
+                    
+                    if len(values) < 3:  # Check if there are enough values
+                        # Handle the case where the line doesn't have enough values
+                        print(f"Skipping line {line_number}: {line}. Expected at least 3 values, found {len(values)}.")
+                        continue
+                    
                     sql = text(
-                        "CALL AssignReviewersToThesisByCodes(:reviewer_code, :thesis_id);"
+                        "CALL AssignReviewersToThesisByCodes(:reviewer_code, :thesis_id, :reviewer_role_id, :assignation_date);"
                     )
                     params = {
-                        "reviewer_code": values[0],
-                        "thesis_id": values[1],
+                        'reviewer_code': values[0],
+                        'thesis_id': values[1],
+                        'reviewer_role_id': values[2],
+                        'assignation_date': assignation_date,
                     }
                     session.execute(sql, params)
                     session.commit()
+                    
                 return {"message": "Relations uploaded successfully"}, 200
-        except Exception as ex:
-            raise Exception(ex)
+        
+        except Exception as e:
+            return {"error": str(e)}, 500
+

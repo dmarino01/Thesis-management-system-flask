@@ -11,7 +11,7 @@ class Thesis():
         self.thesis_status_id = thesis_status_id
         self.is_deleted = is_deleted
 
-    def __init__(self, thesis_id, title, abstract, submission_date, expiration_date, last_update_date, rating, pdf_link, thesis_status_id, project_id, author_id, firstname, lastname, is_deleted=False) -> None:
+    def __init__(self, thesis_id, title, abstract, submission_date, expiration_date, last_update_date, rating, pdf_link, turnitin_link, article_link, thesis_status_id, project_id, author_id, firstname, lastname, is_deleted=False) -> None:
         self.thesis_id = thesis_id
         self.title = title
         self.abstract = abstract
@@ -20,6 +20,8 @@ class Thesis():
         self.last_update_date = last_update_date
         self.rating = rating
         self.pdf_link = pdf_link
+        self.turnitin_link = turnitin_link
+        self.article_link = article_link
         self.thesis_status_id = thesis_status_id
         self.project_id = project_id
         self.author_id = author_id
