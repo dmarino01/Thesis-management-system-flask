@@ -194,7 +194,6 @@ def upload_reviewers():
     except Exception as ex:
         raise Exception(ex)
 
-
 # Upload Reviewers by csv file
 @reviewer_bp.route("/upload_reviewer_assignations", methods=["POST"])
 @login_required
@@ -214,10 +213,15 @@ def upload_reviewer_assignations():
         
         if csv_file:
             data = ControllerReviewer.process_relations_csv(db, separator, codificator, csv_file)
-            flash("Relaciones Subidas Exitosamente...")
-            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))       
+            
+            if data == 200:
+                flash("Relaciones Subidas Exitosamente...")
+                return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+            else:
+                flash("Posible Error al Subir las Relaciones")  # Display the specific error message returned
+                return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+    
     except Exception as ex:  
-        raise Exception(ex)
-        ##error_message = f"Error, {str(ex)}"
-        ##flash(error_message)
-        ##return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+        flash(str(ex))  # Display the caught exception message
+        return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
+

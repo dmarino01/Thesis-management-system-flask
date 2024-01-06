@@ -11,6 +11,7 @@ from config import db
 thesis_bp = Blueprint("thesis", __name__)
 UPLOAD_FOLDER = os.path.join("src", "static", "file", "thesis")
 UPLOAD_FOLDER_TURNITIN = os.path.join("src", "static", "file", "turnitin")
+UPLOAD_FOLDER_ARTICLE = os.path.join("src", "static", "file", "article")
 
 # Thesis Index
 @thesis_bp.route("/myThesis")
@@ -26,7 +27,9 @@ def myThesis():
 def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
+        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
+            db, id
+        )
         return render_template(
             "myThesis/detail.html", thesis=thesis, recommendations=recommendations
         )
@@ -114,8 +117,12 @@ def update_thesis(id):
             unique_id = str(uuid.uuid4().hex[:8])
             # Create the unique filename
             filename_turnitin = secure_filename(pdf_turnitin.filename)
-            filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
-            new_filename_turnitin = f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+            filename_turnitin_without_extension, extension = os.path.splitext(
+                filename_turnitin
+            )
+            new_filename_turnitin = (
+                f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+            )
             # Save path and file
             pdf_path1 = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
             pdf_turnitin.save(pdf_path1)
@@ -123,7 +130,9 @@ def update_thesis(id):
             new_filename_turnitin = old_turnitin_link
 
         if title and abstract:
-            ControllerThesis.updateThesis(db, id, title, abstract, new_filename, new_filename_turnitin)
+            ControllerThesis.updateThesis(
+                db, id, title, abstract, new_filename, new_filename_turnitin
+            )
             return redirect(url_for("thesis.edit_thesis_form", id=id))
         else:
             flash("No deben haber campos vacios...")
@@ -163,8 +172,8 @@ def save_thesis():
                 filename_pdf_without_extension, extension = os.path.splitext(filename_pdf)
                 filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
 
-                new_filename_pdf = f"{unique_id}_{filename_pdf_without_extension}{extension}"
-                new_filename_turnitin = f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+                new_filename_pdf = (f"{unique_id}_{filename_pdf_without_extension}{extension}")
+                new_filename_turnitin = (f"{unique_id}_{filename_turnitin_without_extension}{extension}")
                 # Save path and file
                 pdf_path = os.path.join(UPLOAD_FOLDER, new_filename_pdf)
                 turnitin_path = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
@@ -172,7 +181,81 @@ def save_thesis():
                 pdf_file.save(pdf_path)
                 pdf_turnitin.save(turnitin_path)
 
-                ControllerThesis.createProjectThesis(db, title, abstract, project_id, new_filename_pdf, new_filename_turnitin, expiration_date, project_creation_date)
+                ControllerThesis.createProjectThesis(
+                    db,
+                    title,
+                    abstract,
+                    project_id,
+                    new_filename_pdf,
+                    new_filename_turnitin,
+                    expiration_date,
+                    project_creation_date,
+                )
+                return redirect(url_for("thesis.myThesis"))
+            else:
+                flash("Invalid file format. Please upload a PDF file.")
+                return redirect(url_for("thesis.myThesis"))
+        else:
+            flash("No deben haber campos vacios...")
+            return redirect(url_for("thesis.myThesis"))
+    except Exception as ex:
+        raise Exception(ex)
+
+
+# Save Dissertation
+@thesis_bp.route("/save_dissertation_thesis", methods=["POST"])
+@login_required
+def save_dissertation_thesis():
+    try:
+        title = request.form["title"]
+        abstract = request.form["abstract"]
+
+        pdf_file = request.files["pdf_file"]
+        pdf_turnitin = request.files["pdf_turnitin"]
+        pdf_article = request.files["pdf_article"]
+
+        project_id = request.form.get("project_id")
+        expiration_date = request.form.get("expiration_date")
+        project_creation_date = request.form["project_creation_date"]
+
+        if title and abstract and pdf_file and pdf_turnitin and pdf_article:
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            if allowed_file(pdf_file.filename) and allowed_file(pdf_turnitin.filename) and allowed_file(pdf_article.filename):                
+                # Generate a unique identifier
+                unique_id = str(uuid.uuid4().hex[:8]) 
+                # Create the unique filename
+                filename_pdf = secure_filename(pdf_file.filename)
+                filename_turnitin = secure_filename(pdf_turnitin.filename)
+                filename_article = secure_filename(pdf_article.filename)
+                # Breakdown old filename
+                filename_pdf_without_extension, extension = os.path.splitext(filename_pdf)
+                filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
+                filename_article_without_extension, extension = os.path.splitext(filename_article)
+                # Establish new filename
+                new_filename_pdf = (f"{unique_id}_{filename_pdf_without_extension}{extension}")
+                new_filename_turnitin = (f"{unique_id}_{filename_turnitin_without_extension}{extension}")
+                new_filename_article = (f"{unique_id}_{filename_article_without_extension}{extension}")
+                # Save path and file
+                pdf_path = os.path.join(UPLOAD_FOLDER, new_filename_pdf)
+                turnitin_path = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+                article_path = os.path.join(UPLOAD_FOLDER_ARTICLE, new_filename_article)
+
+                pdf_file.save(pdf_path)
+                pdf_turnitin.save(turnitin_path)
+                pdf_article.save(article_path)
+
+                ControllerThesis.createDissertationThesis(
+                    db,
+                    title,
+                    abstract,
+                    project_id,
+                    new_filename_pdf,
+                    new_filename_turnitin,
+                    new_filename_article,
+                    expiration_date,
+                    project_creation_date,
+                )
+
                 return redirect(url_for("thesis.myThesis"))
             else:
                 flash("Invalid file format. Please upload a PDF file.")

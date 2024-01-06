@@ -5,22 +5,36 @@
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-    <h3>Asignar Revisores a Tesis</h3>
+    <h3>Asignar Revisores a Proyectos y Tesis</h3>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br />
     {% for message in messages %}
-    <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-        id="myAlert">
-        <strong>{{ message }}</strong>
-        <div class="progress-container">
-            <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>{{ message }}</strong>
+                <div class="progress-container">
+                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
     {% endif %}
     {% endwith %}
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="custom-info-button alert alert-info alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>Solo se aceptara Grado de Doctor (DR) para asignar a una tesis.</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
@@ -33,7 +47,8 @@
                         plantilla_relacion_revisores-tesis.csv</a>
                 </div><br><br>
 
-                <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}"
+                    enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="input-group">
                         <input class="form-control bg-dark" type="file" name="csv_file" accept=".csv" required>

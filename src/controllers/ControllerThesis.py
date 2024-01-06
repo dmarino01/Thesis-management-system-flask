@@ -94,21 +94,10 @@ class ControllerThesis:
 
     # Method to save thesis project
     @classmethod
-    def createProjectThesis(
-        cls,
-        db,
-        title,
-        abstract,
-        project_id,
-        pdf_link,
-        turnitin_link,
-        expiration_date,
-        project_creation_date,
-    ):
+    def createProjectThesis(cls,db,title,abstract,project_id,pdf_link,turnitin_link,expiration_date,project_creation_date):
         try:
             person_id = current_user.person_id
             session = db.session()
-            print(expiration_date)
             sql = text(
                 "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, thesis_status_id, project_id) "
                 "VALUES ( "
@@ -131,6 +120,46 @@ class ControllerThesis:
                 "project_id": project_id,
                 "pdf_link": pdf_link,
                 "turnitin_link": turnitin_link,
+                "expiration_date": expiration_date,
+                "person_id": person_id,
+                "project_creation_date": project_creation_date,
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {"message": "Thesis project created successfully"}, 201
+        except Exception as ex:
+            raise Exception(ex)
+        
+    # Method to save dissertion thesis
+    @classmethod
+    def createDissertationThesis(cls,db,title,abstract,project_id,pdf_link,pdf_turnitin_link,pdf_article_link,expiration_date,project_creation_date):
+        try:
+            person_id = current_user.person_id
+            session = db.session()
+          
+            sql = text(
+                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, article_link, thesis_status_id, project_id) "
+                "VALUES ( "
+                "    :title, :abstract, :project_creation_date, CURDATE(), "
+                "    CASE "
+                "        WHEN :expiration_date IS NOT NULL AND :expiration_date != '' THEN :expiration_date "
+                "        ELSE DATE_ADD(CURDATE(), INTERVAL 2 YEAR) "
+                "    END, "
+                "    CURDATE(), "
+                "    :pdf_link, :turnitin_link, :article_link, 1, :project_id "
+                "    ); "
+                "SET @thesis_id = LAST_INSERT_ID(); "
+                "SET @author_id = (SELECT author_id FROM author where person_id = :person_id); "
+                "INSERT INTO AUTHOR_THESIS (author_id, thesis_id) "
+                "VALUES (@author_id, @thesis_id);"
+            )                
+            params = {
+                "title": title,
+                "abstract": abstract,
+                "project_id": project_id,
+                "pdf_link": pdf_link,
+                "turnitin_link": pdf_turnitin_link,
+                "article_link": pdf_article_link,
                 "expiration_date": expiration_date,
                 "person_id": person_id,
                 "project_creation_date": project_creation_date,
@@ -180,7 +209,7 @@ class ControllerThesis:
     def check_dissertation_exists(cls, db, id):
         try:
             session = db.session()
-            sql = text("select * from thesis where project_id = :id")
+            sql = text("select * from thesis where project_id = :id and is_deleted = 0")
             params = {
                 "id": id,
             }

@@ -2,6 +2,9 @@
 
 {% block title %} Sustentación de Tesis {% endblock %}
 
+{% block customCSS %}
+{% endblock %}
+
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
@@ -9,11 +12,9 @@
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded p-4">
-
                 {% if not dissertation_exists %}
-
                 <h6 class="mb-4">Ingrese los Datos de la Sustentación de Tesis</h6>
-                <form action="/save_thesis" method="POST" enctype="multipart/form-data">
+                <form action="/save_dissertation_thesis" method="POST" enctype="multipart/form-data">
                     {% with messages = get_flashed_messages() %}
                     {% for message in messages %}
                     <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
@@ -40,12 +41,25 @@
                     </div>
 
                     <input type="hidden" name="project_id" value="{{ thesis.thesis_id }}">
-
-                    <input type="date" name="expiration_date" value="{{ thesis.expiration_date }}">
+                    <input type="hidden" name="expiration_date" value="{{ thesis.expiration_date }}">
+                    <input type="hidden" name="project_creation_date" value="{{ thesis.submission_date }}">
 
                     <div class="mb-3">
+                        <label for="pdf_file" class="form-label">Subir Archivo</label>
                         <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_file"
                             name="pdf_file" accept=".pdf">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
+                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_turnitin"
+                            name="pdf_turnitin" accept=".pdf">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="pdf_article" class="form-label">Subir Artículo de Investigación</label>
+                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_article"
+                            name="pdf_article" accept=".pdf">
                     </div><br>
 
                     <div class="d-flex justify-content-between align-items-center">
