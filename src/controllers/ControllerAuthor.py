@@ -130,6 +130,55 @@ class ControllerAuthor():
         except Exception as ex:
             raise Exception(ex)
         
+    #Obtain total number of authors
+    @classmethod
+    def getTotalAuthors(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT COUNT(*) FROM AUTHOR")
+            result = session.execute(sql)
+            count = result.scalar()
+            session.close()
+            return count
+        except Exception as ex:
+            raise Exception(ex)
+        
+    #Obtain authors without an assigned advisors
+    @classmethod
+    def getAuthorsWithoutAdvisor(cls, db):
+        try:
+            session = db.session()
+            sql = text('SELECT * FROM author_without_advisor_assigned_info;')
+            result = session.execute(sql)
+            return result
+        except Exception as ex:
+            raise Exception(ex)
+        
+    #Obtain number of authors without an assigned advisors
+    @classmethod
+    def getCountofAuthorsWithoutAdvisor(cls, db):
+        try:
+            session = db.session()    
+            sql = text('SELECT COUNT(*) FROM author_without_advisor_assigned_info;')
+            result = session.execute(sql)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            raise Exception(ex)
+    
+    #Obtain number of authors with an assigned advisors
+    @classmethod
+    def getAuthorsWithAdvisor(cls, db):
+        try:
+            session = db.session()
+            sql = text('SELECT * FROM author_advisor_info;')
+            result = session.execute(sql)
+            session.close()
+            return result
+        except Exception as ex:
+            raise Exception(ex)
+
+        
     #Uploading authors by csv file
     @classmethod
     def process_csv(cls, db, separator, codificator, csv_file):

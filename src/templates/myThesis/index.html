@@ -8,7 +8,8 @@
     /* CSS for separating button borders */
     .btn-container {
         display: flex;
-        gap: 5px; /* Adjust this value to increase/decrease separation */
+        gap: 5px;
+        /* Adjust this value to increase/decrease separation */
     }
 </style>
 
@@ -57,9 +58,9 @@
                     <tr>
                         <td>{{ item.thesis_id }}</td>
                         {% if item.project_id == 0 %}
-                            <td><strong>PROJECTO: </strong>{{ item.title }}</td>
+                        <td><strong>PROJECTO: </strong>{{ item.title }}</td>
                         {% else %}
-                            <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
+                        <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                         {% endif %}
                         <td>{{ item.submission_date }}</td>
                         <td>{{ item.expiration_date }}</td>
@@ -92,7 +93,8 @@
                                 {% if item.thesis_status_id == 1 %}
                                 <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}">
                                     <i class="fa fa-pen"></i> Editar</a>
-                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}" onclick="return confirmDelete();">
+                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
+                                    onclick="return confirmDelete();">
                                     <i class="fa fa-trash"></i> Eliminar</a>
                                 {% endif %}
                             </div>

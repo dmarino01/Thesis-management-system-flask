@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %} Reporte de autores sin asesores {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h2>Reporte de Autores</h2>
+    <div class="bg-secondary rounded p-4">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-0">Reporte de Autores Sin Asesores Asignados</h4>
+            </div>
+            <br>
+            <br>
+            <div class="col-12">
+                <h6 class="mb-0">El total de autores sin asesores asignados es: {{ count_autores_sin_asesores }} de un total de {{ total_autores }} autores</h6>
+            </div>
+        </div>
+        <br>
+        <a href="{{ url_for('author.download_excel') }}" class="btn btn-success"><i class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a>
+        <br><br>
+
+        <div class="table-responsive">
+            <table class="table table-hover text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombres</th>
+                        <th scope="col">Apellidos</th>
+                        <th scope="col">Código de Autor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in autores_sin_asesores %}
+                    <tr class="text-white">
+                        <td>{{ row['ID'] }}</td>
+                        <td>{{ row['Nombres'] }}</td>
+                        <td>{{ row['Apellidos'] }}</td>
+                        <td>{{ row['Código del Autor'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
