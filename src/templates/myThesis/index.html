@@ -84,9 +84,14 @@
                         </td>
                         <td class="text-center col-2">
                             <div class="btn-container">
-                                {% if item.thesis_status_id != 1 %}
+                                {% if item.thesis_status_id != 1 and item.project_id == 0 %}
                                 <a class="btn btn-sm btn-success" href="/view_dissertation_page/{{ item.thesis_id }}">
                                     <i class="fa fa-graduation-cap"></i> Sustentación</a>
+                                {% endif %}
+
+                                {% if item.thesis_status_id != 1 and item.project_id != 0 %}
+                                <a class="btn btn-sm btn-info" href="/sign_review_thesis_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-graduation-cap"></i> Firmar Calificación</a>
                                 {% endif %}
                                 <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}">
                                     <i class="fa fa-eye"></i> Ver</a>

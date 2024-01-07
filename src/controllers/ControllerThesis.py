@@ -94,7 +94,17 @@ class ControllerThesis:
 
     # Method to save thesis project
     @classmethod
-    def createProjectThesis(cls,db,title,abstract,project_id,pdf_link,turnitin_link,expiration_date,project_creation_date):
+    def createProjectThesis(
+        cls,
+        db,
+        title,
+        abstract,
+        project_id,
+        pdf_link,
+        turnitin_link,
+        expiration_date,
+        project_creation_date,
+    ):
         try:
             person_id = current_user.person_id
             session = db.session()
@@ -129,14 +139,25 @@ class ControllerThesis:
             return {"message": "Thesis project created successfully"}, 201
         except Exception as ex:
             raise Exception(ex)
-        
+
     # Method to save dissertion thesis
     @classmethod
-    def createDissertationThesis(cls,db,title,abstract,project_id,pdf_link,pdf_turnitin_link,pdf_article_link,expiration_date,project_creation_date):
+    def createDissertationThesis(
+        cls,
+        db,
+        title,
+        abstract,
+        project_id,
+        pdf_link,
+        pdf_turnitin_link,
+        pdf_article_link,
+        expiration_date,
+        project_creation_date,
+    ):
         try:
             person_id = current_user.person_id
             session = db.session()
-          
+
             sql = text(
                 "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, article_link, thesis_status_id, project_id) "
                 "VALUES ( "
@@ -152,7 +173,7 @@ class ControllerThesis:
                 "SET @author_id = (SELECT author_id FROM author where person_id = :person_id); "
                 "INSERT INTO AUTHOR_THESIS (author_id, thesis_id) "
                 "VALUES (@author_id, @thesis_id);"
-            )                
+            )
             params = {
                 "title": title,
                 "abstract": abstract,
@@ -218,7 +239,7 @@ class ControllerThesis:
             return dissertation_exists
         except Exception as ex:
             raise Exception(ex)
-        
+
     @classmethod
     def getThesisWithoutReviewers(cls, db):
         try:
@@ -227,7 +248,7 @@ class ControllerThesis:
             result = session.execute(sql)
             return result
         except Exception as ex:
-            raise Exception (ex)
+            raise Exception(ex)
 
     @classmethod
     def getTotalThesis(cls, db):
@@ -238,7 +259,7 @@ class ControllerThesis:
             count = result.fetchone()[0]
             return count
         except Exception as ex:
-            raise Exception (ex) 
+            raise Exception(ex)
 
     @classmethod
     def getTotalThesisWithoutReviewer(cls, db):
@@ -249,8 +270,8 @@ class ControllerThesis:
             count = result.fetchone()[0]
             return count
         except Exception as ex:
-            raise Exception (ex)
-        
+            raise Exception(ex)
+
     @classmethod
     def getThesisWithoutReviews(cls, db):
         try:
@@ -259,8 +280,8 @@ class ControllerThesis:
             result = session.execute(sql)
             return result
         except Exception as ex:
-            raise Exception (ex)
-        
+            raise Exception(ex)
+
     @classmethod
     def getTotalThesisWithoutReviews(cls, db):
         try:
@@ -270,4 +291,18 @@ class ControllerThesis:
             count = result.fetchone()[0]
             return count
         except Exception as ex:
-            raise Exception (ex)
+            raise Exception(ex)
+
+    @classmethod
+    def createSignThesis(cls, db, image, id):
+        try:
+            session = db.session()
+            sql = text(
+                "INSERT INTO sign_review_thesis(link, thesis_id) VALUES (:image, :id);"
+            )
+            params = {"image": image, "id": id}
+            session.execute(sql, params)
+            session.commit()
+            return {"message": "Sign Review Thesis created successfully"}, 201
+        except Exception as ex:
+            raise Exception(ex)

@@ -30,7 +30,11 @@
                     <tr>
                         <td>{{ item.thesis_id }}</td>
                         <td>{{ item.firstname }} {{ item.lastname }}</td>
-                        <td>{{ item.title }}</td>
+                        {% if item.project_id == 0 %}
+                        <td><strong>PROJECTO: </strong>{{ item.title }}</td>
+                        {% else %}
+                        <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
+                        {% endif %}
                         <td>{{ item.submission_date }}</td>
                         <td>{{ item.expiration_date }}</td>
                         <td class="align-middle">

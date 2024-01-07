@@ -21,6 +21,7 @@ thesis_bp = Blueprint("thesis", __name__)
 UPLOAD_FOLDER = os.path.join("src", "static", "file", "thesis")
 UPLOAD_FOLDER_TURNITIN = os.path.join("src", "static", "file", "turnitin")
 UPLOAD_FOLDER_ARTICLE = os.path.join("src", "static", "file", "article")
+UPLOAD_FOLDER_SIGNATURE = os.path.join("src", "static", "file", "signature")
 
 
 # Thesis Index
@@ -63,6 +64,54 @@ def view_dissertation_page(id):
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
+
+
+# Sign Review Thesis Form
+@thesis_bp.route("/sign_review_thesis_page/<int:id>", methods=["GET"])
+@login_required
+def sign_review_thesis_page(id):
+    thesis = ControllerThesis.get_thesis_by_id(db, id)
+    return render_template("myThesis/sign_review.html", thesis=thesis)
+
+
+# Save sign of thesis review
+@thesis_bp.route("/save_sign/<int:id>", methods=["POST"])
+@login_required
+def save_sign(id):
+    try:
+        if "sign" in request.files:
+            image_file = request.files["sign"]
+
+            if image_file.filename == "":
+                flash("No file selected.")
+                return redirect(url_for("thesis.sign_review_thesis_page", id=id))
+
+            if not allowed_file(image_file.filename):
+                flash(
+                    "Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg)."
+                )
+                return redirect(url_for("thesis.sign_review_thesis_page", id=id))
+
+            os.makedirs(UPLOAD_FOLDER_SIGNATURE, exist_ok=True)
+
+            # Generate a unique filename to avoid conflicts
+            unique_id = str(uuid.uuid4().hex[:8])
+            filename = secure_filename(image_file.filename)
+            new_filename_sign = f"{unique_id}_{filename}"
+
+            sign_path = os.path.join(UPLOAD_FOLDER_SIGNATURE, new_filename_sign)
+
+            # Save the file to the signature folder
+            image_file.save(sign_path)
+
+            # Pass the path to the ControllerThesis function
+            ControllerThesis.createSignThesis(db, new_filename_sign, id)
+
+        return redirect(url_for("thesis.myThesis"))
+
+    except Exception as ex:
+        flash(f"An error occurred: {ex}")
+        return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
 
 # Edit Thesis Form
@@ -342,7 +391,9 @@ def allowed_file(filename):
 def report_ptsr():
     try:
         total_thesis = ControllerThesis.getTotalThesis(db)
-        total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(db)
+        total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(
+            db
+        )
         thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
         return render_template(
             "report/thesis_without_reviewers.html",
@@ -352,7 +403,8 @@ def report_ptsr():
         )
     except Exception as ex:
         raise Exception(ex)
-    
+
+
 # Report thesis without reviews
 @thesis_bp.route("/report_ptsc")
 @login_required
@@ -389,7 +441,7 @@ def download_excel_tesis_sin_revisores():
         return response
     except Exception as ex:
         raise Exception(ex)
-    
+
 
 # Report of Thesis without Reviews AS EXCEL
 @thesis_bp.route("/download_excel_tesis_sin_revisores")
@@ -409,3 +461,8 @@ def download_excel_tesis_sin_revisiones():
         return response
     except Exception as ex:
         raise Exception(ex)
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
