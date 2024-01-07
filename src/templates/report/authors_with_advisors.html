@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Reporte de autores sin asesores {% endblock %}
+{% block title %} Reporte de autores con asesores {% endblock %}
 
 {% block customCSS %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,38 +13,48 @@
     <div class="bg-secondary rounded p-4">
         <div class="row">
             <div class="col-12">
-                <h4 class="mb-0">Reporte de Autores Sin Asesores Asignados</h4>
+                <h4 class="mb-0">Reporte de Autores Con Asesores Asignados</h4>
             </div>
             <br>
             <br>
             <div class="col-12">
-                <h6 class="mb-0">El total de autores sin asesores asignados es: {{ count_autores_sin_asesores }} de un total de {{ total_autores }} autores</h6>
+                <h6 class="mb-0">El total de autores con asesores asignados es: {{ count_autores_con_asesores }} de un
+                    total de {{ total_autores }} autores</h6>
             </div>
         </div><br>
 
         <div style="width: 250px; margin: 0 auto;">
-            <canvas id="myPieChart" data-count="{{ count_autores_sin_asesores }}" data-total="{{ total_autores }}" width="250" height="250"></canvas>
+            <canvas id="myPieChart" data-count="{{ count_autores_con_asesores }}" data-total="{{ total_autores }}" width="250" height="250"></canvas>
         </div>
 
-        <a href="{{ url_for('author.download_excel_autores_sin_asesores') }}" class="btn btn-success"><i class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+        <a href="{{ url_for('author.download_excel_autores_con_asesores') }}" class="btn btn-success"><i
+                class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
         <div class="table-responsive">
             <table class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <th scope="col">ID</th>
-                        <th scope="col">Nombres</th>
-                        <th scope="col">Apellidos</th>
+                        <th scope="col">ID del Autor</th>
+                        <th scope="col">Nombres del Autor</th>
+                        <th scope="col">Apellidos del Autor</th>
                         <th scope="col">Código de Autor</th>
+                        <th scope="col">ID del Asesor</th>
+                        <th scope="col">Nombres del Asesor</th>
+                        <th scope="col">Apellidos del Asesor</th>
+                        <th scope="col">Código de Asesor</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in autores_sin_asesores %}
+                    {% for row in autores_con_asesores %}
                     <tr class="text-white">
-                        <td>{{ row['ID'] }}</td>
-                        <td>{{ row['Nombres'] }}</td>
-                        <td>{{ row['Apellidos'] }}</td>
+                        <td>{{ row['ID de Autor'] }}</td>
+                        <td>{{ row['Nombres del Autor'] }}</td>
+                        <td>{{ row['Apellidos del Autor'] }}</td>
                         <td>{{ row['Código del Autor'] }}</td>
+                        <td>{{ row['ID de Asesor'] }}</td>
+                        <td>{{ row['Nombres del Asesor'] }}</td>
+                        <td>{{ row['Apellidos del Asesor'] }}</td>
+                        <td>{{ row['Código del Asesor'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -52,7 +62,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block customJS %}
@@ -61,8 +70,6 @@
         var ctx = document.getElementById('myPieChart').getContext('2d');
         var count_autores_con_asesores = parseInt(document.getElementById('myPieChart').getAttribute('data-count'));
         var total_autores = parseInt(document.getElementById('myPieChart').getAttribute('data-total'));
-        console.log("Count with advisors:", count_autores_con_asesores);
-        console.log("Total authors:", total_autores);
         var data = {
             labels: ['Autores con Asesores', 'Autores sin Asesores'],
             datasets: [{

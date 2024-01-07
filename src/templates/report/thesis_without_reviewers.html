@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %} Reporte de proy. y tesis con asesores {% endblock %}
+
+{% block customCSS %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h2>Reporte de Proyectos y Tesis</h2>
+    <div class="bg-secondary rounded p-4">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-0">Reporte de Proyectos y Tesis con Revisores Asignados</h4>
+            </div>
+            <br>
+            <br>
+            <div class="col-12">
+                <h6 class="mb-0">El total de proyectos y tesis sin revisores asignados es: {{ total_thesis_without_reviewers }} de un
+                    total de {{ total_thesis }} proyectos y tesis</h6>
+            </div>
+        </div><br>
+
+        <div style="width: 250px; margin: 0 auto;">
+            <canvas id="myPieChart" data-count="{{ total_thesis_without_reviewers }}" data-total="{{ total_thesis }}" width="250" height="250"></canvas>
+        </div>
+
+        <a href="{{ url_for('thesis.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+
+        <div class="table-responsive">
+            <table class="table table-hover text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">ID</th>
+                        <th scope="col">Título</th>
+                        <th scope="col">Código de Estudiante</th>
+                        <th scope="col">¿Es Proyecto?</th>
+                        <th scope="col">Fecha de Creación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in thesis_without_reviewers %}
+                    <tr class="text-white">
+                        <td>{{ row['thesis_id'] }}</td>
+                        <td>{{ row['title'] }}</td>
+                        <td>{{ row['student_code'] }}</td>
+                        <td>{{ row['project_type'] }}</td>
+                        <td>{{ row['submission_date'] }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var count_thesis_with_reviewers = parseInt(document.getElementById('myPieChart').getAttribute('data-count'));
+        var total_thesis = parseInt(document.getElementById('myPieChart').getAttribute('data-total'));
+        var data = {
+            labels: ['Proy. y Tesis con Asesores', 'Proy. y Tesis sin Asesores'],
+            datasets: [{
+                data: [count_thesis_with_reviewers, total_thesis - count_thesis_with_reviewers],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                hoverBackgroundColor: ['#FF6384', '#36A2EB']
+            }]
+        };
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data
+        });
+    });
+</script>
+{% endblock %}

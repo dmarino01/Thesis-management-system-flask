@@ -218,3 +218,56 @@ class ControllerThesis:
             return dissertation_exists
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def getThesisWithoutReviewers(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT * FROM thesis_without_reviewer_assigned_info;")
+            result = session.execute(sql)
+            return result
+        except Exception as ex:
+            raise Exception (ex)
+
+    @classmethod
+    def getTotalThesis(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT COUNT(*) FROM thesis;")
+            result = session.execute(sql)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            raise Exception (ex) 
+
+    @classmethod
+    def getTotalThesisWithoutReviewer(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT COUNT(*) FROM thesis_without_reviewer_assigned_info;")
+            result = session.execute(sql)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            raise Exception (ex)
+        
+    @classmethod
+    def getThesisWithoutReviews(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT * FROM thesis_without_reviews_assigned_info;")
+            result = session.execute(sql)
+            return result
+        except Exception as ex:
+            raise Exception (ex)
+        
+    @classmethod
+    def getTotalThesisWithoutReviews(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT COUNT(*) FROM thesis_without_reviews_assigned_info;")
+            result = session.execute(sql)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            raise Exception (ex)

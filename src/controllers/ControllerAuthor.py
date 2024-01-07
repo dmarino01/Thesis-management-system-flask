@@ -165,7 +165,19 @@ class ControllerAuthor():
             return count
         except Exception as ex:
             raise Exception(ex)
-    
+        
+    #Obtain number of authors with an assigned advisors
+    @classmethod
+    def getCountofAuthorsWithAdvisor(cls, db):
+        try:
+            session = db.session()    
+            sql = text('SELECT COUNT(*) FROM author_advisor_info;')
+            result = session.execute(sql)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            raise Exception(ex) 
+           
     #Obtain number of authors with an assigned advisors
     @classmethod
     def getAuthorsWithAdvisor(cls, db):

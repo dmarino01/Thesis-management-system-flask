@@ -1,7 +1,16 @@
 from datetime import datetime
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import (
+    Blueprint,
+    make_response,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+)
 from flask_login import login_required
+import pandas as pd
 from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
 from werkzeug.utils import secure_filename
@@ -12,6 +21,7 @@ thesis_bp = Blueprint("thesis", __name__)
 UPLOAD_FOLDER = os.path.join("src", "static", "file", "thesis")
 UPLOAD_FOLDER_TURNITIN = os.path.join("src", "static", "file", "turnitin")
 UPLOAD_FOLDER_ARTICLE = os.path.join("src", "static", "file", "article")
+
 
 # Thesis Index
 @thesis_bp.route("/myThesis")
@@ -169,14 +179,24 @@ def save_thesis():
                 filename_pdf = secure_filename(pdf_file.filename)
                 filename_turnitin = secure_filename(pdf_turnitin.filename)
 
-                filename_pdf_without_extension, extension = os.path.splitext(filename_pdf)
-                filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
+                filename_pdf_without_extension, extension = os.path.splitext(
+                    filename_pdf
+                )
+                filename_turnitin_without_extension, extension = os.path.splitext(
+                    filename_turnitin
+                )
 
-                new_filename_pdf = (f"{unique_id}_{filename_pdf_without_extension}{extension}")
-                new_filename_turnitin = (f"{unique_id}_{filename_turnitin_without_extension}{extension}")
+                new_filename_pdf = (
+                    f"{unique_id}_{filename_pdf_without_extension}{extension}"
+                )
+                new_filename_turnitin = (
+                    f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+                )
                 # Save path and file
                 pdf_path = os.path.join(UPLOAD_FOLDER, new_filename_pdf)
-                turnitin_path = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+                turnitin_path = os.path.join(
+                    UPLOAD_FOLDER_TURNITIN, new_filename_turnitin
+                )
 
                 pdf_file.save(pdf_path)
                 pdf_turnitin.save(turnitin_path)
@@ -220,24 +240,42 @@ def save_dissertation_thesis():
 
         if title and abstract and pdf_file and pdf_turnitin and pdf_article:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            if allowed_file(pdf_file.filename) and allowed_file(pdf_turnitin.filename) and allowed_file(pdf_article.filename):                
+            if (
+                allowed_file(pdf_file.filename)
+                and allowed_file(pdf_turnitin.filename)
+                and allowed_file(pdf_article.filename)
+            ):
                 # Generate a unique identifier
-                unique_id = str(uuid.uuid4().hex[:8]) 
+                unique_id = str(uuid.uuid4().hex[:8])
                 # Create the unique filename
                 filename_pdf = secure_filename(pdf_file.filename)
                 filename_turnitin = secure_filename(pdf_turnitin.filename)
                 filename_article = secure_filename(pdf_article.filename)
                 # Breakdown old filename
-                filename_pdf_without_extension, extension = os.path.splitext(filename_pdf)
-                filename_turnitin_without_extension, extension = os.path.splitext(filename_turnitin)
-                filename_article_without_extension, extension = os.path.splitext(filename_article)
+                filename_pdf_without_extension, extension = os.path.splitext(
+                    filename_pdf
+                )
+                filename_turnitin_without_extension, extension = os.path.splitext(
+                    filename_turnitin
+                )
+                filename_article_without_extension, extension = os.path.splitext(
+                    filename_article
+                )
                 # Establish new filename
-                new_filename_pdf = (f"{unique_id}_{filename_pdf_without_extension}{extension}")
-                new_filename_turnitin = (f"{unique_id}_{filename_turnitin_without_extension}{extension}")
-                new_filename_article = (f"{unique_id}_{filename_article_without_extension}{extension}")
+                new_filename_pdf = (
+                    f"{unique_id}_{filename_pdf_without_extension}{extension}"
+                )
+                new_filename_turnitin = (
+                    f"{unique_id}_{filename_turnitin_without_extension}{extension}"
+                )
+                new_filename_article = (
+                    f"{unique_id}_{filename_article_without_extension}{extension}"
+                )
                 # Save path and file
                 pdf_path = os.path.join(UPLOAD_FOLDER, new_filename_pdf)
-                turnitin_path = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+                turnitin_path = os.path.join(
+                    UPLOAD_FOLDER_TURNITIN, new_filename_turnitin
+                )
                 article_path = os.path.join(UPLOAD_FOLDER_ARTICLE, new_filename_article)
 
                 pdf_file.save(pdf_path)
@@ -296,3 +334,78 @@ def desactivate_thesis(id):
 # Define a function to check if the file extension is allowed
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() == "pdf"
+
+
+# Report thesis without reviewers
+@thesis_bp.route("/report_ptsr")
+@login_required
+def report_ptsr():
+    try:
+        total_thesis = ControllerThesis.getTotalThesis(db)
+        total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(db)
+        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
+        return render_template(
+            "report/thesis_without_reviewers.html",
+            total_thesis=total_thesis,
+            thesis_without_reviewers=thesis_without_reviewers,
+            total_thesis_without_reviewers=total_thesis_without_reviewers,
+        )
+    except Exception as ex:
+        raise Exception(ex)
+    
+# Report thesis without reviews
+@thesis_bp.route("/report_ptsc")
+@login_required
+def report_ptsc():
+    try:
+        total_thesis = ControllerThesis.getTotalThesis(db)
+        total_thesis_without_reviews = ControllerThesis.getTotalThesisWithoutReviews(db)
+        thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
+        return render_template(
+            "report/thesis_without_reviews.html",
+            total_thesis=total_thesis,
+            thesis_without_reviews=thesis_without_reviews,
+            total_thesis_without_reviews=total_thesis_without_reviews,
+        )
+    except Exception as ex:
+        raise Exception(ex)
+
+
+# Report of Thesis without Reviewers AS EXCEL
+@thesis_bp.route("/download_excel_tesis_sin_revisores")
+@login_required
+def download_excel_tesis_sin_revisores():
+    try:
+        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
+        # Create a DataFrame from the fetched data
+        df = pd.DataFrame(thesis_without_reviewers)
+        # Convert DataFrame to Excel
+        excel_file = "report.xlsx"
+        df.to_excel(excel_file, index=False)
+        # Send the Excel file in the response
+        response = make_response(open(excel_file, "rb").read())
+        response.headers["Content-Type"] = "application/vnd.ms-excel"
+        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
+        return response
+    except Exception as ex:
+        raise Exception(ex)
+    
+
+# Report of Thesis without Reviews AS EXCEL
+@thesis_bp.route("/download_excel_tesis_sin_revisores")
+@login_required
+def download_excel_tesis_sin_revisiones():
+    try:
+        thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
+        # Create a DataFrame from the fetched data
+        df = pd.DataFrame(thesis_without_reviews)
+        # Convert DataFrame to Excel
+        excel_file = "report.xlsx"
+        df.to_excel(excel_file, index=False)
+        # Send the Excel file in the response
+        response = make_response(open(excel_file, "rb").read())
+        response.headers["Content-Type"] = "application/vnd.ms-excel"
+        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
+        return response
+    except Exception as ex:
+        raise Exception(ex)
