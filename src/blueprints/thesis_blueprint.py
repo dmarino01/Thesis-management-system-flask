@@ -71,7 +71,9 @@ def view_dissertation_page(id):
 @login_required
 def sign_review_thesis_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
-    return render_template("myThesis/sign_review.html", thesis=thesis)
+    result = ControllerThesis.get_link_sign(db, id)
+    sign_if_exists = ControllerThesis.get_sign_if_exists(db, id)
+    return render_template("myThesis/sign_review.html", thesis=thesis, sign_if_exists=sign_if_exists, result=result)
 
 
 # Save sign of thesis review
@@ -83,7 +85,7 @@ def save_sign(id):
             image_file = request.files["sign"]
 
             if image_file.filename == "":
-                flash("No file selected.")
+                flash("Sin archivo seleccionado...")
                 return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
             if not allowed_file(image_file.filename):

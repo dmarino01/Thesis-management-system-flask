@@ -306,3 +306,36 @@ class ControllerThesis:
             return {"message": "Sign Review Thesis created successfully"}, 201
         except Exception as ex:
             raise Exception(ex)
+
+
+    @classmethod
+    def get_link_sign(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "select srt.link from thesis t "
+                "left join sign_review_thesis srt on srt.thesis_id = t.thesis_id "
+                "where srt.link is not null and t.thesis_id = :p_thesis_id;"       
+            )
+            params = {"p_thesis_id": id}
+            result = session.execute(sql, params)
+            return result
+        except Exception as ex:
+            raise Exception(ex)
+
+
+    @classmethod
+    def get_sign_if_exists(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "select srt.link from thesis t "
+                "left join sign_review_thesis srt on srt.thesis_id = t.thesis_id "
+                "where srt.link is not null and t.thesis_id = :p_thesis_id;"       
+            )
+            params = {"p_thesis_id": id}
+            result = session.execute(sql, params)
+            sign_exists = result.fetchone() is not None
+            return sign_exists
+        except Exception as ex:
+            raise Exception(ex)
