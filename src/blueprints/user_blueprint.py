@@ -99,7 +99,7 @@ def edit_user(id):
         image_file = request.files['image']
         if image_file.filename != '':
             # Validate the file extension
-            if not allowed_file(image_file.filename):
+            if not allowed_img(image_file.filename):
                 flash("Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg).")
                 return redirect(url_for('user.profile'))
             image = image_file.read()
@@ -137,6 +137,6 @@ def remove_image_user(id):
     return redirect(url_for('user.profile'))
 
 #Function to check if the file extension is allowed
-def allowed_file(filename):
+def allowed_img(filename):
     allowed_extensions = {'jpg', 'jpeg', 'png', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions

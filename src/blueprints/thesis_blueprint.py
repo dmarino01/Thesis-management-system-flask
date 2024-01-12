@@ -88,7 +88,7 @@ def save_sign(id):
                 flash("Sin archivo seleccionado...")
                 return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
-            if not allowed_file(image_file.filename):
+            if not allowed_img(image_file.filename):
                 flash(
                     "Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg)."
                 )
@@ -223,7 +223,7 @@ def save_thesis():
 
         if title and abstract and pdf_file and pdf_turnitin:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            if allowed_file(pdf_file.filename) and allowed_file(pdf_turnitin.filename):
+            if allowed_pdf(pdf_file.filename) and allowed_pdf(pdf_turnitin.filename):
                 # Generate a unique identifier
                 unique_id = str(uuid.uuid4().hex[:8])
                 # Create the unique filename
@@ -292,9 +292,9 @@ def save_dissertation_thesis():
         if title and abstract and pdf_file and pdf_turnitin and pdf_article:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             if (
-                allowed_file(pdf_file.filename)
-                and allowed_file(pdf_turnitin.filename)
-                and allowed_file(pdf_article.filename)
+                allowed_pdf(pdf_file.filename)
+                and allowed_pdf(pdf_turnitin.filename)
+                and allowed_pdf(pdf_article.filename)
             ):
                 # Generate a unique identifier
                 unique_id = str(uuid.uuid4().hex[:8])
@@ -383,7 +383,7 @@ def desactivate_thesis(id):
 
 
 # Define a function to check if the file extension is allowed
-def allowed_file(filename):
+def allowed_pdf(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() == "pdf"
 
 
@@ -464,7 +464,7 @@ def download_excel_tesis_sin_revisiones():
     except Exception as ex:
         raise Exception(ex)
 
-def allowed_file(filename):
+def allowed_img(filename):
     ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
