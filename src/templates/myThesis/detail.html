@@ -59,64 +59,138 @@
                             class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
                         {% if thesis.turnitin_link is not none %}
                         <a href="{{ url_for('download_file', filename='file/turnitin/' + thesis.turnitin_link) }}"
-                            class="btn btn-danger" download><i class="fa fa-download"></i> Descargar Reporte Turnitín</a>
+                            class="btn btn-danger" download><i class="fa fa-download"></i> Descargar Reporte
+                            Turnitín</a>
                         {% endif %}
                         {% if thesis.article_link is not none %}
                         <a href="{{ url_for('download_file', filename='file/article/' + thesis.article_link) }}"
-                            class="btn btn-success" download><i class="fa fa-download"></i> Descargar Artículo de Revisión</a>
+                            class="btn btn-success" download><i class="fa fa-download"></i> Descargar Artículo de
+                            Revisión</a>
                         {% endif %}
                     </div>
                 </div><br>
-                {% if current_user.role != "Revisor" %}
+
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        <h4 style="display: inline; margin-right: 10px;">Calificación Final: </h4>
+                        {% if thesis.rating is none %}
+                        <h5 style="display: inline;">Por Calificar...</h5>
+                        {% else %}
+                        <h5 style="display: inline;">{{ thesis.rating }}</h5>
+                        {% endif %}
+                    </div>
+                </div><br>
+                <h4>Observación de los Revisores</h4>
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        {% if review_details %}
+                        {% for item in review_details %}
+                        <div class="d-flex align-items-center border-bottom py-3">
+                            {% if item.image == None %}
+                            <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
+                                style="width: 40px; height: 40px;">
+                            {% else %}
+                            <img class="rounded-circle flex-shrink-0"
+                                src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
+                                style="width: 40px; height: 40px;">
+                            {% endif %}
+                            <div class="w-100 ms-3">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-0">{{ item.firstname }} {{ item.lastname }} | Nota: {{ item.rating }}</h6>
+                                    <small class="review-date">{{ item.review_date }} <span
+                                            class="review_daysOld_{{ loop.index }}"></span></small>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <span>{{ item.comment }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            // Get the review date from the template and convert it to a Date object
+                            var reviewDate = new Date("{{ item.review_date | safe }}");
+                            var today = new Date();
+                            // Calculate the difference in milliseconds
+                            var differenceInTime = today - reviewDate;
+                            // Calculate days difference
+                            var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+                            // Display the number of days
+                            document.querySelector(".review_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
+                        </script>
+                        {% endfor %}
+                        {% else %}
+                        <p>No hay resultados encontrados.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+
+            </div>
+            <br>
+            <div class="col-md-6">
+                <h4>Ver Archivo</h4>
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        <object data="{{ url_for('static', filename='file/thesis/' + thesis.pdf_link) }}"
+                            type="application/pdf" width="100%" height="500px">
+                            <p>Unable to display PDF file.
+                                <a
+                                    href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}">Download</a>
+                                instead.
+                            </p>
+                        </object>
+                    </div>
+                </div>
                 <br>
+                {% if current_user.role != "Revisor" %}
                 <h4>Recomendaciones del Asesor</h4>
                 <div class="card bg-dark text-white">
                     <div class="card-body">
                         {% if recommendations %}
-                            {% for item in recommendations %}
-                                <div class="d-flex align-items-center border-bottom py-3">
-                                    {% if item.image == None %}
-                                    <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
-                                        style="width: 40px; height: 40px;">
-                                    {% else %}
-                                    <img class="rounded-circle flex-shrink-0"
-                                        src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
-                                        style="width: 40px; height: 40px;">
-                                    {% endif %}
-                                    <div class="w-100 ms-3">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-0">{{ item.firstname }} {{ item.lastname }}</h6>
-                                            <small class="recommendation-date">{{ item.recommendation_date }} <span
-                                                    class="recommendation_daysOld_{{ loop.index }}"></span></small>
-                                        </div>
-                                        <div class="d-flex w-100 justify-content-between align-items-center">
-                                            <span>{{ item.recommendation_text }}</span>
-
-                                            {% if current_user.role == 'Asesor' %}
-                                            <a class="btn btn-sm btn-danger"
-                                                href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
-                                                onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                                <script>
-                                    // Get the recommendation date from the template and convert it to a Date object
-                                    var recommendationDate = new Date("{{ item.recommendation_date | safe }}");
-                                    var today = new Date();
-                                    // Calculate the difference in milliseconds
-                                    var differenceInTime = today - recommendationDate;
-                                    // Calculate days difference
-                                    var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-                                    // Display the number of days
-                                    document.querySelector(".recommendation_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
-                                </script>
-                            {% endfor %}
+                        {% for item in recommendations %}
+                        <div class="d-flex align-items-center border-bottom py-3">
+                            {% if item.image == None %}
+                            <img class="rounded-circle" src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
+                                style="width: 40px; height: 40px;">
                             {% else %}
-                                <p>No hay resultados encontrados.</p>
+                            <img class="rounded-circle flex-shrink-0"
+                                src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
+                                style="width: 40px; height: 40px;">
+                            {% endif %}
+                            <div class="w-100 ms-3">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-0">{{ item.firstname }} {{ item.lastname }}</h6>
+                                    <small class="recommendation-date">{{ item.recommendation_date }} <span
+                                            class="recommendation_daysOld_{{ loop.index }}"></span></small>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <span>{{ item.recommendation_text }}</span>
+
+                                    {% if current_user.role == 'Asesor' %}
+                                    <a class="btn btn-sm btn-danger"
+                                        href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
+                                        onclick="return confirmDelete();"><i class="fa fa-trash"></i></a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            // Get the recommendation date from the template and convert it to a Date object
+                            var recommendationDate = new Date("{{ item.recommendation_date | safe }}");
+                            var today = new Date();
+                            // Calculate the difference in milliseconds
+                            var differenceInTime = today - recommendationDate;
+                            // Calculate days difference
+                            var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+                            // Display the number of days
+                            document.querySelector(".recommendation_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
+                        </script>
+                        {% endfor %}
+                        {% else %}
+                        <p>No hay resultados encontrados.</p>
                         {% endif %}
                     </div>
-                </div> <br>
+                </div>
                 {% endif %}
                 {% if current_user.role == "Asesor" or current_user.role == "Admin" %}
                 <form action="{{url_for('recommendation.save_recommendation', id=thesis.thesis_id)}}" method="POST">
@@ -130,35 +204,9 @@
                         <button type="submit" class="btn btn-success">
                             <i class="fa fa-save"></i> Guardar
                         </button>
-                    </div><br>
+                    </div>
                 </form>
                 {% endif %}
-            </div>
-            <br>
-            <div class="col-md-6">
-                <h4>Ver Archivo</h4>
-                <div class="card bg-dark text-white">
-                    <div class="card-body">
-                        <object data="{{ url_for('static', filename='file/thesis/' + thesis.pdf_link) }}"
-                            type="application/pdf" width="100%" height="500px">
-                            <p>Unable to display PDF file.
-                                <a href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}">Download</a>
-                                instead.
-                            </p>
-                        </object>
-                    </div>
-                </div>
-                <br>
-                <div class="card bg-dark text-white">
-                    <div class="card-body">
-                        <h4 style="display: inline; margin-right: 10px;">Calificación Final: </h4>
-                        {% if thesis.rating is none %}
-                        <h5 style="display: inline;">Por Calificar...</h5>
-                        {% else %}
-                        <h5 style="display: inline;">{{ thesis.rating }}</h5>
-                        {% endif %}
-                    </div>
-                </div>
             </div>
         </div>
     </div>

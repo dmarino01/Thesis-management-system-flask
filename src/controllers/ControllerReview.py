@@ -60,7 +60,6 @@ class ControllerReview:
         except Exception as ex:
             raise Exception(ex)
 
-
     @classmethod
     def check_review_exists(cls, db, id, person_id):
         try:
@@ -85,5 +84,25 @@ class ControllerReview:
             review_exists = review_result.fetchone() is not None
 
             return review_exists
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def get_review_details_by_thesis_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "select p.firstname, p.lastname, p.image, r.rating, r.review_date, r.comment "
+                "from review r "
+                "inner join reviewer rw on rw.reviewer_id = r.reviewer_id "
+                "inner join person p on rw.person_id = p.person_id "
+                "where thesis_id = :p_thesis_id; "
+                )
+            params = {
+                "p_thesis_id": id,
+            }
+            result = session.execute(sql, params)
+            session.close()
+            return result
         except Exception as ex:
             raise Exception(ex)

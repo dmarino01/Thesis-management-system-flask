@@ -13,6 +13,7 @@ from flask_login import login_required
 import pandas as pd
 from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
+from controllers.ControllerReview import ControllerReview
 from werkzeug.utils import secure_filename
 import uuid
 from config import db
@@ -42,12 +43,9 @@ def myThesis():
 def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
-            db, id
-        )
-        return render_template(
-            "myThesis/detail.html", thesis=thesis, recommendations=recommendations
-        )
+        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
+        review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
+        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations, review_details=review_details)
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
