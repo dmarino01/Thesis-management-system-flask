@@ -18,17 +18,28 @@
             <br>
             <br>
             <div class="col-12">
-                <h6 class="mb-0">El total de autores sin asesores asignados es: {{ count_autores_sin_asesores }} de un total de {{ total_autores }} autores</h6>
+                <h6 class="mb-0">El total de autores sin asesores asignados es: {{ count_autores_sin_asesores }} de un
+                    total de {{ total_autores }} autores</h6>
             </div>
         </div><br>
 
-        <div style="width: 250px; margin: 0 auto;">
-            <canvas id="myPieChart" data-count="{{ count_autores_sin_asesores }}" data-total="{{ total_autores }}" width="250" height="250"></canvas>
-        </div>
-
-        <a href="{{ url_for('author.download_excel_autores_sin_asesores') }}" class="btn btn-success"><i class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+        <a href="{{ url_for('author.download_excel_autores_sin_asesores') }}" class="btn btn-success"><i
+                class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
         <div class="table-responsive">
+            <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
+                <label for="records-per-page">Registros Por Página: </label>
+                <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 3%;"
+                    class="form-control" id="records-per-page">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+                <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
+                        class="fa fa-arrow-left"></i></button>
+                <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
+            </div><br>
+
             <table class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
@@ -49,7 +60,13 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div><br><br>
+
+        <div style="width: 250px; margin: 0 auto;">
+            <canvas id="myPieChart" data-count="{{ count_autores_sin_asesores }}" data-total="{{ total_autores }}"
+                width="250" height="250"></canvas>
         </div>
+
     </div>
 </div>
 
@@ -76,5 +93,58 @@
             data: data
         });
     });
+</script>
+
+<script>
+    const table = document.querySelector('.table');
+    const recordsPerPageSelect = document.getElementById('records-per-page');
+    const prevPageButton = document.getElementById('prev-page');
+    const nextPageButton = document.getElementById('next-page');
+
+    let currentPage = 1;
+    let recordsPerPage = parseInt(recordsPerPageSelect.value);
+
+    // Update the table based on current page and records per page
+    function updateTable() {
+        const rows = table.querySelectorAll('tbody tr');
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+
+        rows.forEach((row, index) => {
+            if (index >= startIndex && index < endIndex) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Event listeners for changing records per page and pagination
+    recordsPerPageSelect.addEventListener('change', () => {
+        recordsPerPage = parseInt(recordsPerPageSelect.value);
+        currentPage = 1;
+        updateTable();
+    });
+
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+        }
+    });
+
+    nextPageButton.addEventListener('click', () => {
+        const rows = table.querySelectorAll('tbody tr');
+        const totalRows = rows.length;
+        const maxPage = Math.ceil(totalRows / recordsPerPage);
+
+        if (currentPage < maxPage) {
+            currentPage++;
+            updateTable();
+        }
+    });
+
+    // Initial table setup
+    updateTable();
 </script>
 {% endblock %}
