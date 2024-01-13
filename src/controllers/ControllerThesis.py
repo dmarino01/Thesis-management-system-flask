@@ -6,10 +6,11 @@ from sqlalchemy import text
 class ControllerThesis:
     # Method to get thesis by author_id
     @classmethod
-    def getThesis(cls, db):
+    def getThesis(cls, db, project_filter=None, status_filter=None):
         try:
             user_id = current_user.user_id
             session = db.session()
+            
             sql = text(
                 "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
@@ -20,7 +21,23 @@ class ControllerThesis:
                 "INNER JOIN USER U ON U.person_id = P.person_id "
                 "WHERE T.is_deleted = 0 AND U.user_id = :user_id"
             )
-            result = session.execute(sql, {"user_id": user_id})
+
+            # Add filters based on project_id
+            if project_filter is not None:
+                sql += " AND T.project_id = :project_id"
+
+            # Add filters based on thesis_status_id
+            if status_filter is not None:
+                sql += " AND T.thesis_status_id = :status_id"
+
+            result = session.execute(
+                sql,
+                {
+                    "user_id": user_id,
+                    "project_id": project_filter,
+                    "status_id": status_filter,
+                },
+            )
             session.commit()
             rows = result.fetchall()
             thesiss = []
@@ -307,7 +324,6 @@ class ControllerThesis:
         except Exception as ex:
             raise Exception(ex)
 
-
     @classmethod
     def get_link_sign(cls, db, id):
         try:
@@ -315,14 +331,13 @@ class ControllerThesis:
             sql = text(
                 "select srt.link from thesis t "
                 "left join sign_review_thesis srt on srt.thesis_id = t.thesis_id "
-                "where srt.link is not null and t.thesis_id = :p_thesis_id;"       
+                "where srt.link is not null and t.thesis_id = :p_thesis_id;"
             )
             params = {"p_thesis_id": id}
             result = session.execute(sql, params)
             return result
         except Exception as ex:
             raise Exception(ex)
-
 
     @classmethod
     def get_sign_if_exists(cls, db, id):
@@ -331,7 +346,7 @@ class ControllerThesis:
             sql = text(
                 "select srt.link from thesis t "
                 "left join sign_review_thesis srt on srt.thesis_id = t.thesis_id "
-                "where srt.link is not null and t.thesis_id = :p_thesis_id;"       
+                "where srt.link is not null and t.thesis_id = :p_thesis_id;"
             )
             params = {"p_thesis_id": id}
             result = session.execute(sql, params)

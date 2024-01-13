@@ -28,8 +28,12 @@ UPLOAD_FOLDER_SIGNATURE = os.path.join("src", "static", "file", "signature")
 @thesis_bp.route("/myThesis")
 @login_required
 def myThesis():
-    data = ControllerThesis.getThesis(db)
+    project_filter = request.args.get('project_filter')
+    status_filter = request.args.get('status_filter')
+
+    data = ControllerThesis.getThesis(db, project_filter, status_filter)
     return render_template("myThesis/index.html", thesis=data)
+
 
 
 # View Thesis Page
