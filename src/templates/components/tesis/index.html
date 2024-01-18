@@ -4,6 +4,189 @@
 
 {% block content %}
 
-<h2>Mantenedores de Tesis</h2>
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="mb-0">Mantenedor de Tesis</h4>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+            id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="d-flex mb-3">
+            <label for="projectFilter" class="col-md-1 me-2">Filtrar por: </label>
+            <div class="col-md-3 me-2">
+                <select id="projectFilter" class="form-select" onchange="applyFilters()">
+                    <option value="">Todos los Registros</option>
+                    <option value="0">Solo Projectos</option>
+                    <option value="1">Solo Tesis</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="statusFilter" class="form-select" onchange="applyFilters()">
+                    <option value="">Todos los Estados</option>
+                    <option value="1">En Proceso</option>
+                    <option value="2">Aprobado</option>
+                    <option value="3">Rechazado</option>
+                    <option value="4">En Revisión</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success" onclick="resetFilters()"><i class="fa-solid fa-arrow-rotate-left"></i>
+                    Resetear Filtros </button>
+            </div>
+        </div><br>
+
+        <div class="table-responsive">
+            <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">ID</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Fecha de Inicio</th>
+                        <th scope="col">Fecha de Termino</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Nota</th>
+                        <th class="text-center" scope="col">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if thesis %}
+                    {% for item in thesis %}
+                    <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
+                        <td>{{ item.thesis_id }}</td>
+                        {% if item.project_id == 0 %}
+                        <td><strong>PROJECTO: </strong>{{ item.title }}</td>
+                        {% else %}
+                        <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
+                        {% endif %}
+                        <td>{{ item.submission_date }}</td>
+                        <td>{{ item.expiration_date }}</td>
+                        <td class="align-middle">
+                            {% if item.thesis_status_id == 1 %}
+                            <span class="badge bg-warning">EN PROCESO</span>
+                            {% elif item.thesis_status_id == 2 %}
+                            <span class="badge bg-success">APROBADO</span>
+                            {% elif item.thesis_status_id == 3 %}
+                            <span class="badge bg-primary">RECHAZADO</span>
+                            {% elif item.thesis_status_id == 4 %}
+                            <span class="badge bg-primary">EN REVISION</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.rating is not none %}
+                            {{ item.rating }}
+                            {% else %}
+                            <span class="badge bg-warning">SIN NOTA</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center col-2">
+                            <div class="btn-container">
+                                {% if item.thesis_status_id == 2 and item.project_id == 0 %}
+                                <a class="btn btn-sm btn-success" href="/view_dissertation_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-graduation-cap"></i> Sustentación</a>
+                                {% endif %}
+
+                                {% if item.thesis_status_id == 2 and item.project_id != 0 %}
+                                <a class="btn btn-sm btn-info" href="/sign_review_thesis_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-graduation-cap"></i> Firmar Calificación</a>
+                                {% endif %}
+                                <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}">
+                                    <i class="fa fa-eye"></i> Ver</a>
+                                {% if item.thesis_status_id == 1 %}
+                                <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}">
+                                    <i class="fa fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
+                                    onclick="return confirmDelete();">
+                                    <i class="fa fa-trash"></i> Eliminar</a>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td class="text-center" colspan="7">No hay resultados encontrados.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}
+
+{% block customJS %}
+<script>
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar esta Tesis?');
+    }
+</script>
+
+<!-- Add these scripts after the filters in your HTML template -->
+<script>
+    function applyFilters() {
+        var projectFilter = document.getElementById("projectFilter").value;
+        var statusFilter = document.getElementById("statusFilter").value;
+
+        var table = document.getElementById("thesisTable");
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i];
+            var projectValue = row.dataset.projectId;
+            var statusValue = row.dataset.statusId;
+
+            var projectMatch = (projectFilter === '' || projectValue === projectFilter);
+            var statusMatch = (statusFilter === '' || statusValue === statusFilter);
+
+            if (projectMatch && statusMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    }
+</script>
+
+<script>
+    // Helper function to get status ID from status text
+    function getStatusID(statusText) {
+        switch (statusText) {
+            case "EN PROCESO":
+                return "1";
+            case "APROBADO":
+                return "2";
+            case "RECHAZADO":
+                return "3";
+            case "EN REVISION":
+                return "4";
+            default:
+                return "";
+        }
+    }
+</script>
+<script>
+    function resetFilters() {
+        document.getElementById("projectFilter").value = "";
+        document.getElementById("statusFilter").value = "";
+        applyFilters(); // Optional: Apply filters immediately after resetting
+    }
+</script>
 
 {% endblock %}

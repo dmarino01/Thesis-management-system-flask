@@ -1,11 +1,12 @@
 import base64
-from flask import Flask, render_template, redirect, url_for, send_from_directory
+from flask import Flask, render_template, redirect, request, url_for, send_from_directory
 from flask_login import LoginManager, login_required
 from jinja2 import Environment, FileSystemLoader
 from config import Config, db, csrf
 
 # Controller:
 from controllers.ControllerUser import ControllerUser
+from controllers.ControllerThesis import ControllerThesis
 
 # Blueprints:
 from blueprints.author_blueprint import author_bp
@@ -88,7 +89,10 @@ def libreria():
 @app.route('/tesis')
 @login_required
 def tesis():
-    return render_template('components/tesis/index.html')
+    project_filter = request.args.get('project_filter')
+    status_filter = request.args.get('status_filter')
+    data = ControllerThesis.getThesisForAdmin(db, project_filter, status_filter)
+    return render_template('components/tesis/index.html', thesis=data)
 
 @app.template_filter('b64encode')
 def b64encode_filter(data):

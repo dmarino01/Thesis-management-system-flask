@@ -191,6 +191,7 @@
                         {% endif %}
                     </div>
                 </div>
+                <br>
                 {% endif %}
                 {% if current_user.role == "Asesor" or current_user.role == "Admin" %}
                 <form action="{{url_for('recommendation.save_recommendation', id=thesis.thesis_id)}}" method="POST">

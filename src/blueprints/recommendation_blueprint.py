@@ -11,7 +11,9 @@ recommendation_bp = Blueprint('recommendation', __name__)
 @login_required
 def recommendation_thesis(id):
     try:
-        data = ControllerRecommendation.get_thesis_by_author_advisor(db, id)
+        project_filter = request.args.get('project_filter')
+        status_filter = request.args.get('status_filter')
+        data = ControllerRecommendation.get_thesis_by_author_advisor(db, id, project_filter, status_filter)
         return render_template('recommendation/index.html', thesis=data)
     except Exception as ex:
         raise Exception(ex)

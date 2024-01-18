@@ -10,8 +10,32 @@
             <h4 class="mb-0">Mantenedor de Proyectos y Tesis</h4>
         </div>
 
+        <div class="d-flex mb-3">
+            <label for="projectFilter" class="col-md-1 me-2">Filtrar por: </label>
+            <div class="col-md-3 me-2">
+                <select id="projectFilter" class="form-select" onchange="applyFilters()">
+                    <option value="">Todos los Registros</option>
+                    <option value="0">Solo Projectos</option>
+                    <option value="1">Solo Tesis</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="statusFilter" class="form-select" onchange="applyFilters()">
+                    <option value="">Todos los Estados</option>
+                    <option value="1">En Proceso</option>
+                    <option value="2">Aprobado</option>
+                    <option value="3">Rechazado</option>
+                    <option value="4">En Revisión</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success" onclick="resetFilters()"><i class="fa-solid fa-arrow-rotate-left"></i>
+                    Resetear Filtros </button>
+            </div>
+        </div><br>
+
         <div class="table-responsive">
-            <table class="table table-hover text-start align-middle table-hover mb-0">
+            <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
                         <th scope="col">ID</th>
@@ -26,7 +50,7 @@
                 <tbody>
                     {% if thesis %}
                     {% for item in thesis %}
-                    <tr>
+                    <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
                         <td>{{ item.thesis_id }}</td>
                         <td>{{ item.firstname }} {{ item.lastname }}</td>
                         {% if item.project_id == 0 %}
@@ -72,5 +96,62 @@
 {% endblock %}
 
 {% block customJS %}
+<script>
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar esta Tesis?');
+    }
+</script>
+
+<!-- Add these scripts after the filters in your HTML template -->
+<script>
+function applyFilters() {
+    var projectFilter = document.getElementById("projectFilter").value;
+    var statusFilter = document.getElementById("statusFilter").value;
+
+    var table = document.getElementById("thesisTable");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var projectValue = row.dataset.projectId;
+        var statusValue = row.dataset.statusId;
+
+        var projectMatch = (projectFilter === '' || projectValue === projectFilter);
+        var statusMatch = (statusFilter === '' || statusValue === statusFilter);
+
+        // Change the logic to check the visibility of the row
+        if (projectMatch && statusMatch) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+</script>
+
+<script>
+    // Helper function to get status ID from status text
+    function getStatusID(statusText) {
+        switch (statusText) {
+            case "EN PROCESO":
+                return "1";
+            case "APROBADO":
+                return "2";
+            case "RECHAZADO":
+                return "3";
+            case "EN REVISION":
+                return "4";
+            default:
+                return "";
+        }
+    }
+</script>
+<script>
+    function resetFilters() {
+        document.getElementById("projectFilter").value = "";
+        document.getElementById("statusFilter").value = "";
+        applyFilters(); // Optional: Apply filters immediately after resetting
+    }
+</script>
 
 {% endblock %}

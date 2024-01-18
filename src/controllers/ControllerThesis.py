@@ -354,3 +354,63 @@ class ControllerThesis:
             return sign_exists
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def getThesisForAdmin(cls, db, project_filter=None, status_filter=None):
+        try:
+            session = db.session()
+            
+            sql = text(
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "FROM THESIS T "
+                "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
+                "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
+                "INNER JOIN PERSON P ON P.person_id = A.person_id "
+                "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
+                "INNER JOIN USER U ON U.person_id = P.person_id "
+                "WHERE T.is_deleted = 0"
+            )
+
+            # Add filters based on project_id
+            if project_filter is not None:
+                sql += " AND T.project_id = :project_id"
+
+            # Add filters based on thesis_status_id
+            if status_filter is not None:
+                sql += " AND T.thesis_status_id = :status_id"
+
+            result = session.execute(
+                sql,
+                {
+                    "project_id": project_filter,
+                    "status_id": status_filter,
+                },
+            )
+            session.commit()
+            rows = result.fetchall()
+            thesiss = []
+            if rows != None:
+                for row in rows:
+                    thesis = Thesis(
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        row[6],
+                        row[7],
+                        row[8],
+                        row[9],
+                        row[10],
+                        row[11],
+                        row[12],
+                        row[13],
+                        row[14],
+                    )
+                    thesiss.append(thesis)
+                return thesiss
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
