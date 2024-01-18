@@ -246,9 +246,10 @@
                             <img class="rounded-circle" src="data:image/png;base64,{{ current_user.image|b64encode }}"
                                 alt="" style="width: 40px; height: 40px;">
                             {% endif %}
-                            <span class="d-none d-lg-inline-flex">{{ current_user.username }}</span>
+                            <span class="d-lg-inline-flex">{{ current_user.username }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">{{ current_user.username }} | {{ current_user.role }}</a>
                             <a href="{{ url_for('user.profile') }}" class="dropdown-item">Mi Perfil</a>
                             <a href="#" class="dropdown-item">Settings</a>
                             <a href="{{ url_for('user.logout') }}" class="dropdown-item">Cerrar Sesión</a>

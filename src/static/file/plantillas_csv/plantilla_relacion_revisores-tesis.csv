@@ -2,10 +2,3 @@ reviewer_code;thesis_id;reviewer_role_id
 00Y1;1;1;
 00Y2;1;2;
 8011;1;3;
-;;
-;;
-Roles ID;Nombre;
-1;PRESIDENTE;
-2;SECRETARIO;
-3;VOCAL;
-4;ACCESATARIO;
