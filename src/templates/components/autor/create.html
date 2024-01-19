@@ -7,230 +7,230 @@
 
 {% block content %}
 <!-- Form Start -->
-<div class="container-fluid pt-4 px-4">
-    <h3>Crear Nuevo Autor</h3>
-    {% with messages = get_flashed_messages() %}
-    {% for message in messages %}
-    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-        <strong>{{ message }}</strong>
-        <div class="progress-container">
-            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Crear Nuevo Autor</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Ingrese los Datos del Autor</h6>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    {% endwith %}
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Ingrese los Datos del Autor</h6>
-                <form action="/save_autor" method="POST">
 
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingFirstname" name="firstname"
-                                    placeholder="firstname">
-                                <label for="floatingFirstname">Nombres</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingLastname" name="lastname"
-                                    placeholder="lastname">
-                                <label for="floatingLastname">Apellidos</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingStudent_code" name="student_code"
-                                    placeholder="student_code">
-                                <label for="floatingStudent_code">Codigo de Estudiante</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingDni" name="dni" placeholder="dni">
-                                <label for="floatingDni">DNI</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingPhone" name="phone"
-                                    placeholder="phone">
-                                <label for="floatingPhone">Teléfono</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingAddress" name="address"
-                                    placeholder="address">
-                                <label for="floatingPhone">Dirección (opcional)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="email">
-                        <label for="floatingEmail">Correo</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingUsername" name="username"
-                            placeholder="username">
-                        <label for="floatingUsername">Usuario</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" name="password"
-                            placeholder="password">
-                        <label for="floatingPassword">Contraseña</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingVerify_Password" name="verify_password"
-                            placeholder="password">
-                        <label for="floatingVerify_Password">Verificar Contraseña</label>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a class="btn btn-warning" href="{{ url_for('author.autor') }}" role="button"><i
-                                class="fa fa-arrow-left"></i> Volver</a>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save"></i> Guardar
-                        </button>
-                    </div>
-                </form>
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Ingresar Autores por Archivo CSV</h6>
+        {% endfor %}
+        {% endwith %}
+        <div class="row g-4">
+            <div class="col-sm-12 col-xl-6">
+                <div class="card-body">
+                    <form action="/save_autor" method="POST">
 
-                <div style="display: inline-block;">
-                    <h6 style="display: inline;">Archivo de ejemplo</h6>
-                    <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_autores.csv') }}"
-                        style="display: inline; margin-left: 20px;" download>
-                        plantilla_autores.csv</a>
-                </div><br><br>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <form method="POST" action="/upload_autores" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="input-group">
-                        <input class="form-control bg-dark" type="file" name="csv_file" accept=".csv" required>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
-                        </span>
-                    </div><br>
-                    No se incluirá la 1era línea del CSV file
-                    <br><br>
-                    <div class="form-floating mb-3">
-                        <select style="width: 150px;" class="form-select mb-3" id="Select_separator"
-                            name="Select_separator">
-                            <option value=",">,</option>
-                            <option value=";" selected="">;</option>
-                            <option value=":">:</option>
-                            <option value="\t">\t</option>
-                        </select>
-                        <label for="Select_separator">Separador CSV</label>
-                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingFirstname" name="firstname"
+                                        placeholder="Nombres">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingLastname" name="lastname"
+                                        placeholder="Apellidos">
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="form-floating mb-3">
-                        <select style="width: 150px;" class="form-select mb-3" id="Select_codificator"
-                            name="Select_codificator">
-                            <option value="UTF-8" selected="">UTF-8</option>
-                            <option value="WINDOWS-1252">WINDOWS-1252</option>
-                            <option value="ISO-8859-1">ISO-8859-1</option>
-                            <option value="WCHAR">WCHAR</option>
-                            <option value="BYTE2BE">BYTE2BE</option>
-                            <option value="BYTE2LE">BYTE2LE</option>
-                            <option value="BYTE4BE">BYTE4BE</option>
-                            <option value="BYTE4LE">BYTE4LE</option>
-                            <option value="BASE64">BASE64</option>
-                            <option value="UUENCODE">UUENCODE</option>
-                            <option value="HTML-ENTITIES">HTML-ENTITIES</option>
-                            <option value="QUOTED-PRINTABLE">QUOTED-PRINTABLE</option>
-                            <option value="7BIT">7BIT</option>
-                            <option value="8BIT">8BIT</option>
-                            <option value="UCS-4">UCS-4</option>
-                            <option value="UCS-4BE">UCS-4BE</option>
-                            <option value="UCS-4LE">UCS-4LE</option>
-                            <option value="UCS-2">UCS-2</option>
-                            <option value="UCS-2BE">UCS-2BE</option>
-                            <option value="UCS-2LE">UCS-2LE</option>
-                            <option value="UTF-32">UTF-32</option>
-                            <option value="UTF-32BE">UTF-32BE</option>
-                            <option value="UTF-32LE">UTF-32LE</option>
-                            <option value="UTF-16">UTF-16</option>
-                            <option value="UTF-16BE">UTF-16BE</option>
-                            <option value="UTF-16LE">UTF-16LE</option>
-                            <option value="UTF-7">UTF-7</option>
-                            <option value="UTF7-IMAP">UTF7-IMAP</option>
-                            <option value="ASCII">ASCII</option>
-                            <option value="EUC-JP">EUC-JP</option>
-                            <option value="SJIS">SJIS</option>
-                            <option value="EUCJP-WIN">EUCJP-WIN</option>
-                            <option value="EUC-JP-2004">EUC-JP-2004</option>
-                            <option value="SJIS-WIN">SJIS-WIN</option>
-                            <option value="SJIS-MOBILE#DOCOMO">SJIS-MOBILE#DOCOMO</option>
-                            <option value="SJIS-MOBILE#KDDI">SJIS-MOBILE#KDDI</option>
-                            <option value="SJIS-MOBILE#SOFTBANK">SJIS-MOBILE#SOFTBANK</option>
-                            <option value="SJIS-MAC">SJIS-MAC</option>
-                            <option value="SJIS-2004">SJIS-2004</option>
-                            <option value="UTF-8-MOBILE#DOCOMO">UTF-8-MOBILE#DOCOMO</option>
-                            <option value="UTF-8-MOBILE#KDDI-A">UTF-8-MOBILE#KDDI-A</option>
-                            <option value="UTF-8-MOBILE#KDDI-B">UTF-8-MOBILE#KDDI-B</option>
-                            <option value="UTF-8-MOBILE#SOFTBANK">UTF-8-MOBILE#SOFTBANK</option>
-                            <option value="CP932">CP932</option>
-                            <option value="CP51932">CP51932</option>
-                            <option value="JIS">JIS</option>
-                            <option value="ISO-2022-JP">ISO-2022-JP</option>
-                            <option value="ISO-2022-JP-MS">ISO-2022-JP-MS</option>
-                            <option value="GB18030">GB18030</option>
-                            <option value="WINDOWS-1254">WINDOWS-1254</option>
-                            <option value="ISO-8859-2">ISO-8859-2</option>
-                            <option value="ISO-8859-3">ISO-8859-3</option>
-                            <option value="ISO-8859-4">ISO-8859-4</option>
-                            <option value="ISO-8859-5">ISO-8859-5</option>
-                            <option value="ISO-8859-6">ISO-8859-6</option>
-                            <option value="ISO-8859-7">ISO-8859-7</option>
-                            <option value="ISO-8859-8">ISO-8859-8</option>
-                            <option value="ISO-8859-9">ISO-8859-9</option>
-                            <option value="ISO-8859-10">ISO-8859-10</option>
-                            <option value="ISO-8859-13">ISO-8859-13</option>
-                            <option value="ISO-8859-14">ISO-8859-14</option>
-                            <option value="ISO-8859-15">ISO-8859-15</option>
-                            <option value="ISO-8859-16">ISO-8859-16</option>
-                            <option value="EUC-CN">EUC-CN</option>
-                            <option value="CP936">CP936</option>
-                            <option value="HZ">HZ</option>
-                            <option value="EUC-TW">EUC-TW</option>
-                            <option value="BIG-5">BIG-5</option>
-                            <option value="CP950">CP950</option>
-                            <option value="EUC-KR">EUC-KR</option>
-                            <option value="UHC">UHC</option>
-                            <option value="ISO-2022-KR">ISO-2022-KR</option>
-                            <option value="WINDOWS-1251">WINDOWS-1251</option>
-                            <option value="CP866">CP866</option>
-                            <option value="KOI8-R">KOI8-R</option>
-                            <option value="KOI8-U">KOI8-U</option>
-                            <option value="ARMSCII-8">ARMSCII-8</option>
-                            <option value="CP850">CP850</option>
-                            <option value="JIS-MS">JIS-MS</option>
-                            <option value="ISO-2022-JP-2004">ISO-2022-JP-2004</option>
-                            <option value="ISO-2022-JP-MOBILE#KDDI">ISO-2022-JP-MOBILE#KDDI</option>
-                            <option value="CP50220">CP50220</option>
-                            <option value="CP50220RAW">CP50220RAW</option>
-                            <option value="CP50221">CP50221</option>
-                            <option value="CP50222">CP50222</option>
-                        </select>
-                        <label for="Select_codificator">Codificación</label>
-                </form>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingStudent_code"
+                                        name="student_code" placeholder="Codigo de Estudiante">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingDni" name="dni"
+                                        placeholder="DNI">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingPhone" name="phone"
+                                        placeholder="Telefono">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingAddress" name="address"
+                                        placeholder="Dirección (opcional)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="floatingEmail" name="email"
+                                placeholder="Correo">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="floatingUsername" name="username"
+                                placeholder="Usuario">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="floatingPassword" name="password"
+                                placeholder="Contraseña">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="floatingVerify_Password"
+                                name="verify_password" placeholder="Verificar Contraseña">
+                        </div><br>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a class="btn btn-warning" href="{{ url_for('author.autor') }}" role="button"><i
+                                    class="fa fa-arrow-left"></i> Volver</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-12 col-xl-6">
+                <div class="card-body">
+                    <h4 class="mb-4">Ingresar Autores por Archivo CSV</h4>
+
+                    <div style="display: inline-block;">
+                        <h6 style="display: inline;">Archivo de ejemplo</h6>
+                        <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_autores.csv') }}"
+                            style="display: inline; margin-left: 20px;" download>
+                            plantilla_autores.csv</a>
+                    </div><br><br>
+
+                    <form method="POST" action="/upload_autores" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="input-group">
+                            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>
+                                    Subir</button>
+                            </span>
+                        </div><br>
+                        No se incluirá la 1era línea del CSV file
+                        <br><br>
+                        <div class="form-group">
+                            <label for="Select_separator">Separador CSV</label>
+                            <select style="width: 150px;" class="form-control" id="Select_separator"
+                                name="Select_separator">
+                                <option value=",">,</option>
+                                <option value=";" selected="">;</option>
+                                <option value=":">:</option>
+                                <option value="\t">\t</option>
+                            </select>
+                            
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Select_codificator">Codificación</label>
+                            <select style="width: 150px;" class="form-control" id="Select_codificator"
+                                name="Select_codificator">
+                                <option value="UTF-8" selected="">UTF-8</option>
+                                <option value="WINDOWS-1252">WINDOWS-1252</option>
+                                <option value="ISO-8859-1">ISO-8859-1</option>
+                                <option value="WCHAR">WCHAR</option>
+                                <option value="BYTE2BE">BYTE2BE</option>
+                                <option value="BYTE2LE">BYTE2LE</option>
+                                <option value="BYTE4BE">BYTE4BE</option>
+                                <option value="BYTE4LE">BYTE4LE</option>
+                                <option value="BASE64">BASE64</option>
+                                <option value="UUENCODE">UUENCODE</option>
+                                <option value="HTML-ENTITIES">HTML-ENTITIES</option>
+                                <option value="QUOTED-PRINTABLE">QUOTED-PRINTABLE</option>
+                                <option value="7BIT">7BIT</option>
+                                <option value="8BIT">8BIT</option>
+                                <option value="UCS-4">UCS-4</option>
+                                <option value="UCS-4BE">UCS-4BE</option>
+                                <option value="UCS-4LE">UCS-4LE</option>
+                                <option value="UCS-2">UCS-2</option>
+                                <option value="UCS-2BE">UCS-2BE</option>
+                                <option value="UCS-2LE">UCS-2LE</option>
+                                <option value="UTF-32">UTF-32</option>
+                                <option value="UTF-32BE">UTF-32BE</option>
+                                <option value="UTF-32LE">UTF-32LE</option>
+                                <option value="UTF-16">UTF-16</option>
+                                <option value="UTF-16BE">UTF-16BE</option>
+                                <option value="UTF-16LE">UTF-16LE</option>
+                                <option value="UTF-7">UTF-7</option>
+                                <option value="UTF7-IMAP">UTF7-IMAP</option>
+                                <option value="ASCII">ASCII</option>
+                                <option value="EUC-JP">EUC-JP</option>
+                                <option value="SJIS">SJIS</option>
+                                <option value="EUCJP-WIN">EUCJP-WIN</option>
+                                <option value="EUC-JP-2004">EUC-JP-2004</option>
+                                <option value="SJIS-WIN">SJIS-WIN</option>
+                                <option value="SJIS-MOBILE#DOCOMO">SJIS-MOBILE#DOCOMO</option>
+                                <option value="SJIS-MOBILE#KDDI">SJIS-MOBILE#KDDI</option>
+                                <option value="SJIS-MOBILE#SOFTBANK">SJIS-MOBILE#SOFTBANK</option>
+                                <option value="SJIS-MAC">SJIS-MAC</option>
+                                <option value="SJIS-2004">SJIS-2004</option>
+                                <option value="UTF-8-MOBILE#DOCOMO">UTF-8-MOBILE#DOCOMO</option>
+                                <option value="UTF-8-MOBILE#KDDI-A">UTF-8-MOBILE#KDDI-A</option>
+                                <option value="UTF-8-MOBILE#KDDI-B">UTF-8-MOBILE#KDDI-B</option>
+                                <option value="UTF-8-MOBILE#SOFTBANK">UTF-8-MOBILE#SOFTBANK</option>
+                                <option value="CP932">CP932</option>
+                                <option value="CP51932">CP51932</option>
+                                <option value="JIS">JIS</option>
+                                <option value="ISO-2022-JP">ISO-2022-JP</option>
+                                <option value="ISO-2022-JP-MS">ISO-2022-JP-MS</option>
+                                <option value="GB18030">GB18030</option>
+                                <option value="WINDOWS-1254">WINDOWS-1254</option>
+                                <option value="ISO-8859-2">ISO-8859-2</option>
+                                <option value="ISO-8859-3">ISO-8859-3</option>
+                                <option value="ISO-8859-4">ISO-8859-4</option>
+                                <option value="ISO-8859-5">ISO-8859-5</option>
+                                <option value="ISO-8859-6">ISO-8859-6</option>
+                                <option value="ISO-8859-7">ISO-8859-7</option>
+                                <option value="ISO-8859-8">ISO-8859-8</option>
+                                <option value="ISO-8859-9">ISO-8859-9</option>
+                                <option value="ISO-8859-10">ISO-8859-10</option>
+                                <option value="ISO-8859-13">ISO-8859-13</option>
+                                <option value="ISO-8859-14">ISO-8859-14</option>
+                                <option value="ISO-8859-15">ISO-8859-15</option>
+                                <option value="ISO-8859-16">ISO-8859-16</option>
+                                <option value="EUC-CN">EUC-CN</option>
+                                <option value="CP936">CP936</option>
+                                <option value="HZ">HZ</option>
+                                <option value="EUC-TW">EUC-TW</option>
+                                <option value="BIG-5">BIG-5</option>
+                                <option value="CP950">CP950</option>
+                                <option value="EUC-KR">EUC-KR</option>
+                                <option value="UHC">UHC</option>
+                                <option value="ISO-2022-KR">ISO-2022-KR</option>
+                                <option value="WINDOWS-1251">WINDOWS-1251</option>
+                                <option value="CP866">CP866</option>
+                                <option value="KOI8-R">KOI8-R</option>
+                                <option value="KOI8-U">KOI8-U</option>
+                                <option value="ARMSCII-8">ARMSCII-8</option>
+                                <option value="CP850">CP850</option>
+                                <option value="JIS-MS">JIS-MS</option>
+                                <option value="ISO-2022-JP-2004">ISO-2022-JP-2004</option>
+                                <option value="ISO-2022-JP-MOBILE#KDDI">ISO-2022-JP-MOBILE#KDDI</option>
+                                <option value="CP50220">CP50220</option>
+                                <option value="CP50220RAW">CP50220RAW</option>
+                                <option value="CP50221">CP50221</option>
+                                <option value="CP50222">CP50222</option>
+                            </select>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

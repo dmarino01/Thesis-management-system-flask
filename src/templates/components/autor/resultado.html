@@ -25,81 +25,85 @@
 {% block content %}
 
 <!-- Recent Sales Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Autores</h4>
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Mantenedor de Autores</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Mantenedor de Autores</h6>
             <a class="btn btn-sm btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
                 AUTOR</a>
         </div>
-        <form action="/search_autores" method="POST">
-            <div class="input-group mb-2" style="width: 25%;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="text" class="form-control" name="keyname" placeholder="Buscar autor por nombre...">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+        <div class="card-body">
+            <form action="/search_autores" method="POST">
+                <div class="input-group mb-2" style="width: 25%;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="text" class="form-control" name="keyname" placeholder="Buscar autor por nombre...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                    </div>
                 </div>
+            </form>
+            <br>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <br />
+            {% for message in messages %}
+            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>{{ message }}</strong>
+                <div class="progress-container">
+                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </form>
-        <br>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <br />
-        {% for message in messages %}
-        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-            id="myAlert">
-            <strong>{{ message }}</strong>
-            <div class="progress-container">
-                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
 
-        <div class="table-responsive">
-            <table class="table table-hover text-start align-middle table-hover mb-0">
-                <thead>
-                    <tr class="text-white">
-                        <th scope="col">ID</th>
-                        <th scope="col">Código</th>
-                        <th scope="col">Nombres y Apellidos</th>
-                        <th scope="col">DNI</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Teléfono</th>
-                        <th scope="col">Dirección</th>
-                        <th scope="col">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if filtered_autores %}
-                    {% for item in filtered_autores %}
-                    <tr>
-                        <td>{{ item.author_id }}</td>
-                        <td>{{ item.student_code }}</td>
-                        <td>{{ item.firstname }} {{ item.lastname }}</td>        
-                        <td>{{ item.dni }}</td>     
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.username }}</td>
-                        <td>{{ item.phone }}</td>
-                        <td>{{ item.address }}</td>
-                        <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.author_id }}"><i
-                                    class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.author_id }}"
-                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td class="text-center" colspan="9">No hay resultados encontrados.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Nombres y Apellidos</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Teléfono</th>
+                            <th scope="col">Dirección</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if filtered_autores %}
+                        {% for item in filtered_autores %}
+                        <tr>
+                            <td>{{ item.author_id }}</td>
+                            <td>{{ item.student_code }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.dni }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.username }}</td>
+                            <td>{{ item.phone }}</td>
+                            <td>{{ item.address }}</td>
+                            <td class="col-2">
+                                <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.author_id }}"><i
+                                        class="fa fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.author_id }}"
+                                    onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="9">No hay resultados encontrados.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

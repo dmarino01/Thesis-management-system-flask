@@ -25,9 +25,9 @@
     }
 
     .pagination-controls {
-        margin-right: auto; /* Push the controls to the left */
+        margin-right: auto;
+        /* Push the controls to the left */
     }
-
 </style>
 {% endblock %}
 
@@ -36,93 +36,108 @@
 {% block content %}
 
 <!-- Recent Sales Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Autores</h4>
-            <a class="btn btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Mantenedor de Autores</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Mantenedor de Autores</h6>
+            <a class="btn btn-sm btn-success" href="/create_autor_form"><i class="fa fa-plus"></i> AGREGAR NUEVO
                 AUTOR</a>
         </div>
-        <form action="/search_autores" method="POST">
-            <div class="input-group mb-2" style="width: 25%;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="text" class="form-control" name="keyname" placeholder="Buscar autor por nombre...">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Pagination Controls -->
+                    <div class="d-flex align-items-center">
+                        <label for="records-per-page" class="mr-2 mb-0">Mostrar: </label>
+                        <select class="form-control" id="records-per-page">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <button class="btn btn-primary btn-sm ml-2" id="prev-page"><i class="fa fa-arrow-left"></i></button>
+                        <button class="btn btn-primary btn-sm ml-2" id="next-page"><i class="fa fa-arrow-right"></i></button>
+                    </div>
+                
+                    <!-- Search Autores -->
+                    <form action="/search_autores" method="POST" class="ml-auto d-flex align-items-center" style="width: 30%;">
+                        <div class="input-group mb-2" style="width: 100%;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="text" class="form-control" name="keyname" placeholder="Buscar autor por nombre..." style="height: 45px; font-size: 16px;">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary" style="height: 45px;"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br>  
+                
+                {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+                    <strong>{{ message }}</strong>
+                    <div class="progress-container">
+                        <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
-        </form>
-        <br>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <br />
-        {% for message in messages %}
-        <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-            id="myAlert">
-            <strong>{{ message }}</strong>
-            <div class="progress-container">
-                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+                {% endfor %}
+                {% endwith %}
 
-        <div class="table-responsive">
-            <!-- Pagination Controls -->
-            <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
-                <label for="records-per-page">Registros Por Página: </label>
-                <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 3%;" class="form-control" id="records-per-page">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                </select>
-                <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i class="fa fa-arrow-left"></i></button>
-                <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
-            </div><br>
-
-            <table class="table table-hover text-start align-middle table-hover mb-0">
-                <thead>
-                    <tr class="text-white">
-                        <th scope="col">ID</th>
-                        <th scope="col">Código</th>
-                        <th scope="col">Nombres y Apellidos</th>
-                        <th scope="col">DNI</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Teléfono</th>
-                        <th scope="col">Dirección</th>
-                        <th scope="col">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if autores %}
-                    {% for item in autores %}
-                    <tr>
-                        <td>{{ item.author_id }}</td>
-                        <td>{{ item.student_code }}</td>
-                        <td>{{ item.firstname }} {{ item.lastname }}</td>        
-                        <td>{{ item.dni }}</td>     
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.username }}</td>
-                        <td>{{ item.phone }}</td>
-                        <td>{{ item.address }}</td>                           
-                        <td class="col-2">
-                            <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.person_id }}"><i
-                                    class="fa fa-pen"></i> Editar</a>
-                            <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.person_id }}"
-                                onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td class="text-center" colspan="9">No hay resultados encontrados.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Código</th>
+                            <th>Nombres y Apellidos</th>
+                            <th>DNI</th>
+                            <th>Email</th>
+                            <th>Usuario</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>ID</th>
+                            <th>Código</th>
+                            <th>Nombres y Apellidos</th>
+                            <th>DNI</th>
+                            <th>Email</th>
+                            <th>Usuario</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Acción</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% if autores %}
+                        {% for item in autores %}
+                        <tr>
+                            <td>{{ item.author_id }}</td>
+                            <td>{{ item.student_code }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.dni }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.username }}</td>
+                            <td>{{ item.phone }}</td>
+                            <td>{{ item.address }}</td>
+                            <td class="col-2">
+                                <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.person_id }}"><i
+                                        class="fa fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.person_id }}"
+                                    onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="9">No hay resultados encontrados.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -136,7 +151,7 @@
     const recordsPerPageSelect = document.getElementById('records-per-page');
     const prevPageButton = document.getElementById('prev-page');
     const nextPageButton = document.getElementById('next-page');
-    
+
     let currentPage = 1;
     let recordsPerPage = parseInt(recordsPerPageSelect.value);
 

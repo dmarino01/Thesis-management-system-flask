@@ -36,7 +36,7 @@
     <h3>Firmar Calificación de Sustentación de Tesis</h3>
     <div class="row g-4">
         <div class="col-sm-8 col-xl-4">
-            <div class="bg-secondary rounded p-4">
+            <div class="rounded p-4">
                 <form action="{{ url_for('thesis.save_sign', id=thesis.thesis_id) }}" method="POST"
                     enctype="multipart/form-data">
 
@@ -56,7 +56,7 @@
 
                     <div class="mb-3">
                         <label for="sign" class="form-label">Subir Firma Digital</label>
-                        <input class="form-control bg-dark" style="width: 60%;" type="file" id="sign" name="sign"
+                        <input class="form-control" style="width: 60%;" type="file" id="sign" name="sign"
                             accept=".jpg, .jpeg, .png" onchange="previewImage(event)" {% if sign_if_exists is true %}
                             disabled="" {% endif %}>
                     </div>

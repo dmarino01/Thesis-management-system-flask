@@ -11,7 +11,7 @@
     <h2>Crear Sustentación Tesis</h2>
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded p-4">
+            <div class="card-shadow p-4">
                 {% if not dissertation_exists %}
                 <h6 class="mb-4">Ingrese los Datos de la Sustentación de Tesis</h6>
                 <form action="/save_dissertation_thesis" method="POST" enctype="multipart/form-data">
@@ -29,15 +29,15 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="form-floating mb-3">
+                        <label for="floatingTitle">Título</label>
                         <input type="text" class="form-control" id="floatingTitle" name="title"
                             value="{{ thesis.title }}" placeholder="title">
-                        <label for="floatingTitle">Título</label>
                     </div>
 
                     <div class="form-floating mb-3">
+                        <label for="floatingTitle">Abstract</label>
                         <textarea class="form-control" style="height: 150px;" id="floatingTitle" name="abstract"
                             placeholder="abstract">{{ thesis.abstract }}</textarea>
-                        <label for="floatingTitle">Abstract</label>
                     </div>
 
                     <input type="hidden" name="project_id" value="{{ thesis.thesis_id }}">
@@ -46,19 +46,19 @@
 
                     <div class="mb-3">
                         <label for="pdf_file" class="form-label">Subir Archivo</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_file"
+                        <input class="form-control" style="width: 40%;" type="file" id="pdf_file"
                             name="pdf_file" accept=".pdf">
                     </div>
 
                     <div class="mb-3">
                         <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_turnitin"
+                        <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin"
                             name="pdf_turnitin" accept=".pdf">
                     </div>
 
                     <div class="mb-3">
                         <label for="pdf_article" class="form-label">Subir Artículo de Investigación</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_article"
+                        <input class="form-control" style="width: 40%;" type="file" id="pdf_article"
                             name="pdf_article" accept=".pdf">
                     </div><br>
 

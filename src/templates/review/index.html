@@ -3,95 +3,97 @@
 {% block title %} Revisar Proyectos y Tesis {% endblock %}
 
 {% block content %}
-<div class="container-fluid pt-4 px-4">
-    <h2>Revisar Proyectos y Tesis</h2>
-    <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Proyectos y Tesis</h4>
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Revisar Proyectos y Tesis</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Revisar Proyectos y Tesis</h6>
         </div>
+        <div class="card-body">
+            <div class="d-flex mb-3">
+                <label for="projectFilter" class="col-md-1 mb-0 me-2">Filtrar por: </label>
+                <div class="col-md-3 me-2">
+                    <select id="projectFilter" class="form-control" onchange="applyFilters()">
+                        <option value="">Todos los Registros</option>
+                        <option value="0">Solo Projectos</option>
+                        <option value="1">Solo Tesis</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-control" onchange="applyFilters()">
+                        <option value="">Todos los Estados</option>
+                        <option value="1">En Proceso</option>
+                        <option value="2">Aprobado</option>
+                        <option value="3">Rechazado</option>
+                        <option value="4">En Revisión</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-success" onclick="resetFilters()"><i
+                            class="fa-solid fa-arrow-rotate-left"></i>
+                        Resetear Filtros </button>
+                </div>
+            </div><br>
 
-        <div class="d-flex mb-3">
-            <label for="projectFilter" class="col-md-1 me-2">Filtrar por: </label>
-            <div class="col-md-3 me-2">
-                <select id="projectFilter" class="form-select" onchange="applyFilters()">
-                    <option value="">Todos los Registros</option>
-                    <option value="0">Solo Projectos</option>
-                    <option value="1">Solo Tesis</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select id="statusFilter" class="form-select" onchange="applyFilters()">
-                    <option value="">Todos los Estados</option>
-                    <option value="1">En Proceso</option>
-                    <option value="2">Aprobado</option>
-                    <option value="3">Rechazado</option>
-                    <option value="4">En Revisión</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-success" onclick="resetFilters()"><i class="fa-solid fa-arrow-rotate-left"></i>
-                    Resetear Filtros </button>
-            </div>
-        </div><br>
-
-        <div class="table-responsive">
-            <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
-                <thead>
-                    <tr class="text-white">
-                        <th scope="col">ID</th>
-                        <th scope="col">Autor</th>
-                        <th scope="col">Titulo</th>
-                        <th scope="col">Fecha de Inicio de Proyecto</th>
-                        <th scope="col">Fecha de Termino de Proyecto</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Nota Final</th>
-                        <th scope="col">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if thesis %}
-                    {% for item in thesis %}
-                    <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
-                        <td>{{ item.thesis_id }}</td>
-                        <td>{{ item.firstname }} {{ item.lastname }}</td>
-                        {% if item.project_id == 0 %}
-                        <td><strong>PROJECTO: </strong>{{ item.title }}</td>
-                        {% else %}
-                        <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
-                        {% endif %}
-                        <td>{{ item.submission_date }}</td>
-                        <td>{{ item.expiration_date }}</td>
-                        <td class="align-middle">
-                            {% if item.thesis_status_id == 1 %}
-                            <span class="badge bg-warning">EN PROCESO</span>
-                            {% elif item.thesis_status_id == 2 %}
-                            <span class="badge bg-success">APROBADO</span>
-                            {% elif item.thesis_status_id == 3 %}
-                            <span class="badge bg-primary">RECHAZADO</span>
-                            {% elif item.thesis_status_id == 4 %}
-                            <span class="badge bg-primary">EN REVISION</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if item.rating is not none %}
-                            {{ item.rating }}
+            <div class="table-responsive">
+                <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Titulo</th>
+                            <th scope="col">Fecha de Inicio de Proyecto</th>
+                            <th scope="col">Fecha de Termino de Proyecto</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Nota Final</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if thesis %}
+                        {% for item in thesis %}
+                        <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
+                            <td>{{ item.thesis_id }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            {% if item.project_id == 0 %}
+                            <td><strong>PROJECTO: </strong>{{ item.title }}</td>
                             {% else %}
-                            <span class="badge bg-warning">SIN NOTA</span>
+                            <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
-                        </td>
-                        <td class="col-2">
-                            <a class="btn btn-sm btn-success" href="/review_thesis_page/{{ item.thesis_id }}"><i
-                                    class="fa fa-pen"></i> Calificar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td class="text-center" colspan="8">No hay resultados encontrados.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                            <td>{{ item.submission_date }}</td>
+                            <td>{{ item.expiration_date }}</td>
+                            <td class="align-middle">
+                                {% if item.thesis_status_id == 1 %}
+                                <span class="badge bg-warning">EN PROCESO</span>
+                                {% elif item.thesis_status_id == 2 %}
+                                <span class="badge bg-success">APROBADO</span>
+                                {% elif item.thesis_status_id == 3 %}
+                                <span class="badge bg-primary">RECHAZADO</span>
+                                {% elif item.thesis_status_id == 4 %}
+                                <span class="badge bg-primary">EN REVISION</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.rating is not none %}
+                                {{ item.rating }}
+                                {% else %}
+                                <span class="badge bg-warning">SIN NOTA</span>
+                                {% endif %}
+                            </td>
+                            <td class="col-2">
+                                <a class="btn btn-sm btn-success" href="/review_thesis_page/{{ item.thesis_id }}"><i
+                                        class="fa fa-pen"></i> Calificar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="8">No hay resultados encontrados.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

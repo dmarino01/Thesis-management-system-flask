@@ -4,192 +4,199 @@
 
 {% block content %}
 
-<div class="container-fluid pt-4 px-4">
-    <div class="row">
-        <div class="col-md-8 col-xl-8 mb-4 mb-xl-0">
-            <div class="bg-secondary rounded h-100 p-4">
-                <h4>EDITAR PERFIL</h4><br>
-                <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post"
-                    enctype="multipart/form-data">
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="row">
+            <div class="col-md-8 col-xl-8 mb-4 mb-xl-0">
+                <div class="mb-4 h-100 p-4">
+                    <h4>EDITAR PERFIL</h4><br>
 
-                    {% with messages = get_flashed_messages() %}
-                    {% for message in messages %}
-                    {% set alert_class = 'custom-primary-button alert alert-primary' %}
+                    <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post"
+                        enctype="multipart/form-data">
 
-                    {% if "Perfil Actualizado Exitosamente..." in message %}
-                    {% set alert_class = 'custom-primary-button alert alert-primary' %}
-                    {% elif "Las contraseñas no coinciden..." in message or "Usuario no debe estar vacio..." in message
-                    %}
-                    {% set alert_class = 'alert alert-primary' %}
-                    {% endif %}
+                        {% with messages = get_flashed_messages() %}
+                        {% for message in messages %}
+                        {% set alert_class = 'custom-primary-button alert alert-primary' %}
 
-                    <div class="{{ alert_class }} alert-dismissible position-relative" role="alert" id="myAlert">
-                        <strong>{{ message }}</strong>
-                        <div class="progress-container">
-                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                        {% if "Perfil Actualizado Exitosamente..." in message %}
+                        {% set alert_class = 'custom-primary-button alert alert-primary' %}
+                        {% elif "Las contraseñas no coinciden..." in message or "Usuario no debe estar vacio..." in
+                        message
+                        %}
+                        {% set alert_class = 'alert alert-primary' %}
+                        {% endif %}
+
+                        <div class="{{ alert_class }} alert-dismissible position-relative" role="alert" id="myAlert">
+                            <strong>{{ message }}</strong>
+                            <div class="progress-container">
+                                <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
 
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    {% if current_user.role == "Autor" %}
-                    <div class="col-md-3">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingCode" value="{{ user.student_code }}"
-                                name="student_code" placeholder="student_code">
-                            <label for="floatingCode">Código</label>
-                        </div>
-                    </div>
-                    {% elif current_user.role == "Asesor" %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        {% if current_user.role == "Autor" %}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="floatingCode">Código</label>
                                 <input type="text" class="form-control" id="floatingCode"
-                                    value="{{ user.advisor_code }}" name="advisor_code" placeholder="advisor_code">
-                                <label for="floatingCode">Codigo</label>
+                                    value="{{ user.student_code }}" name="student_code" placeholder="student_code">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingInstitution" value="{{ user.institution }}"
-                                    name="institution" placeholder="institution">
-                                <label for="floatingInstitution">Institucion</label>
+                        {% elif current_user.role == "Asesor" %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingCode">Codigo</label>
+                                    <input type="text" class="form-control" id="floatingCode"
+                                        value="{{ user.advisor_code }}" name="advisor_code" placeholder="advisor_code">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="floatingInstitution"
+                                        value="{{ user.institution }}" name="institution" placeholder="institution">
+                                    <label for="floatingInstitution">Institucion</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% elif current_user.role == "Revisor" %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingCode"
-                                    value="{{ user.reviewer_code }}" name="reviewer_code" placeholder="reviewer_code">
-                                <label for="floatingCode">Codigo</label>
+                        {% elif current_user.role == "Revisor" %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingCode">Codigo</label>
+                                    <input type="text" class="form-control" id="floatingCode"
+                                        value="{{ user.reviewer_code }}" name="reviewer_code"
+                                        placeholder="reviewer_code">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingGrade">Grado</label>
+                                    <input type="text" class="form-control" id="floatingGrade" value="{{ user.grade }}"
+                                        name="grade" placeholder="grade">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingGrade" value="{{ user.grade }}"
-                                    name="grade" placeholder="grade">
-                                <label for="floatingGrade">Grado</label>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+                        {% endif %}
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingFirstname"
-                                    value="{{ user.firstname }}" name="firstname" placeholder="firstname">
-                                <label for="floatingFirstname">Nombres</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingFirstname">Nombres</label>
+                                    <input type="text" class="form-control" id="floatingFirstname"
+                                        value="{{ user.firstname }}" name="firstname" placeholder="firstname">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingLastname">Apellidos</label>
+                                    <input type="text" class="form-control" id="floatingLastname"
+                                        value="{{ user.lastname }}" name="lastname" placeholder="lastname">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingLastname"
-                                    value="{{ user.lastname }}" name="lastname" placeholder="lastname">
-                                <label for="floatingLastname">Apellidos</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingDni" value="{{ user.dni }}"
-                                    name="dni" placeholder="dni">
-                                <label for="floatingDni">DNI</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingDni">DNI</label>
+                                    <input type="text" class="form-control" id="floatingDni" value="{{ user.dni }}"
+                                        name="dni" placeholder="dni">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingPhone">Teléfono</label>
+                                    <input type="text" class="form-control" id="floatingPhone" value="{{ user.phone }}"
+                                        name="phone" placeholder="phone">
+                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingPhone">Dirección (opcional)</label>
+                                    <input type="text" class="form-control" id="floatingAddress"
+                                        value="{{ user.address }}" name="address" placeholder="address">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingPhone" value="{{ user.phone }}"
-                                    name="phone" placeholder="phone">
-                                <label for="floatingPhone">Teléfono</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingAddress" value="{{ user.address }}"
-                                    name="address" placeholder="address">
-                                <label for="floatingPhone">Dirección (opcional)</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingUsername"
-                                    value="{{ user.username }}" name="username" placeholder="username">
-                                <label for="floatingUsername">Usuario</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingUsername">Usuario</label>
+                                    <input type="text" class="form-control" id="floatingUsername"
+                                        value="{{ user.username }}" name="username" placeholder="username">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingEmail">Correo</label>
+                                    <input type="email" class="form-control" id="floatingEmail" value="{{ user.email }}"
+                                        name="email" placeholder="email">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingEmail" value="{{ user.email }}"
-                                    name="email" placeholder="email">
-                                <label for="floatingEmail">Correo</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingPassword">Contraseña</label>
+                                    <input type="password" class="form-control" id="floatingPassword" name="password"
+                                        placeholder="password">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingVerify_Password">Verificar Contraseña</label>
+                                    <input type="password" class="form-control" id="floatingVerify_Password"
+                                        name="verify_password" placeholder="password">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword" name="password"
-                                    placeholder="password">
-                                <label for="floatingPassword">Contraseña</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingVerify_Password"
-                                    name="verify_password" placeholder="password">
-                                <label for="floatingVerify_Password">Verificar Contraseña</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">Editar foto de perfil (opcional)</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="formFile" name="image"
-                            accept=".jpg, .jpeg, .png, .gif">
-                    </div><br>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Editar foto de perfil (opcional)</label>
+                            <input class="form-control" style="width: 40%;" type="file" id="formFile"
+                                name="image" accept=".jpg, .jpeg, .png, .gif">
+                        </div><br>
 
-                    <div class="col-md-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> Guardar
-                            </button>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-save"></i> Guardar
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="col-md-8 col-xl-4">
-            <div class="bg-secondary rounded h-100 p-4 d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 text-left">FOTO</h4>
-                    {% if current_user.image is not none %}
-                    <a class="btn btn-danger btn-sm align-self-start"
-                        href="{{ url_for('user.remove_image_user', id=current_user.person_id)}}"><i
-                            class="fa fa-trash"></i> Quitar Imagen</a>
-                    {% endif %}
-                </div><br>
-                <div class="d-flex justify-content-center align-items-center flex-grow-1">
-                    {% if image_data %}
-                    <img src="data:image/jpeg;base64, {{ image_data }}" alt="User Image" class="img-fluid"
-                        style="max-width: 90%; width: auto; height: auto;">
-                    {% else %}
-                    <p>No hay imagen disponible.</p>
-                    {% endif %}
+
+            <div class="col-md-8 col-xl-4">
+
+                <div class="rounded h-100 p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 text-left">FOTO</h4>
+                        {% if current_user.image is not none %}
+                        <a class="btn btn-danger btn-sm align-self-start"
+                            href="{{ url_for('user.remove_image_user', id=current_user.person_id)}}"><i
+                                class="fa fa-trash"></i> Quitar Imagen</a>
+                        {% endif %}
+                    </div><br>
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                        {% if image_data %}
+                        <img src="data:image/jpeg;base64, {{ image_data }}" alt="User Image" class="img-fluid"
+                            style="max-width: 90%; width: auto; height: auto;">
+                        {% else %}
+                        <p>No hay imagen disponible.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 

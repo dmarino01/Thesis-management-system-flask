@@ -3,93 +3,95 @@
 {% block title %} Tesis Asesoradas {% endblock %}
 
 {% block content %}
-<div class="container-fluid pt-4 px-4">
-    <h2>Recomendar de Proyectos y Tesis</h2>
-    <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Mantenedor de Proyectos y Tesis</h4>
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Recomendar Proyectos y Tesis</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Recomendar Proyectos y Tesis</h6>
         </div>
+        <div class="card-body">
+            <div class="d-flex mb-3">
+                <label for="projectFilter" class="col-md-1 mb-0 me-2">Filtrar por: </label>
+                <div class="col-md-3 me-2">
+                    <select id="projectFilter" class="form-control" onchange="applyFilters()">
+                        <option value="">Todos los Registros</option>
+                        <option value="0">Solo Projectos</option>
+                        <option value="1">Solo Tesis</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-control" onchange="applyFilters()">
+                        <option value="">Todos los Estados</option>
+                        <option value="1">En Proceso</option>
+                        <option value="2">Aprobado</option>
+                        <option value="3">Rechazado</option>
+                        <option value="4">En Revisión</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-success" onclick="resetFilters()"><i
+                            class="fa-solid fa-arrow-rotate-left"></i>
+                        Resetear Filtros </button>
+                </div>
+            </div><br>
 
-        <div class="d-flex mb-3">
-            <label for="projectFilter" class="col-md-1 me-2">Filtrar por: </label>
-            <div class="col-md-3 me-2">
-                <select id="projectFilter" class="form-select" onchange="applyFilters()">
-                    <option value="">Todos los Registros</option>
-                    <option value="0">Solo Projectos</option>
-                    <option value="1">Solo Tesis</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select id="statusFilter" class="form-select" onchange="applyFilters()">
-                    <option value="">Todos los Estados</option>
-                    <option value="1">En Proceso</option>
-                    <option value="2">Aprobado</option>
-                    <option value="3">Rechazado</option>
-                    <option value="4">En Revisión</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-success" onclick="resetFilters()"><i class="fa-solid fa-arrow-rotate-left"></i>
-                    Resetear Filtros </button>
-            </div>
-        </div><br>
-
-        <div class="table-responsive">
-            <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
-                <thead>
-                    <tr class="text-white">
-                        <th scope="col">ID</th>
-                        <th scope="col">Autor</th>
-                        <th scope="col">Titulo</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Nota</th>
-                        <th scope="col">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if thesis %}
-                    {% for item in thesis %}
-                    <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
-                        <td>{{ item.thesis_id }}</td>
-                        <td>{{ item.firstname }} {{ item.lastname }}</td>
-                        {% if item.project_id == 0 %}
+            <div class="table-responsive">
+                <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Titulo</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Nota</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if thesis %}
+                        {% for item in thesis %}
+                        <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
+                            <td>{{ item.thesis_id }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            {% if item.project_id == 0 %}
                             <td><strong>PROJECTO: </strong>{{ item.title }}</td>
-                        {% else %}
-                            <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
-                        {% endif %}
-                        <td>{{ item.submission_date }}</td> 
-                        <td class="align-middle">
-                            {% if item.thesis_status_id == 1 %}
-                                <span class="badge bg-warning">EN PROCESO</span>
-                            {% elif item.thesis_status_id == 2 %}
-                                <span class="badge bg-success">APROBADO</span>
-                            {% elif item.thesis_status_id == 3 %}
-                                <span class="badge bg-primary">RECHAZADO</span>
-                            {% elif item.thesis_status_id == 4 %}
-                                <span class="badge bg-primary">EN REVISION</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if item.rating is not none %}
-                                {{ item.rating }}
                             {% else %}
-                            <span class="badge bg-warning">SIN NOTA</span>
+                            <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
-                        </td>
-                        <td class="col-2">
-                            <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
-                                class="fa fa-eye"></i> Ver</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td class="text-center" colspan="7">No hay resultados encontrados.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                            <td>{{ item.submission_date }}</td>
+                            <td class="align-middle">
+                                {% if item.thesis_status_id == 1 %}
+                                <span class="badge bg-warning">EN PROCESO</span>
+                                {% elif item.thesis_status_id == 2 %}
+                                <span class="badge bg-success">APROBADO</span>
+                                {% elif item.thesis_status_id == 3 %}
+                                <span class="badge bg-primary">RECHAZADO</span>
+                                {% elif item.thesis_status_id == 4 %}
+                                <span class="badge bg-primary">EN REVISION</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.rating is not none %}
+                                {{ item.rating }}
+                                {% else %}
+                                <span class="badge bg-warning">SIN NOTA</span>
+                                {% endif %}
+                            </td>
+                            <td class="col-2">
+                                <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
+                                        class="fa fa-eye"></i> Ver</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="7">No hay resultados encontrados.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -104,29 +106,29 @@
 
 <!-- Add these scripts after the filters in your HTML template -->
 <script>
-function applyFilters() {
-    var projectFilter = document.getElementById("projectFilter").value;
-    var statusFilter = document.getElementById("statusFilter").value;
+    function applyFilters() {
+        var projectFilter = document.getElementById("projectFilter").value;
+        var statusFilter = document.getElementById("statusFilter").value;
 
-    var table = document.getElementById("thesisTable");
-    var rows = table.getElementsByTagName("tr");
+        var table = document.getElementById("thesisTable");
+        var rows = table.getElementsByTagName("tr");
 
-    for (var i = 1; i < rows.length; i++) {
-        var row = rows[i];
-        var projectValue = row.dataset.projectId;
-        var statusValue = row.dataset.statusId;
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i];
+            var projectValue = row.dataset.projectId;
+            var statusValue = row.dataset.statusId;
 
-        var projectMatch = (projectFilter === '' || projectValue === projectFilter);
-        var statusMatch = (statusFilter === '' || statusValue === statusFilter);
+            var projectMatch = (projectFilter === '' || projectValue === projectFilter);
+            var statusMatch = (statusFilter === '' || statusValue === statusFilter);
 
-        // Change the logic to check the visibility of the row
-        if (projectMatch && statusMatch) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
+            // Change the logic to check the visibility of the row
+            if (projectMatch && statusMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
         }
     }
-}
 </script>
 
 <script>

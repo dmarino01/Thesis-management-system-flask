@@ -8,84 +8,90 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid pt-4 px-4">
-    {% if thesis.project_id == 0 %}
-    <h3>Editar del Proyecto de Tesis</h3>
-    {% else %}
-    <h3>Editar del Sustentación de Tesis</h3>
-    {% endif %}
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded p-4">
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">
+        {% if thesis.project_id == 0 %}
+        Editar del Proyecto de Tesis
+        {% else %}
+        Editar del Sustentación de Tesis
+        {% endif %}
+    </h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">
                 {% if thesis.project_id == 0 %}
-                <h4>Editar del Proyecto de Tesis</h4>
+                Editar del Proyecto de Tesis
                 {% else %}
-                <h4>Editar del Sustentación de Tesis</h4>
+                Editar del Sustentación de Tesis
                 {% endif %}
-                <form action="{{ url_for('thesis.update_thesis', id=thesis.thesis_id) }}" method="POST"
-                    enctype="multipart/form-data">
-                    {% with messages = get_flashed_messages() %}
-                    {% for message in messages %}
-                    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                        <strong>{{ message }}</strong>
-                        <div class="progress-container">
-                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endwith %}
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            </h6>
+        </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="title" value="{{ thesis.title }}" name="title"
-                            placeholder="title">
-                        <label for="title">Título</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" style="height: 150px;" id="abstract" name="abstract"
-                            placeholder="abstract">{{ thesis.abstract }}</textarea>
-                        <label for="abstract">Abstract</label>
-                    </div>
-
-                    <input class="form-control" type="hidden" name="old_pdf_link" value="{{ thesis.pdf_link }}">
-                    <input class="form-control" type="hidden" name="old_turnitin_link"
-                        value="{{ thesis.turnitin_link }}">
-                    <input class="form-control" type="hidden" name="old_article_link" value="{{ thesis.article_link }}">
-
-                    <div class="mb-3">
-                        <label for="pdf_file" class="form-label">Subir Archivo Actualizado</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_file"
-                            name="pdf_file" accept=".pdf">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                        <input class="form-control bg-dark" style="width: 40%;" type="file" id="pdf_turnitin"
-                            name="pdf_turnitin" accept=".pdf">
-                    </div>
-
-                    {% if thesis.project_id == 0 %}
-                    <label for="project_creation_date">Fecha de Creación de Proyecto</label><br>
-                    <div class="form-floating mb-3">
-                        <input type="date" id="project_creation_date" value="{{ thesis.submission_date }}"
-                            name="project_creation_date"></input>
-                    </div>           
-                    {% endif %}
-
-                    <br>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                                class="fa fa-arrow-left"></i> Volver</a>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save"></i> Guardar
-                        </button>
-                    </div>
-                </form>
-
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endwith %}
+
+        <div class="card-body">
+            <form action="{{ url_for('thesis.update_thesis', id=thesis.thesis_id) }}" method="POST"
+                enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" class="form-control" id="title" value="{{ thesis.title }}" name="title"
+                        placeholder="title">
+                </div>
+
+                <div class="form-group">
+                    <label for="abstract">Abstract</label>
+                    <textarea class="form-control" style="height: 150px;" id="abstract" name="abstract"
+                        placeholder="abstract">{{ thesis.abstract }}</textarea>
+                </div>
+
+                <input class="form-control" type="hidden" name="old_pdf_link" value="{{ thesis.pdf_link }}">
+                <input class="form-control" type="hidden" name="old_turnitin_link" value="{{ thesis.turnitin_link }}">
+                <input class="form-control" type="hidden" name="old_article_link" value="{{ thesis.article_link }}">
+
+                <div class="mb-3">
+                    <label for="pdf_file" class="form-label">Subir Archivo Actualizado</label>
+                    <input class="form-control" style="width: 40%;" type="file" id="pdf_file" name="pdf_file"
+                        accept=".pdf">
+                </div>
+
+                <div class="mb-3">
+                    <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
+                    <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin"
+                        name="pdf_turnitin" accept=".pdf">
+                </div>
+
+                {% if thesis.project_id == 0 %}
+                <label for="project_creation_date">Fecha de Creación de Proyecto</label><br>
+                <div class="form-group">
+                    <input type="date" id="project_creation_date" value="{{ thesis.submission_date }}"
+                        name="project_creation_date"></input>
+                </div>
+                {% endif %}
+                <br>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
+                            class="fa fa-arrow-left"></i> Volver</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
+
 {% endblock %}
