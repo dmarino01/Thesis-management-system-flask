@@ -27,6 +27,32 @@
         <a href="{{ url_for('thesis.download_excel_tesis_sin_revisiones') }}" class="btn btn-success"><i
                 class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
+        <!-- Filters -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="projectTypeFilter">Filtrar por Tipo:</label>
+                <select class="form-control" id="projectTypeFilter">
+                    <option value="all">Todos</option>
+                    <option value="proyecto">Proyecto</option>
+                    <option value="tesis">Tesis</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="startDateFilter">Fecha de Inicio:</label>
+                <input type="date" class="form-control" id="startDateFilter">
+            </div>
+
+            <div class="col-md-3">
+                <label for="endDateFilter">Fecha de Fin:</label>
+                <input type="date" class="form-control" id="endDateFilter">
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary mt-4" onclick="applyFilters()">Aplicar Filtros</button>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <!-- Pagination Controls -->
             <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
@@ -98,13 +124,36 @@
         });
     });
 </script>
+<script>
+    function applyFilters() {
+        const projectTypeFilter = document.getElementById('projectTypeFilter').value;
+        const startDateFilter = document.getElementById('startDateFilter').value;
+        const endDateFilter = document.getElementById('endDateFilter').value;
 
+        const rows = table.querySelectorAll('tbody tr');
+        const totalRows = rows.length;
+
+        rows.forEach((row, index) => {
+            const projectType = row.cells[5].textContent.toLowerCase();
+            const submissionDate = row.cells[6].textContent;
+
+            const showRow = (projectTypeFilter === 'all' || projectType.includes(projectTypeFilter)) &&
+                (!startDateFilter || new Date(submissionDate) >= new Date(startDateFilter)) &&
+                (!endDateFilter || new Date(submissionDate) <= new Date(endDateFilter));
+
+            row.style.display = showRow ? 'table-row' : 'none';
+        });
+
+        // Reset pagination to the first page after applying filters
+        currentPage = 1;
+    }
+</script>
 <script>
     const table = document.querySelector('.table');
     const recordsPerPageSelect = document.getElementById('records-per-page');
     const prevPageButton = document.getElementById('prev-page');
     const nextPageButton = document.getElementById('next-page');
-    
+
     let currentPage = 1;
     let recordsPerPage = parseInt(recordsPerPageSelect.value);
 
