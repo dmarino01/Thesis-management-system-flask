@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="container-fluid pt-4 px-4">
+<div class="container-fluid">
     <h2>Crear Sustentación Tesis</h2>
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
@@ -48,22 +48,44 @@
                         <input type="hidden" name="project_creation_date" value="{{ thesis.submission_date }}">
 
                         <div class="mb-3">
-                            <label for="pdf_file" class="form-label">Subir Archivo</label>
-                            <input class="form-control" style="width: 40%;" type="file" id="pdf_file" name="pdf_file"
-                                accept=".pdf">
+                            <label for="pdf_file" class="form-label">Subir Archivo de Tesis</label>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <input type="file" class="form-control custom-file-input" id="pdf_file"
+                                            name="pdf_file" accept=".pdf">
+                                        <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                            <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin"
-                                name="pdf_turnitin" accept=".pdf">
+                            <label for="pdf_file" class="form-label">Subir Reporte de Turnitín</label>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <input class="form-control" type="file" id="pdf_turnitin" name="pdf_turnitin"
+                                            accept=".pdf">
+                                        <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="pdf_article" class="form-label">Subir Artículo de Investigación</label>
-                            <input class="form-control" style="width: 40%;" type="file" id="pdf_article"
-                                name="pdf_article" accept=".pdf">
-                        </div><br>
+                            <label for="pdf_file" class="form-label">Subir Artículo de Investigación</label>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <input class="form-control" type="file" id="pdf_article" name="pdf_article"
+                                            accept=".pdf">
+                                        <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
 
                         <div class="d-flex justify-content-between align-items-center">
                             <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i

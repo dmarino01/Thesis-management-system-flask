@@ -248,24 +248,35 @@
 
                 <div class="mb-3">
                     <label for="pdf_file" class="form-label">Subir Archivo</label>
-                    <input class="form-control" style="width: 40%;" type="file" id="pdf_file" name="pdf_file"
-                        accept=".pdf">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="file" class="form-control custom-file-input" id="pdf_file" name="pdf_file" accept=".pdf">
+                                <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
 
                 <div class="row">
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                            <input class="form-control" type="file" id="pdf_turnitin" name="pdf_turnitin"accept=".pdf">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="pdf_turnitin" name="pdf_turnitin" accept=".pdf">
+                                <label class="custom-file-label" for="pdf_turnitin">Escoja un archivo</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="mb-3">
                             <label for="turnitin_porcentaje" class="form-label">% de Turnitín (máx 20)</label>
                             <input class="form-control" type="number" name="turnitin_porcentaje" id="turnitin_porcentaje" min="0" max="20" oninput="checkValue(this)">
                         </div>
                     </div>
                 </div>
+                
 
                 <label for="project_creation_date">Fecha de Creación de Proyecto</label><br>
                 <div class="form-group">

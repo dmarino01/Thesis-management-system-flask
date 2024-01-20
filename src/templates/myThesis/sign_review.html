@@ -32,63 +32,78 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid pt-4 px-4">
-    <h3>Firmar Calificación de Sustentación de Tesis</h3>
-    <div class="row g-4">
-        <div class="col-sm-8 col-xl-4">
-            <div class="rounded p-4">
-                <form action="{{ url_for('thesis.save_sign', id=thesis.thesis_id) }}" method="POST"
-                    enctype="multipart/form-data">
+<div class="container-fluid">
 
-                    {% with messages = get_flashed_messages() %}
-                    {% for message in messages %}
-                    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                        <strong>{{ message }}</strong>
-                        <div class="progress-container">
-                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+    {% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+        <strong>{{ message }}</strong>
+        <div class="progress-container">
+            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endwith %}
+
+    <div class="row g-4 justify-content-center"> <!-- Add justify-content-center here -->
+        <div class="col-sm-12 col-xl-6">
+            <h1 class="h3 mb-2 text-gray-800">Firmar Calificación de Sustentación de Tesis</h1>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="m-0 font-weight-bold text-primary">Ingresar Imagen de Firma</h6>
+                </div>
+
+                <div class="card-body">
+
+                    <form action="{{ url_for('thesis.save_sign', id=thesis.thesis_id) }}" method="POST"
+                        enctype="multipart/form-data">
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="mb-3">
+                            <label for="sign" class="form-label">Subir Firma Digital</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="sign" name="sign" accept=".jpg, .jpeg, .png" onchange="previewImage(event)" {% if sign_if_exists is true %}
+                                    disabled {% endif %}>
+                                <label class="input-group-text" for="sign">Escoga un archivo</label>
+                            </div>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endwith %}
 
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="image-preview-container">
+                            <img id="imagePreview" src="#" alt="Preview" class="image-preview">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="sign" class="form-label">Subir Firma Digital</label>
-                        <input class="form-control" style="width: 60%;" type="file" id="sign" name="sign"
-                            accept=".jpg, .jpeg, .png" onchange="previewImage(event)" {% if sign_if_exists is true %}
-                            disabled="" {% endif %}>
-                    </div>
-                    <div class="image-preview-container">
-                        <img id="imagePreview" src="#" alt="Preview" class="image-preview">
-                    </div>
+                        {% if result %}
+                        {% for row in result %}
+                        {% if row.link %}
+                        <img class="image-preview" src="{{ url_for('static', filename='file/signature/' + row.link) }}"
+                            alt="No Image Available">
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <br><br>
 
-                    {% if result %}
-                    {% for row in result %}
-                    {% if row.link %}
-                    <img class="image-preview" src="{{ url_for('static', filename='file/signature/' + row.link) }}"
-                        alt="No Image Available">
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <br><br>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
+                                    class="fa fa-arrow-left"></i> Volver</a>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                                class="fa fa-arrow-left"></i> Volver</a>
+                            <button type="submit" class="btn btn-success" {% if sign_if_exists is true %} disabled="" {%
+                                endif %}>
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
 
-                        <button type="submit" class="btn btn-success" {% if sign_if_exists is true %} disabled="" {%
-                            endif %}>
-                            <i class="fa fa-save"></i> Guardar
-                        </button>
+                        </div>
+                    </form>
 
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
 
 {% block customJS %}

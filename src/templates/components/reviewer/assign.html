@@ -49,13 +49,16 @@
 
                     <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}"
                         enctype="multipart/form-data">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group">
-                            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
-                            <span class="input-group-btn">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv" required>
+                                <label class="custom-file-label" for="csv_file">Escoja un archivo</label>
+                            </div>
+                            <div class="input-group-append ml-1">
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
-                            </span>
-                        </div><br>
+                            </div>
+                        </div>
+                        <br>
                         No se incluirá la 1era línea del CSV file
                         <br><br>
                         <div class="form-floating mb-3">
