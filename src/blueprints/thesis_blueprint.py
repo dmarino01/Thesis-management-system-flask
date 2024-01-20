@@ -14,6 +14,7 @@ import pandas as pd
 from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
 from controllers.ControllerReview import ControllerReview
+from controllers.ControllerReviewer import ControllerReviewer
 from werkzeug.utils import secure_filename
 import uuid
 from config import db
@@ -29,8 +30,8 @@ UPLOAD_FOLDER_SIGNATURE = os.path.join("src", "static", "file", "signature")
 @thesis_bp.route("/myThesis")
 @login_required
 def myThesis():
-    project_filter = request.args.get('project_filter')
-    status_filter = request.args.get('status_filter')
+    project_filter = request.args.get("project_filter")
+    status_filter = request.args.get("status_filter")
     data = ControllerThesis.getThesis(db, project_filter, status_filter)
     return render_template("myThesis/index.html", thesis=data)
 
@@ -41,10 +42,18 @@ def myThesis():
 def view_thesis_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
+        recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
+            db, id
+        )
         review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
         status_review = ControllerReview.getStatusReview(db, id)
-        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations, review_details=review_details, status_review=status_review)
+        return render_template(
+            "myThesis/detail.html",
+            thesis=thesis,
+            recommendations=recommendations,
+            review_details=review_details,
+            status_review=status_review,
+        )
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -74,7 +83,12 @@ def sign_review_thesis_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     result = ControllerThesis.get_link_sign(db, id)
     sign_if_exists = ControllerThesis.get_sign_if_exists(db, id)
-    return render_template("myThesis/sign_review.html", thesis=thesis, sign_if_exists=sign_if_exists, result=result)
+    return render_template(
+        "myThesis/sign_review.html",
+        thesis=thesis,
+        sign_if_exists=sign_if_exists,
+        result=result,
+    )
 
 
 # Save sign of thesis review
@@ -194,7 +208,13 @@ def update_thesis(id):
 
         if title and abstract and turnitin_porcentaje:
             ControllerThesis.updateThesis(
-                db, id, title, abstract, new_filename, new_filename_turnitin, turnitin_porcentaje
+                db,
+                id,
+                title,
+                abstract,
+                new_filename,
+                new_filename_turnitin,
+                turnitin_porcentaje,
             )
             return redirect(url_for("thesis.edit_thesis_form", id=id))
         else:
@@ -468,7 +488,41 @@ def download_excel_tesis_sin_revisiones():
     except Exception as ex:
         raise Exception(ex)
 
+
 def allowed_img(filename):
-    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# Page Thesis by Admin
+@thesis_bp.route("/tesis")
+@login_required
+def tesis():
+    project_filter = request.args.get("project_filter")
+    status_filter = request.args.get("status_filter")
+    data = ControllerThesis.getThesisForAdmin(db, project_filter, status_filter)
+    return render_template("components/tesis/index.html", thesis=data)
+
+
+# Page Assign Jury for Thesis by Admin
+@thesis_bp.route("/admin_assigns_jury_page/<int:id>")
+@login_required
+def admin_assigns_jury_page(id):
+    thesis = ControllerThesis.get_thesis_by_id(db, id)
+    left_reviewers = ControllerReviewer.getLeftReviewersToAssign(db, id)
+    assigned_reviewers = ControllerReviewer.get_reviewers_by_thesis_id(db, id)
+    total_assigned_reviewer = ControllerReviewer.getTotalReviewersByThesisId(db, id)
+    template_vars = {
+        "thesis": thesis,
+        "left_reviewers": left_reviewers,
+        "assigned_reviewers": assigned_reviewers,
+        "total_assigned_reviewer": total_assigned_reviewer,
+    }
+    return render_template("components/tesis/assign_jury.html", **template_vars)
+
+
+# Page Assign Advisor for Thesis by Admin
+@thesis_bp.route("/admin_assigns_advisor_page/<int:id>")
+@login_required
+def admin_assigns_advisor_page(id):
+    return render_template("components/tesis/assign_advisor.html")

@@ -2,6 +2,10 @@
 
 {% block title %} TESIS {% endblock %}
 
+{% block customCSS %}
+
+{% endblock %}
+
 {% block content %}
 
 <div class="container-fluid">
@@ -55,11 +59,12 @@
             <div class="table-responsive">
                 <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
                     <thead>
-                        <tr>
+                        <tr align="center">
                             <th scope="col">ID</th>
                             <th scope="col">Título</th>
-                            <th scope="col">Fecha de Inicio</th>
-                            <th scope="col">Fecha de Termino</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Fecha Termino</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Nota</th>
                             <th class="text-center" scope="col">Acción</th>
@@ -75,6 +80,7 @@
                             {% else %}
                             <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
                             <td>{{ item.submission_date }}</td>
                             <td>{{ item.expiration_date }}</td>
                             <td class="align-middle">
@@ -97,16 +103,10 @@
                             </td>
                             <td class="text-center col-2">
                                 <div class="btn-container">
-
-                                    <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}">
-                                        <i class="fa fa-eye"></i> Ver</a>
-                                    {% if item.thesis_status_id == 1 %}
-                                    <a class="btn btn-sm btn-warning" href="/edit_thesis_form/{{ item.thesis_id }}">
-                                        <i class="fa fa-pen"></i> Editar</a>
-                                    <a class="btn btn-sm btn-danger" href="/desactivate_thesis/{{ item.thesis_id }}"
-                                        onclick="return confirmDelete();">
-                                        <i class="fa fa-trash"></i> Eliminar</a>
-                                    {% endif %}
+                                    <a class="btn btn-sm btn-primary" href="/admin_assigns_jury_page/{{ item.thesis_id }}">
+                                        <i class="fa fa-cog"></i> Jurado</a>
+                                    <a class="btn btn-sm btn-secondary" href="/admin_assigns_advisor_page/{{ item.thesis_id }}">
+                                        <i class="fa fa-cog"></i> Asesor</a>
                                 </div>
                             </td>
 

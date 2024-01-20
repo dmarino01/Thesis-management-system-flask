@@ -10,73 +10,72 @@
 
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Reporte de Autores</h1>
-    <div class="card-shallow p-4">
-
-        <div class="row">
-            <div class="col-12">
-                <h4 class="mb-0">Reporte de Autores Con Asesores Asignados</h4>
-            </div>
-            <br>
-            <br>
-            <div class="col-12">
-                <h6 class="mb-0">El total de autores con asesores asignados es: {{ count_autores_con_asesores }} de
-                    un
-                    total de {{ total_autores }} autores</h6>
-            </div>
-        </div><br>
-
-        <a href="{{ url_for('author.download_excel_autores_con_asesores') }}" class="btn btn-success"><i
-                class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Reporte de Autores Con Asesores Asignados</h6>
+        </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <!-- Pagination Controls -->
-                <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
-                    <label class="mb-0" for="records-per-page">Registros Por Página: </label>
-                    <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 5%;"
-                        class="form-control" id="records-per-page">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>
-                    <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
-                            class="fa fa-arrow-left"></i></button>
-                    <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
-                </div><br>
-
-                <table class="table table-hover text-start align-middle table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID del Autor</th>
-                            <th scope="col">Nombres del Autor</th>
-                            <th scope="col">Apellidos del Autor</th>
-                            <th scope="col">Código de Autor</th>
-                            <th scope="col">ID del Asesor</th>
-                            <th scope="col">Nombres del Asesor</th>
-                            <th scope="col">Apellidos del Asesor</th>
-                            <th scope="col">Código de Asesor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in autores_con_asesores %}
-                        <tr>
-                            <td>{{ row['ID de Autor'] }}</td>
-                            <td>{{ row['Nombres del Autor'] }}</td>
-                            <td>{{ row['Apellidos del Autor'] }}</td>
-                            <td>{{ row['Código del Autor'] }}</td>
-                            <td>{{ row['ID de Asesor'] }}</td>
-                            <td>{{ row['Nombres del Asesor'] }}</td>
-                            <td>{{ row['Apellidos del Asesor'] }}</td>
-                            <td>{{ row['Código del Asesor'] }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div><br><br>
-
-            <div style="width: 250px; margin: 0 auto;">
-                <canvas id="myPieChart" data-count="{{ count_autores_con_asesores }}" data-total="{{ total_autores }}"
-                    width="250" height="250"></canvas>
+            <div class="row">
+                <div class="col-12">
+                    <h6 class="mb-0">El total de autores con asesores asignados es: {{ count_autores_con_asesores }} de
+                        un
+                        total de {{ total_autores }} autores</h6>
+                </div>
             </div>
+            <br>
+            <a href="{{ url_for('author.download_excel_autores_con_asesores') }}" class="btn btn-success"><i
+                    class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+     
+                <div class="table-responsive">
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
+                        <label class="mb-0" for="records-per-page">Registros Por Página: </label>
+                        <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 6%;"
+                            class="form-control" id="records-per-page">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
+                                class="fa fa-arrow-left"></i></button>
+                        <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
+                    </div><br>
+
+                    <table class="table table-hover text-start align-middle table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID del Autor</th>
+                                <th scope="col">Nombres del Autor</th>
+                                <th scope="col">Apellidos del Autor</th>
+                                <th scope="col">Código de Autor</th>
+                                <th scope="col">ID del Asesor</th>
+                                <th scope="col">Nombres del Asesor</th>
+                                <th scope="col">Apellidos del Asesor</th>
+                                <th scope="col">Código de Asesor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in autores_con_asesores %}
+                            <tr>
+                                <td>{{ row['ID de Autor'] }}</td>
+                                <td>{{ row['Nombres del Autor'] }}</td>
+                                <td>{{ row['Apellidos del Autor'] }}</td>
+                                <td>{{ row['Código del Autor'] }}</td>
+                                <td>{{ row['ID de Asesor'] }}</td>
+                                <td>{{ row['Nombres del Asesor'] }}</td>
+                                <td>{{ row['Apellidos del Asesor'] }}</td>
+                                <td>{{ row['Código del Asesor'] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br><br>
+
+                <div style="width: 250px; margin: 0 auto;">
+                    <canvas id="myPieChart" data-count="{{ count_autores_con_asesores }}"
+                        data-total="{{ total_autores }}" width="250" height="250"></canvas>
+                </div>
+           
         </div>
     </div>
 </div>

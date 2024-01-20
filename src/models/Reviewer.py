@@ -20,3 +20,4 @@ class Reviewer():
         self.image = image
         self.username = username
         self.is_deleted = is_deleted
+

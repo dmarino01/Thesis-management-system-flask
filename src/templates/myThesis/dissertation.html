@@ -11,71 +11,75 @@
     <h2>Crear Sustentación Tesis</h2>
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
-            <div class="card-shadow p-4">
-                {% if not dissertation_exists %}
-                <h6 class="mb-4">Ingrese los Datos de la Sustentación de Tesis</h6>
-                <form action="/save_dissertation_thesis" method="POST" enctype="multipart/form-data">
-                    {% with messages = get_flashed_messages() %}
-                    {% for message in messages %}
-                    <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                        <strong>{{ message }}</strong>
-                        <div class="progress-container">
-                            <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="m-0 font-weight-bold text-primary">Ingrese los Datos de la Sustentación de Tesis</h6>
+                </div>
+                <div class="card-body">
+                    {% if not dissertation_exists %}
+                    <form action="/save_dissertation_thesis" method="POST" enctype="multipart/form-data">
+                        {% with messages = get_flashed_messages() %}
+                        {% for message in messages %}
+                        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+                            <strong>{{ message }}</strong>
+                            <div class="progress-container">
+                                <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endwith %}
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        {% endfor %}
+                        {% endwith %}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    <div class="form-floating mb-3">
-                        <label for="floatingTitle">Título</label>
-                        <input type="text" class="form-control" id="floatingTitle" name="title"
-                            value="{{ thesis.title }}" placeholder="title">
-                    </div>
+                        <div class="form-floating mb-3">
+                            <label for="floatingTitle">Título</label>
+                            <input type="text" class="form-control" id="floatingTitle" name="title"
+                                value="{{ thesis.title }}" placeholder="title">
+                        </div>
 
-                    <div class="form-floating mb-3">
-                        <label for="floatingTitle">Abstract</label>
-                        <textarea class="form-control" style="height: 150px;" id="floatingTitle" name="abstract"
-                            placeholder="abstract">{{ thesis.abstract }}</textarea>
-                    </div>
+                        <div class="form-floating mb-3">
+                            <label for="floatingTitle">Abstract</label>
+                            <textarea class="form-control" style="height: 150px;" id="floatingTitle" name="abstract"
+                                placeholder="abstract">{{ thesis.abstract }}</textarea>
+                        </div>
 
-                    <input type="hidden" name="project_id" value="{{ thesis.thesis_id }}">
-                    <input type="hidden" name="expiration_date" value="{{ thesis.expiration_date }}">
-                    <input type="hidden" name="project_creation_date" value="{{ thesis.submission_date }}">
+                        <input type="hidden" name="project_id" value="{{ thesis.thesis_id }}">
+                        <input type="hidden" name="expiration_date" value="{{ thesis.expiration_date }}">
+                        <input type="hidden" name="project_creation_date" value="{{ thesis.submission_date }}">
 
-                    <div class="mb-3">
-                        <label for="pdf_file" class="form-label">Subir Archivo</label>
-                        <input class="form-control" style="width: 40%;" type="file" id="pdf_file"
-                            name="pdf_file" accept=".pdf">
-                    </div>
+                        <div class="mb-3">
+                            <label for="pdf_file" class="form-label">Subir Archivo</label>
+                            <input class="form-control" style="width: 40%;" type="file" id="pdf_file" name="pdf_file"
+                                accept=".pdf">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                        <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin"
-                            name="pdf_turnitin" accept=".pdf">
-                    </div>
+                        <div class="mb-3">
+                            <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
+                            <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin"
+                                name="pdf_turnitin" accept=".pdf">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="pdf_article" class="form-label">Subir Artículo de Investigación</label>
-                        <input class="form-control" style="width: 40%;" type="file" id="pdf_article"
-                            name="pdf_article" accept=".pdf">
-                    </div><br>
+                        <div class="mb-3">
+                            <label for="pdf_article" class="form-label">Subir Artículo de Investigación</label>
+                            <input class="form-control" style="width: 40%;" type="file" id="pdf_article"
+                                name="pdf_article" accept=".pdf">
+                        </div><br>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                                class="fa fa-arrow-left"></i> Volver</a>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save"></i> Guardar
-                        </button>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
+                                    class="fa fa-arrow-left"></i> Volver</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
 
 
-                {% else %}
-                Sustentación Creada <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}" role="button"><i
-                        class="fa fa-arrow-left"></i> Volver</a>
-                {% endif %}
+                    {% else %}
+                    Sustentación Creada <a class="btn btn-warning" href="{{ url_for('thesis.myThesis') }}"
+                        role="button"><i class="fa fa-arrow-left"></i> Volver</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

@@ -3,130 +3,128 @@
 {% block title %} Crear Nuevo Revisor {% endblock %}
 
 {% block content %}
-
 <!-- Form Start -->
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Crear Nuevo Revisor</h1>
-    <div class="card shallow p-4">
-        <div class="card-body">
-            <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
-                <h6 class="m-0 font-weight-bold text-primary">Ingrese los Datos del Revisor</h6>
+    <div class="card shadow mb-4">
+
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Ingrese los Datos del Revisor</h6>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
+            <strong>{{ message }}</strong>
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endwith %}
+        <div class="row g-4">
+            <div class="col-sm-12 col-xl-6">
+                <div class="card-body">
+                    <form action="/save_reviewer" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            {% with messages = get_flashed_messages() %}
-            {% for message in messages %}
-            <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                <strong>{{ message }}</strong>
-                <div class="progress-container">
-                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endwith %}
-            <div class="row g-4">
-                <div class="col-sm-12 col-xl-6">
-                    <div class="card-body">
-                        <form action="/save_reviewer" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="floatingFirstname">Nombres</label>
-                                        <input type="text" class="form-control" id="floatingFirstname" name="firstname"
-                                            placeholder="firstname">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="floatingLastname">Apellidos</label>
-                                        <input type="text" class="form-control" id="floatingLastname" name="lastname"
-                                            placeholder="lastname">
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingFirstname">Nombres</label>
+                                    <input type="text" class="form-control" id="floatingFirstname" name="firstname"
+                                        placeholder="firstname">
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="floatingReviewer_code">Código de Revisor</label>
-                                        <input type="text" class="form-control" id="floatingReviewer_code"
-                                            name="reviewer_code" placeholder="reviewer_code">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="floatingDni">DNI</label>
-                                        <input type="text" class="form-control" id="floatingDni" name="dni"
-                                            placeholder="dni">
-
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="floatingGrade">Título</label>
-                                        <select class="form-control" id="floatingGrade" name="grade"
-                                            placeholder="grade">
-                                            <option value="DR" selected="">DR</option>
-                                            <option value="MS">MS</option>
-                                        </select>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingLastname">Apellidos</label>
+                                    <input type="text" class="form-control" id="floatingLastname" name="lastname"
+                                        placeholder="lastname">
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="floatingPhone">Teléfono</label>
-                                        <input type="text" class="form-control" id="floatingPhone" name="phone"
-                                            placeholder="phone">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="floatingPhone">Dirección (opcional)</label>
-                                        <input type="text" class="form-control" id="floatingAddress" name="address"
-                                            placeholder="address">
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingReviewer_code">Código de Revisor</label>
+                                    <input type="text" class="form-control" id="floatingReviewer_code"
+                                        name="reviewer_code" placeholder="reviewer_code">
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingDni">DNI</label>
+                                    <input type="text" class="form-control" id="floatingDni" name="dni"
+                                        placeholder="dni">
 
-                            <div class="form-group">
-                                <label for="floatingEmail">Correo</label>
-                                <input type="email" class="form-control" id="floatingEmail" name="email"
-                                    placeholder="email">
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label for="floatingUsername">Usuario</label>
-                                <input type="text" class="form-control" id="floatingUsername" name="username"
-                                    placeholder="username">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="floatingGrade">Título</label>
+                                    <select class="form-control" id="floatingGrade" name="grade" placeholder="grade">
+                                        <option value="DR" selected="">DR</option>
+                                        <option value="MS">MS</option>
+                                    </select>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="floatingPassword">Contraseña</label>
-                                <input type="password" class="form-control" id="floatingPassword" name="password"
-                                    placeholder="password">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingPhone">Teléfono</label>
+                                    <input type="text" class="form-control" id="floatingPhone" name="phone"
+                                        placeholder="phone">
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label for="floatingVerify_Password">Verificar Contraseña</label>
-                                <input type="password" class="form-control" id="floatingVerify_Password"
-                                    name="verify_password" placeholder="password">
-                            </div><br>
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a class="btn btn-warning" href="{{ url_for('reviewer.reviewer') }}" role="button"><i
-                                        class="fa fa-arrow-left"></i> Volver</a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa fa-save"></i> Guardar
-                                </button>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="floatingPhone">Dirección (opcional)</label>
+                                    <input type="text" class="form-control" id="floatingAddress" name="address"
+                                        placeholder="address">
+                                </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floatingEmail">Correo</label>
+                            <input type="email" class="form-control" id="floatingEmail" name="email"
+                                placeholder="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floatingUsername">Usuario</label>
+                            <input type="text" class="form-control" id="floatingUsername" name="username"
+                                placeholder="username">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floatingPassword">Contraseña</label>
+                            <input type="password" class="form-control" id="floatingPassword" name="password"
+                                placeholder="password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floatingVerify_Password">Verificar Contraseña</label>
+                            <input type="password" class="form-control" id="floatingVerify_Password"
+                                name="verify_password" placeholder="password">
+                        </div><br>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a class="btn btn-warning" href="{{ url_for('reviewer.reviewer') }}" role="button"><i
+                                    class="fa fa-arrow-left"></i> Volver</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+
 
             <div class="col-sm-12 col-xl-6">
                 <div class="card-body">
@@ -144,7 +142,8 @@
                         <div class="input-group">
                             <input class="form-control" type="file" name="csv_file" accept=".csv" required>
                             <span class="input-group-btn">
-                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>
+                                    Subir</button>
                             </span>
                         </div><br>
                         No se incluirá la 1era línea del CSV file
@@ -158,7 +157,6 @@
                                 <option value=":">:</option>
                                 <option value="\t">\t</option>
                             </select>
-
                         </div>
 
                         <div class="form-group">

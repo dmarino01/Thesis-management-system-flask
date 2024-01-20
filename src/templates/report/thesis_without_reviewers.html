@@ -8,98 +8,98 @@
 
 {% block content %}
 
-<div class="container-fluid pt-4 px-4">
-    <h2>Reporte de Proyectos y Tesis</h2>
-    <div class="rounded p-4">
-        <div class="row">
-            <div class="col-12">
-                <h4 class="mb-0">Reporte de Proyectos y Tesis sin Revisores Asignados</h4>
-            </div>
-            <br>
-            <br>
-            <div class="col-12">
-                <h6 class="mb-0">El total de proyectos y tesis sin revisores asignados es: {{
-                    total_thesis_without_reviewers }} de un
-                    total de {{ total_thesis }} proyectos y tesis</h6>
-            </div>
-        </div><br>
-
-        <a href="{{ url_for('thesis.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
-                class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
-
-        <!-- Filters -->
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <label for="projectTypeFilter">Filtrar por Tipo:</label>
-                <select class="form-control" id="projectTypeFilter">
-                    <option value="all">Todos</option>
-                    <option value="proyecto">Proyecto</option>
-                    <option value="tesis">Tesis</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <label for="startDateFilter">Fecha de Inicio:</label>
-                <input type="date" class="form-control" id="startDateFilter">
-            </div>
-
-            <div class="col-md-3">
-                <label for="endDateFilter">Fecha de Fin:</label>
-                <input type="date" class="form-control" id="endDateFilter">
-            </div>
-
-            <div class="col-md-3">
-                <button class="btn btn-primary mt-4" onclick="applyFilters()">Aplicar Filtros</button>
-            </div>
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Reporte de Proyectos y Tesis</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Reporte de Proyectos y Tesis sin Revisores Asignados</h6>
         </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <h6 class="mb-0">El total de proyectos y tesis sin revisores asignados es: {{
+                        total_thesis_without_reviewers }} de un
+                        total de {{ total_thesis }} proyectos y tesis</h6>
+                </div>
+            </div>
+            <br>
+            <a href="{{ url_for('thesis.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
+                    class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
-        <div class="table-responsive">
-            <!-- Pagination Controls -->
-            <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
-                <label for="records-per-page">Registros Por Página: </label>
-                <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 5%;"
-                    class="form-control" id="records-per-page">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                </select>
-                <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
-                        class="fa fa-arrow-left"></i></button>
-                <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
-            </div><br>
+            <!-- Filters -->
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="projectTypeFilter">Filtrar por Tipo:</label>
+                    <select class="form-control" id="projectTypeFilter">
+                        <option value="all">Todos</option>
+                        <option value="proyecto">Proyecto</option>
+                        <option value="tesis">Tesis</option>
+                    </select>
+                </div>
 
-            <table class="table table-hover text-start align-middle table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Título</th>
-                        <th scope="col">Código de Estudiante</th>
-                        <th scope="col">Nombres</th>
-                        <th scope="col">Apellidos</th>
-                        <th scope="col">¿Es Proyecto?</th>
-                        <th scope="col">Fecha de Creación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in thesis_without_reviewers %}
-                    <tr>
-                        <td>{{ row['thesis_id'] }}</td>
-                        <td>{{ row['title'] }}</td>
-                        <td>{{ row['student_code'] }}</td>
-                        <td>{{ row['firstname'] }}</td>
-                        <td>{{ row['lastname'] }}</td>
-                        <td>{{ row['project_type'] }}</td>
-                        <td>{{ row['submission_date'] }}</td>
-                    </tr>
-                    {% endfor %}
+                <div class="col-md-3">
+                    <label for="startDateFilter">Fecha de Inicio:</label>
+                    <input type="date" class="form-control" id="startDateFilter">
+                </div>
 
-                </tbody>
-            </table>
-        </div><br><br>
+                <div class="col-md-3">
+                    <label for="endDateFilter">Fecha de Fin:</label>
+                    <input type="date" class="form-control" id="endDateFilter">
+                </div>
 
-        <div style="width: 250px; margin: 0 auto;">
-            <canvas id="myPieChart" data-count="{{ total_thesis_without_reviewers }}" data-total="{{ total_thesis }}"
-                width="250" height="250"></canvas>
+                <div class="col-md-3">
+                    <button class="btn btn-primary mt-4" onclick="applyFilters()">Aplicar Filtros</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <!-- Pagination Controls -->
+                <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
+                    <label for="records-per-page">Registros Por Página: </label>
+                    <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 5%;"
+                        class="form-control" id="records-per-page">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
+                            class="fa fa-arrow-left"></i></button>
+                    <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
+                </div><br>
+
+                <table class="table table-hover text-start align-middle table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Código de Estudiante</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">¿Es Proyecto?</th>
+                            <th scope="col">Fecha de Creación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in thesis_without_reviewers %}
+                        <tr>
+                            <td>{{ row['thesis_id'] }}</td>
+                            <td>{{ row['title'] }}</td>
+                            <td>{{ row['student_code'] }}</td>
+                            <td>{{ row['firstname'] }}</td>
+                            <td>{{ row['lastname'] }}</td>
+                            <td>{{ row['project_type'] }}</td>
+                            <td>{{ row['submission_date'] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div><br><br>
+
+            <div style="width: 250px; margin: 0 auto;">
+                <canvas id="myPieChart" data-count="{{ total_thesis_without_reviewers }}"
+                    data-total="{{ total_thesis }}" width="250" height="250"></canvas>
+            </div>
         </div>
     </div>
 </div>

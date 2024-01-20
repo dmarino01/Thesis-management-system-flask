@@ -86,14 +86,6 @@ def temas():
 def libreria():
     return render_template('libreria.html')
 
-@app.route('/tesis')
-@login_required
-def tesis():
-    project_filter = request.args.get('project_filter')
-    status_filter = request.args.get('status_filter')
-    data = ControllerThesis.getThesisForAdmin(db, project_filter, status_filter)
-    return render_template('components/tesis/index.html', thesis=data)
-
 @app.template_filter('b64encode')
 def b64encode_filter(data):
     if data:

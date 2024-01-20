@@ -2,6 +2,7 @@ import csv
 from datetime import date, datetime
 from io import StringIO
 from models.Reviewer import Reviewer
+from models.AssignedReviewer import AssignedReviewer
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.security import generate_password_hash
@@ -140,6 +141,81 @@ class ControllerReviewer:
                 return None
         except Exception as ex:
             raise Exception(ex)
+        
+    
+    # Get Reviewers by Thesis ID
+    @classmethod
+    def get_reviewers_by_thesis_id(cls, db, id):
+        try:
+            session = db.session()
+            sql = text("CALL GetReviewersByThesisId(:p_thesis_id);")
+            result = session.execute(sql, {"p_thesis_id": id})
+            rows = result.fetchall()
+            reviewers = []
+            if rows != None:
+                for row in rows:
+                    reviewer = AssignedReviewer(
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        row[6],
+                    )
+                    reviewers.append(reviewer)
+                return reviewers
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+        
+    
+    #Obtain number of reviewer by thesis id
+    @classmethod
+    def getTotalReviewersByThesisId(cls, db, id):
+        try:
+            session = db.session()    
+            sql = text('CALL GetTotalReviewersByThesisId(:p_thesis_id);')
+            result = session.execute(sql, {"p_thesis_id": id})
+            count = result.fetchone()[0]
+            result.close()
+            return count
+        except Exception as ex:
+            raise Exception(ex)
+        
+    #Obtain reviewer no assigned to thesis 
+    @classmethod    
+    def getLeftReviewersToAssign(cls, db, id):
+        try:  
+            session = db.session()
+            sql = text("CALL getLeftReviewersToAssign(:p_thesis_id)")
+            result = session.execute(sql, {"p_thesis_id": id})
+            rows = result.fetchall()
+            reviewers = []
+            if rows != None:
+                for row in rows:
+                    reviewer = Reviewer(
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        row[6],
+                        row[7],
+                        row[8],
+                        row[9],
+                        row[10],
+                        row[11],
+                    )
+                    reviewers.append(reviewer)
+                return reviewers
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+        
 
     # Update an reviewer info
     @classmethod

@@ -3,9 +3,8 @@
 {% block title %} Asignar Revisores a Tesis {% endblock %}
 
 {% block content %}
+<div class="container-fluid">
 
-<div class="container-fluid pt-4 px-4">
-    <h3>Asignar Revisores a Proyectos y Tesis</h3>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br />
@@ -25,147 +24,149 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="custom-info-button alert alert-info alert-dismissible position-relative" role="alert"
-                id="myAlert">
-                <strong>Solo se aceptara Grado de Doctor (DR) para asignar a una tesis.</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
 
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Ingresar Relación por Archivo CSV</h6>
+            <h1 class="h3 mb-2 text-gray-800">Asignar Revisores a Proyectos y Tesis</h1>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="m-0 font-weight-bold text-primary">Ingresar Relación por Archivo CSV</h6>
+                </div>
+                <div class="card-body">
 
-                <div style="display: inline-block;">
-                    <h6 style="display: inline;">Archivo de ejemplo</h6>
-                    <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_revisores-tesis.csv') }}"
-                        style="display: inline; margin-left: 20px;" download>
-                        plantilla_relacion_revisores-tesis.csv</a>
-                </div><br><br>
-
-                <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}"
-                    enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="input-group">
-                        <input class="form-control bg-dark" type="file" name="csv_file" accept=".csv" required>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
-                        </span>
-                    </div><br>
-                    No se incluirá la 1era línea del CSV file
-                    <br><br>
-                    <div class="form-floating mb-3">
-                        <select style="width: 150px;" class="form-select mb-3" id="Select_separator"
-                            name="Select_separator">
-                            <option value=",">,</option>
-                            <option value=";" selected="">;</option>
-                            <option value=":">:</option>
-                            <option value="\t">\t</option>
-                        </select>
-                        <label for="Select_separator">Separador CSV</label>
+                    <div class="custom-info-button alert alert-info alert-dismissible position-relative" role="alert"
+                        id="myAlert">
+                        <strong>Solo se aceptara Grado de Doctor (DR) para asignar a una tesis.</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
+                    
+                    <div style="display: inline-block;">
+                        <h6 style="display: inline;">Archivo de ejemplo</h6>
+                        <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_revisores-tesis.csv') }}"
+                            style="display: inline; margin-left: 20px;" download>
+                            plantilla_relacion_revisores-tesis.csv</a>
+                    </div><br><br>
 
-                    <div class="form-floating mb-3">
-                        <select style="width: 150px;" class="form-select mb-3" id="Select_codificator"
-                            name="Select_codificator">
-                            <option value="UTF-8" selected="">UTF-8</option>
-                            <option value="WINDOWS-1252">WINDOWS-1252</option>
-                            <option value="ISO-8859-1">ISO-8859-1</option>
-                            <option value="WCHAR">WCHAR</option>
-                            <option value="BYTE2BE">BYTE2BE</option>
-                            <option value="BYTE2LE">BYTE2LE</option>
-                            <option value="BYTE4BE">BYTE4BE</option>
-                            <option value="BYTE4LE">BYTE4LE</option>
-                            <option value="BASE64">BASE64</option>
-                            <option value="UUENCODE">UUENCODE</option>
-                            <option value="HTML-ENTITIES">HTML-ENTITIES</option>
-                            <option value="QUOTED-PRINTABLE">QUOTED-PRINTABLE</option>
-                            <option value="7BIT">7BIT</option>
-                            <option value="8BIT">8BIT</option>
-                            <option value="UCS-4">UCS-4</option>
-                            <option value="UCS-4BE">UCS-4BE</option>
-                            <option value="UCS-4LE">UCS-4LE</option>
-                            <option value="UCS-2">UCS-2</option>
-                            <option value="UCS-2BE">UCS-2BE</option>
-                            <option value="UCS-2LE">UCS-2LE</option>
-                            <option value="UTF-32">UTF-32</option>
-                            <option value="UTF-32BE">UTF-32BE</option>
-                            <option value="UTF-32LE">UTF-32LE</option>
-                            <option value="UTF-16">UTF-16</option>
-                            <option value="UTF-16BE">UTF-16BE</option>
-                            <option value="UTF-16LE">UTF-16LE</option>
-                            <option value="UTF-7">UTF-7</option>
-                            <option value="UTF7-IMAP">UTF7-IMAP</option>
-                            <option value="ASCII">ASCII</option>
-                            <option value="EUC-JP">EUC-JP</option>
-                            <option value="SJIS">SJIS</option>
-                            <option value="EUCJP-WIN">EUCJP-WIN</option>
-                            <option value="EUC-JP-2004">EUC-JP-2004</option>
-                            <option value="SJIS-WIN">SJIS-WIN</option>
-                            <option value="SJIS-MOBILE#DOCOMO">SJIS-MOBILE#DOCOMO</option>
-                            <option value="SJIS-MOBILE#KDDI">SJIS-MOBILE#KDDI</option>
-                            <option value="SJIS-MOBILE#SOFTBANK">SJIS-MOBILE#SOFTBANK</option>
-                            <option value="SJIS-MAC">SJIS-MAC</option>
-                            <option value="SJIS-2004">SJIS-2004</option>
-                            <option value="UTF-8-MOBILE#DOCOMO">UTF-8-MOBILE#DOCOMO</option>
-                            <option value="UTF-8-MOBILE#KDDI-A">UTF-8-MOBILE#KDDI-A</option>
-                            <option value="UTF-8-MOBILE#KDDI-B">UTF-8-MOBILE#KDDI-B</option>
-                            <option value="UTF-8-MOBILE#SOFTBANK">UTF-8-MOBILE#SOFTBANK</option>
-                            <option value="CP932">CP932</option>
-                            <option value="CP51932">CP51932</option>
-                            <option value="JIS">JIS</option>
-                            <option value="ISO-2022-JP">ISO-2022-JP</option>
-                            <option value="ISO-2022-JP-MS">ISO-2022-JP-MS</option>
-                            <option value="GB18030">GB18030</option>
-                            <option value="WINDOWS-1254">WINDOWS-1254</option>
-                            <option value="ISO-8859-2">ISO-8859-2</option>
-                            <option value="ISO-8859-3">ISO-8859-3</option>
-                            <option value="ISO-8859-4">ISO-8859-4</option>
-                            <option value="ISO-8859-5">ISO-8859-5</option>
-                            <option value="ISO-8859-6">ISO-8859-6</option>
-                            <option value="ISO-8859-7">ISO-8859-7</option>
-                            <option value="ISO-8859-8">ISO-8859-8</option>
-                            <option value="ISO-8859-9">ISO-8859-9</option>
-                            <option value="ISO-8859-10">ISO-8859-10</option>
-                            <option value="ISO-8859-13">ISO-8859-13</option>
-                            <option value="ISO-8859-14">ISO-8859-14</option>
-                            <option value="ISO-8859-15">ISO-8859-15</option>
-                            <option value="ISO-8859-16">ISO-8859-16</option>
-                            <option value="EUC-CN">EUC-CN</option>
-                            <option value="CP936">CP936</option>
-                            <option value="HZ">HZ</option>
-                            <option value="EUC-TW">EUC-TW</option>
-                            <option value="BIG-5">BIG-5</option>
-                            <option value="CP950">CP950</option>
-                            <option value="EUC-KR">EUC-KR</option>
-                            <option value="UHC">UHC</option>
-                            <option value="ISO-2022-KR">ISO-2022-KR</option>
-                            <option value="WINDOWS-1251">WINDOWS-1251</option>
-                            <option value="CP866">CP866</option>
-                            <option value="KOI8-R">KOI8-R</option>
-                            <option value="KOI8-U">KOI8-U</option>
-                            <option value="ARMSCII-8">ARMSCII-8</option>
-                            <option value="CP850">CP850</option>
-                            <option value="JIS-MS">JIS-MS</option>
-                            <option value="ISO-2022-JP-2004">ISO-2022-JP-2004</option>
-                            <option value="ISO-2022-JP-MOBILE#KDDI">ISO-2022-JP-MOBILE#KDDI</option>
-                            <option value="CP50220">CP50220</option>
-                            <option value="CP50220RAW">CP50220RAW</option>
-                            <option value="CP50221">CP50221</option>
-                            <option value="CP50222">CP50222</option>
-                        </select>
-                        <label for="Select_codificator">Codificación</label>
-                </form>
+                    <form method="POST" action="{{ url_for('reviewer.upload_reviewer_assignations') }}"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="input-group">
+                            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
+                            </span>
+                        </div><br>
+                        No se incluirá la 1era línea del CSV file
+                        <br><br>
+                        <div class="form-floating mb-3">
+                            <label for="Select_separator">Separador CSV</label>
+                            <select style="width: 150px;" class="form-control mb-3" id="Select_separator"
+                                name="Select_separator">
+                                <option value=",">,</option>
+                                <option value=";" selected="">;</option>
+                                <option value=":">:</option>
+                                <option value="\t">\t</option>
+                            </select>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="Select_codificator">Codificación</label>
+                            <select style="width: 150px;" class="form-control mb-3" id="Select_codificator"
+                                name="Select_codificator">
+                                <option value="UTF-8" selected="">UTF-8</option>
+                                <option value="WINDOWS-1252">WINDOWS-1252</option>
+                                <option value="ISO-8859-1">ISO-8859-1</option>
+                                <option value="WCHAR">WCHAR</option>
+                                <option value="BYTE2BE">BYTE2BE</option>
+                                <option value="BYTE2LE">BYTE2LE</option>
+                                <option value="BYTE4BE">BYTE4BE</option>
+                                <option value="BYTE4LE">BYTE4LE</option>
+                                <option value="BASE64">BASE64</option>
+                                <option value="UUENCODE">UUENCODE</option>
+                                <option value="HTML-ENTITIES">HTML-ENTITIES</option>
+                                <option value="QUOTED-PRINTABLE">QUOTED-PRINTABLE</option>
+                                <option value="7BIT">7BIT</option>
+                                <option value="8BIT">8BIT</option>
+                                <option value="UCS-4">UCS-4</option>
+                                <option value="UCS-4BE">UCS-4BE</option>
+                                <option value="UCS-4LE">UCS-4LE</option>
+                                <option value="UCS-2">UCS-2</option>
+                                <option value="UCS-2BE">UCS-2BE</option>
+                                <option value="UCS-2LE">UCS-2LE</option>
+                                <option value="UTF-32">UTF-32</option>
+                                <option value="UTF-32BE">UTF-32BE</option>
+                                <option value="UTF-32LE">UTF-32LE</option>
+                                <option value="UTF-16">UTF-16</option>
+                                <option value="UTF-16BE">UTF-16BE</option>
+                                <option value="UTF-16LE">UTF-16LE</option>
+                                <option value="UTF-7">UTF-7</option>
+                                <option value="UTF7-IMAP">UTF7-IMAP</option>
+                                <option value="ASCII">ASCII</option>
+                                <option value="EUC-JP">EUC-JP</option>
+                                <option value="SJIS">SJIS</option>
+                                <option value="EUCJP-WIN">EUCJP-WIN</option>
+                                <option value="EUC-JP-2004">EUC-JP-2004</option>
+                                <option value="SJIS-WIN">SJIS-WIN</option>
+                                <option value="SJIS-MOBILE#DOCOMO">SJIS-MOBILE#DOCOMO</option>
+                                <option value="SJIS-MOBILE#KDDI">SJIS-MOBILE#KDDI</option>
+                                <option value="SJIS-MOBILE#SOFTBANK">SJIS-MOBILE#SOFTBANK</option>
+                                <option value="SJIS-MAC">SJIS-MAC</option>
+                                <option value="SJIS-2004">SJIS-2004</option>
+                                <option value="UTF-8-MOBILE#DOCOMO">UTF-8-MOBILE#DOCOMO</option>
+                                <option value="UTF-8-MOBILE#KDDI-A">UTF-8-MOBILE#KDDI-A</option>
+                                <option value="UTF-8-MOBILE#KDDI-B">UTF-8-MOBILE#KDDI-B</option>
+                                <option value="UTF-8-MOBILE#SOFTBANK">UTF-8-MOBILE#SOFTBANK</option>
+                                <option value="CP932">CP932</option>
+                                <option value="CP51932">CP51932</option>
+                                <option value="JIS">JIS</option>
+                                <option value="ISO-2022-JP">ISO-2022-JP</option>
+                                <option value="ISO-2022-JP-MS">ISO-2022-JP-MS</option>
+                                <option value="GB18030">GB18030</option>
+                                <option value="WINDOWS-1254">WINDOWS-1254</option>
+                                <option value="ISO-8859-2">ISO-8859-2</option>
+                                <option value="ISO-8859-3">ISO-8859-3</option>
+                                <option value="ISO-8859-4">ISO-8859-4</option>
+                                <option value="ISO-8859-5">ISO-8859-5</option>
+                                <option value="ISO-8859-6">ISO-8859-6</option>
+                                <option value="ISO-8859-7">ISO-8859-7</option>
+                                <option value="ISO-8859-8">ISO-8859-8</option>
+                                <option value="ISO-8859-9">ISO-8859-9</option>
+                                <option value="ISO-8859-10">ISO-8859-10</option>
+                                <option value="ISO-8859-13">ISO-8859-13</option>
+                                <option value="ISO-8859-14">ISO-8859-14</option>
+                                <option value="ISO-8859-15">ISO-8859-15</option>
+                                <option value="ISO-8859-16">ISO-8859-16</option>
+                                <option value="EUC-CN">EUC-CN</option>
+                                <option value="CP936">CP936</option>
+                                <option value="HZ">HZ</option>
+                                <option value="EUC-TW">EUC-TW</option>
+                                <option value="BIG-5">BIG-5</option>
+                                <option value="CP950">CP950</option>
+                                <option value="EUC-KR">EUC-KR</option>
+                                <option value="UHC">UHC</option>
+                                <option value="ISO-2022-KR">ISO-2022-KR</option>
+                                <option value="WINDOWS-1251">WINDOWS-1251</option>
+                                <option value="CP866">CP866</option>
+                                <option value="KOI8-R">KOI8-R</option>
+                                <option value="KOI8-U">KOI8-U</option>
+                                <option value="ARMSCII-8">ARMSCII-8</option>
+                                <option value="CP850">CP850</option>
+                                <option value="JIS-MS">JIS-MS</option>
+                                <option value="ISO-2022-JP-2004">ISO-2022-JP-2004</option>
+                                <option value="ISO-2022-JP-MOBILE#KDDI">ISO-2022-JP-MOBILE#KDDI</option>
+                                <option value="CP50220">CP50220</option>
+                                <option value="CP50220RAW">CP50220RAW</option>
+                                <option value="CP50221">CP50221</option>
+                                <option value="CP50222">CP50222</option>
+                            </select>
+                    </form>
+                    <h6 class="mb-4">Roles de Revisor</h6>
+                    <h8 class="mb-4">1: Presidente</h8>
+                    <h8 class="mb-4">2: Secretario</h8>
+                    <h8 class="mb-4">3: Vocal</h8>
+                    <h8 class="mb-4">4: Accesatario</h8>
+                </div>
             </div>
-            <h6 class="mb-4">Roles de Revisor</h6>
-            <h8 class="mb-4">1: PRESIDENTE</h8>
-            <h8 class="mb-4">2: SECRETARIO</h8>
-            <h8 class="mb-4">3: VOCAL</h8>
-            <h8 class="mb-4">4: ACCESATARIO</h8>
         </div>
     </div>
 </div>
