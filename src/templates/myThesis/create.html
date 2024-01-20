@@ -3,6 +3,25 @@
 {% block title %} Registrar Proyecto de Tesis {% endblock %}
 
 {% block customCSS %}
+<script>
+    function checkValue(input) {
+        // Remove leading zeros and ensure it's a valid number
+        let value = parseInt(input.value, 10);
+
+        // Check if the value is NaN (non-numeric)
+        if (isNaN(value)) {
+            input.value = 0;
+        } else {
+            // Ensure the value is within the range
+            if (value < 0) {
+                input.value = 0;
+            } else if (value > 20) {
+                input.value = 20;
+            }
+        }
+    }
+</script>
+
 <style>
     body {
         background: #f7f6f3;
@@ -233,10 +252,19 @@
                         accept=".pdf">
                 </div>
 
-                <div class="mb-3">
-                    <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
-                    <input class="form-control" style="width: 40%;" type="file" id="pdf_turnitin" name="pdf_turnitin"
-                        accept=".pdf">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
+                            <input class="form-control" type="file" id="pdf_turnitin" name="pdf_turnitin"accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="turnitin_porcentaje" class="form-label">% de Turnitín (máx 20)</label>
+                            <input class="form-control" type="number" name="turnitin_porcentaje" id="turnitin_porcentaje" min="0" max="20" oninput="checkValue(this)">
+                        </div>
+                    </div>
                 </div>
 
                 <label for="project_creation_date">Fecha de Creación de Proyecto</label><br>
@@ -260,6 +288,9 @@
 
 {% endblock %}
 
+
+<!-- Your HTML and other code -->
+
 {% block CustomJS %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -275,4 +306,9 @@
         document.getElementById('project_creation_date').value = `${year}-${month}-${day}`;
     });
 </script>
+
 {% endblock %}
+
+<!-- Your remaining HTML and other code -->
+
+

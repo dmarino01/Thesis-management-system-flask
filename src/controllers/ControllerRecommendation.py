@@ -12,7 +12,7 @@ class ControllerRecommendation:
             #sql = text("CALL GetThesisByAdvisor(:person_id);")
             sql = text(
                     "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, "
-                    "T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, Aut.author_id, P.firstname, P.lastname "
+                    "T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, Aut.author_id, P.firstname, P.lastname "
                     "FROM THESIS T "
                     "INNER JOIN AUTHOR_THESIS AT ON T.thesis_id = AT.thesis_id "
                     "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
@@ -57,6 +57,7 @@ class ControllerRecommendation:
                         row[12],
                         row[13],
                         row[14],
+                        row[15],
                     )
                     thesiss.append(thesis)
                 return thesiss

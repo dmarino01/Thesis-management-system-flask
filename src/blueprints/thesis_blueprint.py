@@ -43,7 +43,8 @@ def view_thesis_page(id):
         thesis = ControllerThesis.get_thesis_by_id(db, id)
         recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(db, id)
         review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
-        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations, review_details=review_details)
+        status_review = ControllerReview.getStatusReview(db, id)
+        return render_template("myThesis/detail.html", thesis=thesis, recommendations=recommendations, review_details=review_details, status_review=status_review)
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -144,6 +145,7 @@ def update_thesis(id):
         old_turnitin_link = request.form["old_turnitin_link"]
         pdf_file = request.files["pdf_file"]
         pdf_turnitin = request.files["pdf_turnitin"]
+        turnitin_porcentaje = request.form["turnitin_porcentaje"]
         project_creation_date = request.form["project_creation_date"]
 
         if pdf_file and pdf_file.filename != "":
@@ -190,9 +192,9 @@ def update_thesis(id):
         else:
             new_filename_turnitin = old_turnitin_link
 
-        if title and abstract:
+        if title and abstract and turnitin_porcentaje:
             ControllerThesis.updateThesis(
-                db, id, title, abstract, new_filename, new_filename_turnitin
+                db, id, title, abstract, new_filename, new_filename_turnitin, turnitin_porcentaje
             )
             return redirect(url_for("thesis.edit_thesis_form", id=id))
         else:
@@ -212,6 +214,7 @@ def save_thesis():
         abstract = request.form["abstract"]
         pdf_file = request.files["pdf_file"]
         pdf_turnitin = request.files["pdf_turnitin"]
+        turnitin_porcentaje = request.form["turnitin_porcentaje"]
         project_id = request.form.get("project_id")
         expiration_date = request.form.get("expiration_date")
         project_creation_date = request.form["project_creation_date"]
@@ -221,7 +224,7 @@ def save_thesis():
         else:
             project_id = int(project_id)
 
-        if title and abstract and pdf_file and pdf_turnitin:
+        if title and abstract and pdf_file and pdf_turnitin and turnitin_porcentaje:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             if allowed_pdf(pdf_file.filename) and allowed_pdf(pdf_turnitin.filename):
                 # Generate a unique identifier
@@ -259,6 +262,7 @@ def save_thesis():
                     project_id,
                     new_filename_pdf,
                     new_filename_turnitin,
+                    turnitin_porcentaje,
                     expiration_date,
                     project_creation_date,
                 )

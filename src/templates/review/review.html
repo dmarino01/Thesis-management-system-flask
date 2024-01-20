@@ -50,14 +50,15 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <h4>Colocar Calificación</h4>
                         <div class="form-floating mb-3">
+                            <label for="nota">Nota</label>
                             <input type="number" class="form-control" id="nota" name="nota" style="width: 80px;"
                                 placeholder="Nota" min="0" max="20" oninput="checkValue(this)">
-                            <label for="nota">Nota</label>
                         </div>
                         <div class="form-floating mb-3">
+                            <label for="comentario">Comentarios (Opcional)</label>
                             <textarea class="form-control" style="height: 100px;" id="comentario" name="comentario"
                                 placeholder="abstract"></textarea>
-                            <label for="comentario">Comentarios (Opcional)</label>
+                            
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <button type="submit" class="btn btn-success">
