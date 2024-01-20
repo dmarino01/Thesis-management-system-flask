@@ -366,7 +366,7 @@ class ControllerThesis:
             session = db.session()
             
             sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
@@ -412,6 +412,7 @@ class ControllerThesis:
                         row[12],
                         row[13],
                         row[14],
+                        row[15],
                     )
                     thesiss.append(thesis)
                 return thesiss

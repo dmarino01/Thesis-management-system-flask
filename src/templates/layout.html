@@ -53,10 +53,11 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                <div class="rounded-circle">
+                    <img src="{{ url_for('static', filename='img/favicon1.ico') }}" alt="logo-unt"
+                        style="width: 40px; height: 40px;">
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Synthesis</div>
             </a>
 
             <!-- Divider -->
@@ -101,7 +102,7 @@
                 </div>
             </li>
             {% endif %}
-            
+
             {% if current_user.role == 'Admin' or current_user.role == 'Autor' %}
             <li class="nav-item">
                 <a class="nav-link" href="/myThesis">
@@ -109,15 +110,16 @@
                     <span>Mis Tesis</span></a>
             </li>
             {% endif %}
-            
+
             {% if current_user.role == 'Admin' or current_user.role == 'Asesor' %}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('recommendation.recommendation_thesis', id=current_user.person_id)}}">
+                <a class="nav-link"
+                    href="{{ url_for('recommendation.recommendation_thesis', id=current_user.person_id)}}">
                     <i class="fa fa-fw fa-bookmark"></i>
                     <span>Tesis Añadidas</span></a>
             </li>
             {% endif %}
-            
+
             {% if current_user.role == 'Admin' or current_user.role == 'Revisor' %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('review.review_thesis', id=current_user.person_id)}}">
@@ -201,16 +203,6 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
-            <!-- Sidebar Message -->
-            <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components,
-                    and more!</p>
-                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to
-                    Pro!</a>
-            </div>
-
         </ul>
         <!-- End of Sidebar -->
 
