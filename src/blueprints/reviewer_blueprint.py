@@ -225,3 +225,29 @@ def upload_reviewer_assignations():
         flash(str(ex))  # Display the caught exception message
         return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
 
+
+# Save Reviewer assignation
+@reviewer_bp.route("/save_jury_assignation/<int:id>", methods=["POST"])
+@login_required
+def save_jury_assignation(id):
+    try:
+        reviewer = request.form["reviewer"]
+        role = request.form["role"]
+        if reviewer and role:
+            data = ControllerReviewer.assignRelationReviewerThesis(db, id, reviewer, role)
+        return redirect(url_for("thesis.admin_assigns_jury_page", id=id))
+    except Exception as ex:  
+        #flash(str(ex))  # Display the caught exception message
+        return redirect(url_for("thesis.admin_assigns_jury_page", id=id))
+    
+
+# Delete Reviewer assignation
+@reviewer_bp.route("/revome_reviewer_from_assignment_page/<int:reviewer_id>/<int:thesis_id>")
+@login_required
+def revome_reviewer_from_assignment_page(reviewer_id, thesis_id):
+    try:
+        data = ControllerReviewer.deleteRelationReviewerThesis(db, reviewer_id, thesis_id)
+        return redirect(url_for("thesis.admin_assigns_jury_page", id=thesis_id))
+    except Exception as ex:  
+        #flash(str(ex))  # Display the caught exception message
+        return redirect(url_for("thesis.admin_assigns_jury_page", id=thesis_id))

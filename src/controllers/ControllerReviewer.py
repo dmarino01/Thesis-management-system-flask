@@ -350,3 +350,42 @@ class ControllerReviewer:
         except Exception as e:
             print(f"Exception occurred: {e}")
             return {"error": str(e)}, 500
+
+
+    # Assign thesis - reviewers relation
+    @classmethod
+    def assignRelationReviewerThesis(cls, db, id, reviewer, role):
+        try:
+            assignation_date = date.today().strftime("%Y-%m-%d")
+            session = db.session()
+            sql = text(
+                "INSERT INTO reviewer_thesis "
+                "(reviewer_id, thesis_id, reviewer_role_id, assignation_date) "
+                "VALUES "
+                "(:reviewer_id, :thesis_id, :reviewer_role_id, :assignation_date)"
+            )
+            params = {
+                "thesis_id": id,
+                "reviewer_id": reviewer,
+                "reviewer_role_id": role,
+                "assignation_date": assignation_date
+            }
+            session.execute(sql, params)
+            session.commit()
+            return {"message": "Reviewer assignation created successfully"}, 200
+        except Exception as ex:
+            raise Exception(ex)
+        
+    # Delete thesis - reviewers relation
+    @classmethod
+    def deleteRelationReviewerThesis(cls, db, reviewer_id, thesis_id):
+        try:
+            assignation_date = date.today().strftime("%Y-%m-%d")
+            session = db.session()
+            sql = text("DELETE FROM reviewer_thesis WHERE reviewer_id = :reviewer_id AND thesis_id = :thesis_id;")
+            params = {"reviewer_id": reviewer_id, "thesis_id": thesis_id}
+            session.execute(sql, params)
+            session.commit()
+            return {"message": "Reviewer assignation deleted successfully"}, 200
+        except Exception as ex:
+            raise Exception(ex)

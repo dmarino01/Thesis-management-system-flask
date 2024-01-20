@@ -4,6 +4,7 @@
 
 {% block customCSS %}
 
+
 {% endblock %}
 
 {% block content %}
@@ -14,33 +15,22 @@
             <h6 class="m-0 font-weight-bold text-primary">Asignar Revisores de Tesis</h6>
         </div>
         <div class="card-body">
+            <form action="{{ url_for('reviewer.save_jury_assignation', id=thesis.thesis_id) }}" method="post">
 
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <br />
-            {% for message in messages %}
-            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-                id="myAlert">
-                <strong>{{ message }}</strong>
-                <div class="progress-container">
-                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <form action="" method="post">
                 <div class="row align-items-center">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="mySelect11">Seleccionar Revisor</label>
-                            <select class="form-control" id="mySelect11" name="reviewer" placeholder="reviewer">
+                            <label for="mySelect">Seleccionar Revisor</label>
+                            <select class="form-control" id="mySelect" name="reviewer">
                                 {% if left_reviewers %}
+                                <option value="">Seleccionar revisor...</option>
                                 {% for reviewer in left_reviewers %}
-                                <option value="{{ reviewer.reviewer_id }}">{{ reviewer.firstname }} {{ reviewer.lastname
-                                    }} | {{ reviewer.username }}</option>
+                                <option value="{{ reviewer.reviewer_id }}">
+                                    {{ reviewer.reviewer_code }} | {{ reviewer.firstname }} {{ reviewer.lastname }} | {{
+                                    reviewer.username }}
+                                </option>
                                 {% endfor %}
                                 {% else %}
                                 <option value="">No hay revisores...</option>
@@ -110,7 +100,7 @@
                             <td class="text-center col-2">
                                 <div class="btn-container">
                                     <a class="btn btn-sm btn-danger"
-                                        href="/revome_reviewer_from_assignment_page/{{ item.reviewer_id }}/{{ thesis.thesis_id }}">
+                                        href="{{ url_for('reviewer.revome_reviewer_from_assignment_page', reviewer_id=item.reviewer_id, thesis_id=thesis.thesis_id)}}">
                                         <i class="fa fa-trash"></i> Quitar</a>
                                 </div>
                             </td>
@@ -132,5 +122,12 @@
 {% endblock %}
 
 {% block customJS %}
-
+<script>
+    jQuery(document).ready(function () {
+        // Initialize Select2
+        jQuery('#mySelect').select2({
+            placeholder: "Selecciona un revisor...",
+        });
+    });
+</script>
 {% endblock %}
