@@ -148,7 +148,7 @@ class ControllerAuthor():
     def getAuthorsWithoutAdvisor(cls, db):
         try:
             session = db.session()
-            sql = text('SELECT * FROM author_without_advisor_assigned_info;')
+            sql = text('SELECT * FROM thesis_author_without_advisor_assigned_info;')
             result = session.execute(sql)
             return result
         except Exception as ex:
@@ -159,7 +159,7 @@ class ControllerAuthor():
     def getCountofAuthorsWithoutAdvisor(cls, db):
         try:
             session = db.session()    
-            sql = text('SELECT COUNT(*) FROM author_without_advisor_assigned_info;')
+            sql = text('SELECT COUNT(*) FROM thesis_author_without_advisor_assigned_info;')
             result = session.execute(sql)
             count = result.fetchone()[0]
             return count
@@ -171,7 +171,7 @@ class ControllerAuthor():
     def getCountofAuthorsWithAdvisor(cls, db):
         try:
             session = db.session()    
-            sql = text('SELECT COUNT(*) FROM author_advisor_info;')
+            sql = text('SELECT COUNT(*) FROM thesis_author_advisor_info;')
             result = session.execute(sql)
             count = result.fetchone()[0]
             return count
@@ -183,7 +183,7 @@ class ControllerAuthor():
     def getAuthorsWithAdvisor(cls, db):
         try:
             session = db.session()
-            sql = text('SELECT * FROM author_advisor_info;')
+            sql = text('SELECT * FROM thesis_author_advisor_info;')
             result = session.execute(sql)
             session.close()
             return result

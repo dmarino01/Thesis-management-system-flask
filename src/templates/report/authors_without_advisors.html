@@ -12,12 +12,12 @@
     <h1 class="h3 mb-2 text-gray-800">Reporte de Autores</h1>
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
-            <h6 class="m-0 font-weight-bold text-primary">Reporte de Autores Sin Asesores Asignados</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Reporte de Autores Con tesis Sin Asesores Asignados</h6>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <h6 class="mb-0">El total de autores sin asesores asignados es: {{ count_autores_sin_asesores }} de
+                    <h6 class="mb-0">El total de autores con tesis sin asesores asignados es: {{ count_autores_sin_asesores }} de
                         un
                         total de {{ total_autores }} autores</h6>
                 </div>
@@ -42,20 +42,25 @@
 
                 <table class="table table-hover text-start align-middle table-hover mb-0">
                     <thead>
-                        <tr>
-                            <th scope="col">ID</th>
+                        <tr>                  
+                            <th scope="col">ID de Autor</th>
                             <th scope="col">Nombres</th>
                             <th scope="col">Apellidos</th>
                             <th scope="col">Código de Autor</th>
+                            <th scope="col">ID de Tesis</th>
+                            <th scope="col">Titulo</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in autores_sin_asesores %}
                         <tr>
-                            <td>{{ row['ID'] }}</td>
-                            <td>{{ row['Nombres'] }}</td>
-                            <td>{{ row['Apellidos'] }}</td>
-                            <td>{{ row['Código del Autor'] }}</td>
+                            
+                            <td>{{ row['author_id'] }}</td>
+                            <td>{{ row['author_firstname'] }}</td>
+                            <td>{{ row['author_lastname'] }}</td>
+                            <td>{{ row['student_code'] }}</td>
+                            <td>{{ row['thesis_id'] }}</td>
+                            <td>{{ row['title'] }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -81,7 +86,7 @@
         console.log("Count with advisors:", count_autores_con_asesores);
         console.log("Total authors:", total_autores);
         var data = {
-            labels: ['Autores con Asesores', 'Autores sin Asesores'],
+            labels: ['Trabajos con Asesores', 'Trabajos sin Asesores'],
             datasets: [{
                 data: [count_autores_con_asesores, total_autores - count_autores_con_asesores],
                 backgroundColor: ['#FF6384', '#36A2EB'],

@@ -12,12 +12,12 @@
     <h1 class="h3 mb-2 text-gray-800">Reporte de Autores</h1>
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
-            <h6 class="m-0 font-weight-bold text-primary">Reporte de Autores Con Asesores Asignados</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Reporte de Autores Con Tesis Con Asesores Asignados</h6>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <h6 class="mb-0">El total de autores con asesores asignados es: {{ count_autores_con_asesores }} de
+                    <h6 class="mb-0">El total de autores con tesis con asesores asignados es: {{ count_autores_con_asesores }} de
                         un
                         total de {{ total_autores }} autores</h6>
                 </div>
@@ -48,23 +48,29 @@
                                 <th scope="col">Nombres del Autor</th>
                                 <th scope="col">Apellidos del Autor</th>
                                 <th scope="col">Código de Autor</th>
+                                <th scope="col">ID de Tesis</th>
+                                <th scope="col">Titulo</th>
                                 <th scope="col">ID del Asesor</th>
                                 <th scope="col">Nombres del Asesor</th>
                                 <th scope="col">Apellidos del Asesor</th>
                                 <th scope="col">Código de Asesor</th>
+                                <th scope="col">Fecha de Asignación</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for row in autores_con_asesores %}
                             <tr>
-                                <td>{{ row['ID de Autor'] }}</td>
-                                <td>{{ row['Nombres del Autor'] }}</td>
-                                <td>{{ row['Apellidos del Autor'] }}</td>
-                                <td>{{ row['Código del Autor'] }}</td>
-                                <td>{{ row['ID de Asesor'] }}</td>
-                                <td>{{ row['Nombres del Asesor'] }}</td>
-                                <td>{{ row['Apellidos del Asesor'] }}</td>
-                                <td>{{ row['Código del Asesor'] }}</td>
+                                <td>{{ row['author_id'] }}</td>
+                                <td>{{ row['author_firstname'] }}</td>
+                                <td>{{ row['author_lastname'] }}</td>
+                                <td>{{ row['student_code'] }}</td>
+                                <td>{{ row['thesis_id'] }}</td>
+                                <td>{{ row['title'] }}</td>
+                                <td>{{ row['advisor_id'] }}</td>
+                                <td>{{ row['advisor_firstname'] }}</td>
+                                <td>{{ row['advisor_lastname'] }}</td>
+                                <td>{{ row['advisor_code'] }}</td>
+                                <td>{{ row['assignation_date'] }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
