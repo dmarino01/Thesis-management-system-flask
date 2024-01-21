@@ -143,7 +143,7 @@ class ControllerReviewer:
 
     # Get Reviewers by Thesis ID
     @classmethod
-    def get_reviewers_by_thesis_id(cls, db, id):
+    def getReviewersByThesisId(cls, db, id):
         try:
             session = db.session()
             sql = text("CALL GetReviewersByThesisId(:p_thesis_id);")
@@ -359,7 +359,6 @@ class ControllerReviewer:
             session.execute(sql, params)
             session.commit()
             session.close()
-            flash("Reviewer assignation created successfully...")
             return {"message": "Reviewer assignation created successfully"}, 200
         except Exception as ex:
             raise Exception(ex)
@@ -368,7 +367,6 @@ class ControllerReviewer:
     @classmethod
     def deleteRelationReviewerThesis(cls, db, reviewer_id, thesis_id):
         try:
-            assignation_date = date.today().strftime("%Y-%m-%d")
             session = db.session()
             sql = text(
                 "DELETE FROM reviewer_thesis WHERE reviewer_id = :reviewer_id AND thesis_id = :thesis_id;"

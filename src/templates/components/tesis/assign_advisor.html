@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+
+{% block title %} Asignar Revisor {% endblock %}
+
+{% block customCSS %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Asignar Asesor a Tesis N° {{thesis.thesis_id}}</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Asignar Asesor de Tesis</h6>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <br />
+            {% for message in messages %}
+            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>{{ message }}</strong>
+                <div class="progress-container">
+                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('advisor.save_advisor_assignation', id=thesis.thesis_id) }}" method="post">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="mySelect">Seleccionar Asesor</label>
+                            <select class="form-control" id="mySelect" name="advisor">
+                                {% if left_advisors %}
+                                    <option value="">Seleccionar asesor...</option>
+                                    {% for advisor in left_advisors %}
+                                        <option value="{{ advisor.advisor_id }}">
+                                            {{ advisor.advisor_code }} | {{ advisor.firstname }} {{ advisor.lastname }} | {{ advisor.username }}
+                                        </option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option value="">No hay asesor...</option>
+                                {% endif %}
+                            </select>                            
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 text-center">
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <!-- Use d-flex and align-items-center to vertically center the content -->
+                            <button type="submit" class="btn btn-success" {% if total_assigned_advisor==1 %}disabled{%
+                                endif %}>
+                                <i class="fa fa-plus"></i>
+                                {% if total_assigned_advisor == 1 %}
+                                Asesor ya asignado...
+                                {% else %}
+                                Asignar
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <br>
+
+            <div class="table-responsive">
+                <table id="thesisTable" class="table table-hover text-start align-middle table-hover mb-0">
+                    <thead>
+                        <tr align="center">
+                            <th scope="col">Código </th>
+                            <th scope="col">Asesor</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if assigned_advisors %}
+                        {% for item in assigned_advisors %}
+                        <tr align="center">
+                            <td>{{ item.advisor_code }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.username }}</td>
+                            <td class="text-center col-2">
+                                <div class="btn-container">
+                                    <a class="btn btn-sm btn-danger"
+                                        href="{{ url_for('advisor.revome_advisor_from_assignment_page', advisor_id=item.advisor_id, thesis_id=thesis.thesis_id)}}">
+                                        <i class="fa fa-trash"></i> Quitar</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="4">No hay resultados encontrados.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block customJS %}
+<script>
+    jQuery(document).ready(function () {
+        // Initialize Select2
+        jQuery('#mySelect').select2({
+            placeholder: "Selecciona un asesor...",
+        });
+    });
+</script>
+{% endblock %}

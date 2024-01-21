@@ -15,6 +15,21 @@
             <h6 class="m-0 font-weight-bold text-primary">Asignar Revisores de Tesis</h6>
         </div>
         <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <br />
+            {% for message in messages %}
+            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>{{ message }}</strong>
+                <div class="progress-container">
+                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
             <form action="{{ url_for('reviewer.save_jury_assignation', id=thesis.thesis_id) }}" method="post">
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -86,13 +101,13 @@
                             <td>{{ item.reviewer_code }}</td>
                             <td>{{ item.firstname }} {{ item.lastname }}</td>
                             <td>{{ item.username }}</td>
-                            <td>{% if item.reviewer_code_id == 1 %}
+                            <td>{% if item.reviewer_role_id == 1 %}
                                 <span class="badge bg-primary text-white">PRESIDENTE</span>
-                                {% elif item.reviewer_code_id == 2 %}
+                                {% elif item.reviewer_role_id == 2 %}
                                 <span class="badge bg-secondary text-white">SECRETARIO</span>
-                                {% elif item.reviewer_code_id == 3 %}
+                                {% elif item.reviewer_role_id == 3 %}
                                 <span class="badge bg-warning text-white">VOCAL</span>
-                                {% elif item.reviewer_code_id == 4 %}
+                                {% elif item.reviewer_role_id == 4 %}
                                 <span class="badge bg-info text-white">ACCESATARIO</span>
                                 {% endif %}
                             </td>

@@ -225,9 +225,10 @@ def save_jury_assignation(id):
         role = request.form["role"]
         if reviewer and role:
             data = ControllerReviewer.assignRelationReviewerThesis(db, id, reviewer, role)
+            #flash("Revisor asignado correctamente...")
         return redirect(url_for("thesis.admin_assigns_jury_page", id=id))
     except Exception as ex:  
-        #flash(str(ex))  # Display the caught exception message
+        flash(str(ex))  # Display the caught exception message
         return redirect(url_for("thesis.admin_assigns_jury_page", id=id))
     
 

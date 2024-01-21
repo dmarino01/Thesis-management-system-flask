@@ -159,3 +159,30 @@ def upload_advisor_assignations():
     except Exception as ex:
         flash(str(ex))
         return redirect(url_for("advisor.assign_author_advisor_form"))
+    
+
+# Save Advisor assignation
+@advisor_bp.route("/save_advisor_assignation/<int:id>", methods=["POST"])
+@login_required
+def save_advisor_assignation(id):
+    try:
+        advisor = request.form["advisor"]
+        if advisor:
+            data = ControllerAdvisor.assignRelationAdvisorThesis(db, id, advisor)
+            #flash("Asesor asignado correctamente...")
+        return redirect(url_for("thesis.admin_assigns_advisor_page", id=id))
+    except Exception as ex:  
+        flash(str(ex))  # Display the caught exception message
+        return redirect(url_for("thesis.admin_assigns_advisor_page", id=id))
+    
+
+# Delete Advisor assignation
+@advisor_bp.route("/revome_advisor_from_assignment_page/<int:advisor_id>/<int:thesis_id>")
+@login_required
+def revome_advisor_from_assignment_page(advisor_id, thesis_id):
+    try:
+        data = ControllerAdvisor.deleteRelationAdvisorThesis(db, advisor_id, thesis_id)
+        return redirect(url_for("thesis.admin_assigns_advisor_page", id=thesis_id))
+    except Exception as ex:  
+        #flash(str(ex))  # Display the caught exception message
+        return redirect(url_for("thesis.admin_assigns_advisor_page", id=thesis_id))

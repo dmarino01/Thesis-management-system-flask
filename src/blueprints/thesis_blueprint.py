@@ -15,6 +15,7 @@ from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerRecommendation import ControllerRecommendation
 from controllers.ControllerReview import ControllerReview
 from controllers.ControllerReviewer import ControllerReviewer
+from controllers.ControllerAdvisor import ControllerAdvisor
 from werkzeug.utils import secure_filename
 import uuid
 from config import db
@@ -510,7 +511,7 @@ def tesis():
 def admin_assigns_jury_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     left_reviewers = ControllerReviewer.getLeftReviewersToAssign(db, id)
-    assigned_reviewers = ControllerReviewer.get_reviewers_by_thesis_id(db, id)
+    assigned_reviewers = ControllerReviewer.getReviewersByThesisId(db, id)
     total_assigned_reviewer = ControllerReviewer.getTotalReviewersByThesisId(db, id)
     template_vars = {
         "thesis": thesis,
@@ -525,4 +526,14 @@ def admin_assigns_jury_page(id):
 @thesis_bp.route("/admin_assigns_advisor_page/<int:id>")
 @login_required
 def admin_assigns_advisor_page(id):
-    return render_template("components/tesis/assign_advisor.html")
+    thesis = ControllerThesis.get_thesis_by_id(db, id)
+    left_advisors = ControllerAdvisor.getLeftAdvisorsToAssign(db, id)
+    assigned_advisors = ControllerAdvisor.getAdvisorsByThesisId(db, id)
+    total_assigned_advisor = ControllerAdvisor.getTotalAdvisorsByThesisId(db, id)
+    template_vars = {
+        "thesis": thesis,
+        "left_advisors": left_advisors,
+        "assigned_advisors": assigned_advisors,
+        "total_assigned_advisor": total_assigned_advisor,
+    }
+    return render_template("components/tesis/assign_advisor.html", **template_vars)
