@@ -25,17 +25,16 @@
                             <label for="mySelect">Seleccionar Revisor</label>
                             <select class="form-control" id="mySelect" name="reviewer">
                                 {% if left_reviewers %}
-                                <option value="">Seleccionar revisor...</option>
-                                {% for reviewer in left_reviewers %}
-                                <option value="{{ reviewer.reviewer_id }}">
-                                    {{ reviewer.reviewer_code }} | {{ reviewer.firstname }} {{ reviewer.lastname }} | {{
-                                    reviewer.username }}
-                                </option>
-                                {% endfor %}
+                                    <option value="">Seleccionar revisor...</option>
+                                    {% for reviewer in left_reviewers %}
+                                        <option value="{{ reviewer.reviewer_id }}" {% if thesis.project_id != 0 and reviewer.grade != "DR" %} disabled {% endif %}>
+                                            {{ reviewer.reviewer_code }} | {{ reviewer.grade }} {{ reviewer.firstname }} {{ reviewer.lastname }} | {{ reviewer.username }}
+                                        </option>
+                                    {% endfor %}
                                 {% else %}
-                                <option value="">No hay revisores...</option>
+                                    <option value="">No hay revisores...</option>
                                 {% endif %}
-                            </select>
+                            </select>                            
                         </div>
                     </div>
                     <div class="col-md-4">
