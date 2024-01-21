@@ -41,7 +41,15 @@
             content: '\00a0';
             /* Unicode for a non-breaking space character */
         }
+        .modal-header {
+            background-color: #fffcfc; /* Dark background color */
+        }
+    
+        .modal-footer {
+            background-color: #fffcfc; /* Dark background color */
+        }
     </style>
+    
 </head>
 
 <body id="page-top">
@@ -431,7 +439,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer 
-            <!-- Footer 
+             Footer 
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -466,8 +474,8 @@
                 <div class="modal-body">Seleccione "Cerrar sesión" a continuación si está listo para finalizar su sesión
                     actual.</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-primary" href="{{ url_for('user.logout') }}">Cerrar Sesión</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fas fa-xmark"></i> Cancelar</button>
+                    <a class="btn btn-primary" href="{{ url_for('user.logout') }}"><i class="fas fa-right-from-bracket"></i> Cerrar Sesión</a>
                 </div>
             </div>
         </div>

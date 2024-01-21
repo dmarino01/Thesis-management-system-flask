@@ -23,7 +23,7 @@ def search():
         data = ControllerRole.getRolesbyName(db, name)
         return render_template('components/role/resultado.html', filtered_roles=data)
     except Exception as ex:
-        flash("Rol No Encontrado...")
+        flash("Rol No Encontrado...", "danger")
         return redirect(url_for('role.role'))
     
 # Display the create role form
@@ -39,10 +39,10 @@ def save_role():
     try:
         role = request.form['role']
         ControllerRole.createRole(db, role)
-        flash("Rol Creado Exitosamente...")
+        flash("Rol Creado Exitosamente...", "success")
         return redirect(url_for('role.role'))
     except Exception as ex:
-        flash("Rol No ha sido Creado...")
+        flash("Rol No ha sido Creado...", "danger")
         return redirect(url_for('role.create_role_form'))
     
 # Display the edit role form
@@ -59,10 +59,10 @@ def update_role(id):
     try:
         role = request.form['role']
         ControllerRole.update_role(db, id, role)
-        flash("Role Actualizado Exitosamente...")
+        flash("Role Actualizado Exitosamente...", "success")
         return redirect(url_for('role.role'))
     except Exception as ex:
-        flash("No se pudo editar el Role...")
+        flash("No se pudo editar el Role...", "danger")
         return redirect(url_for('role.edit_role_form', id=id))
     
 # Display the assign permission to roles form
@@ -80,10 +80,10 @@ def save_permissions_for_role(id):
     try:
         permissions = ""
         ControllerRole.assign_permissions(db, id, permissions)
-        flash("Permisos Asignados Correctamente...")
+        flash("Permisos Asignados Correctamente...", "success")
         return redirect(url_for('role.role'))
     except Exception as ex:
-        flash("No se guardos los roles...")
+        flash("No se guardos los roles...", "danger")
         return redirect(url_for('role.assign_permission_form', id=id))
 
 # Deactivate a role
@@ -95,12 +95,12 @@ def desactivate_role(id):
         if role:
             try:
                 ControllerRole.desactivate_role(db, id)
-                flash("Rol Eliminado Exitosamente...")
+                flash("Rol Eliminado Exitosamente...", "success")
                 return redirect(url_for('role.role'))
             except Exception as ex:
                 raise Exception(ex)
         else:
-            flash("No se pudo eliminar el Rol...")
+            flash("No se pudo eliminar el Rol...", "danger")
             return redirect(url_for('role.role'))
     except Exception as ex:
         raise Exception(ex)

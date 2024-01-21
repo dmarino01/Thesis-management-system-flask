@@ -82,13 +82,13 @@ def save_autor():
                     username,
                     password,
                 )
-                flash("Autor Creado Exitosamente...")
+                flash("Autor Creado Exitosamente...", "successs")
                 return redirect(url_for("author.autor"))
             else:
-                flash("Las contraseñas no coinciden...")
+                flash("Las contraseñas no coinciden...", "danger")
                 return redirect(url_for("author.create_autor_form"))
         else:
-            flash("No deben haber campos vacios...")
+            flash("No deben haber campos vacios...", "danger")
             return redirect(url_for("author.create_autor_form"))
     except Exception as ex:
         return redirect(url_for("author.create_autor_form"))
@@ -136,10 +136,10 @@ def update_autor(id):
                 email,
                 username,
             )
-            flash("Autor Actualizado Exitosamente...")
+            flash("Autor Actualizado Exitosamente...", "success")
             return redirect(url_for("author.autor"))
         else:
-            flash("No deben haber campos vacios...")
+            flash("No deben haber campos vacios...", "danger")
             return redirect(url_for("author.edit_autor_form"))
     except Exception as ex:
         return redirect(url_for("author.edit_autor_form", id=id))
@@ -153,10 +153,10 @@ def desactivate_autor(id):
         autor = ControllerAuthor.get_autor_by_id(db, id)
         if autor:
             ControllerAuthor.desactivate_autor(db, id)
-            flash("Autor Eliminado Exitosamente...")
+            flash("Autor Eliminado Exitosamente...", "success")
             return redirect(url_for("author.autor"))
         else:
-            flash("No se pudo eliminar el Autor...")
+            flash("No se pudo eliminar el Autor...", "danger")
             return redirect(url_for("author.autor"))
     except Exception as ex:
         raise Exception(ex)
@@ -174,11 +174,11 @@ def upload_autores():
         separator = request.form["Select_separator"]
         codificator = request.form["Select_codificator"]
         if csv_file.filename == "":
-            flash("Sin archivo seleccionado...")
+            flash("Sin archivo seleccionado...", "danger")
             return redirect(url_for("author.create_autor_form"))
         if csv_file:
             data = ControllerAuthor.process_csv(db, separator, codificator, csv_file)
-            flash("Autores Subidos Exitosamente...")
+            flash("Autores Subidos Exitosamente...", "danger")
             return redirect(url_for("author.create_autor_form"))
     except Exception as ex:
         raise Exception(ex)

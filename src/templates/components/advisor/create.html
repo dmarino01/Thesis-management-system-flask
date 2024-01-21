@@ -12,16 +12,17 @@
             <h6 class="m-0 font-weight-bold text-primary">Ingrese los Datos del Asesor</h6>
         </div>
 
-        {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-            <strong>{{ message }}</strong>
-            <div class="progress-container">
-                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         {% endfor %}
+        {% endif %}
         {% endwith %}
         <div class="row g-4">
             <div class="col-sm-12 col-xl-6">

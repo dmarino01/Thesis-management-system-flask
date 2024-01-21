@@ -1,5 +1,4 @@
 import base64
-from tkinter import Image
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from controllers.ControllerUser import ControllerUser
@@ -23,12 +22,13 @@ def login():
         if logged_user != None:
             if logged_user.password:
                 login_user(logged_user)
+                #flash('Login exitoso!', 'success')
                 return redirect(url_for('home'))
             else:
-                flash('Contraseña Inválida...', 'error')
+                flash('Contraseña Inválida...', 'danger')
                 return render_template("auth/login.html")
         else:
-            flash('Usuario No Encontrado...', 'error')
+            flash('Usuario No Encontrado...', 'danger')
             return render_template("auth/login.html")
     else:
         return render_template("auth/login.html")
@@ -39,6 +39,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("Salio de la sessión correctamente...", "info")
     return redirect(url_for('user.login'))
 
 
@@ -100,7 +101,7 @@ def edit_user(id):
         if image_file.filename != '':
             # Validate the file extension
             if not allowed_img(image_file.filename):
-                flash("Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg).")
+                flash("Formato de Archivo Inválido. Seleccione una imagee (e.g., .jpg, .png, .jpeg).", "danger")
                 return redirect(url_for('user.profile'))
             image = image_file.read()
         else:
@@ -116,16 +117,16 @@ def edit_user(id):
         if firstname != "" and lastname != "" and dni != "" and email != "" and username != "":
             if password == verify_password:
                 ControllerUser.update_user(db, id, student_code, reviewer_code, advisor_code, institution, grade, firstname, lastname, dni, phone, address, email, image, username, password)
-                flash("Perfil Actualizado Exitosamente...")
+                flash("Perfil Actualizado Exitosamente...", "success")
                 return redirect(url_for('user.profile'))
             else:
-                flash("Las contraseñas no coinciden...")
+                flash("Las contraseñas no coinciden...", "danger")
                 return redirect(url_for('user.profile'))
         else:
-            flash("Usuario no debe estar vacio...")
+            flash("Usuario no debe estar vacio...", "danger")
             return redirect(url_for('user.profile'))
     else:
-        flash("Campo de código/grado faltante(s)...")
+        flash("Campo de código/grado faltante(s)...", "danger")
         return redirect(url_for('user.profile'))
 
 # Route to remove image user
@@ -133,7 +134,7 @@ def edit_user(id):
 @login_required
 def remove_image_user(id):
     ControllerUser.remove_image_user(db, id)
-    flash("Imagen Removida Exitosamente...")
+    flash("Imagen Removida Exitosamente...", "success")
     return redirect(url_for('user.profile'))
 
 #Function to check if the file extension is allowed

@@ -34,6 +34,7 @@ def save_review(id):
         comentario = request.form['comentario']
         date = datetime.datetime.now()
         ControllerReview.createReview(db, nota, comentario, id, person_id, date)
+        flash("Nota Guardada", "success")
         return redirect(url_for('review.review_thesis', id=person_id))
     except Exception as ex:
         raise Exception(ex)

@@ -14,26 +14,17 @@
                     <form action="{{ url_for('user.edit_user', id=current_user.person_id)}}" method="post"
                         enctype="multipart/form-data">
 
-                        {% with messages = get_flashed_messages() %}
-                        {% for message in messages %}
-                        {% set alert_class = 'custom-primary-button alert alert-primary' %}
-
-                        {% if "Perfil Actualizado Exitosamente..." in message %}
-                        {% set alert_class = 'custom-primary-button alert alert-primary' %}
-                        {% elif "Las contraseñas no coinciden..." in message or "Usuario no debe estar vacio..." in
-                        message
-                        %}
-                        {% set alert_class = 'alert alert-primary' %}
-                        {% endif %}
-
-                        <div class="{{ alert_class }} alert-dismissible position-relative" role="alert" id="myAlert">
-                            <strong>{{ message }}</strong>
-                            <div class="progress-container">
-                                <div class="progress-bar" role="progress-bar" id="myProgressBar"></div>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         {% endfor %}
+                        {% endif %}
                         {% endwith %}
 
 

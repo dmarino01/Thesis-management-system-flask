@@ -242,7 +242,7 @@ class ControllerAdvisor:
                         continue
                     values = line.split(f"{separator}")
                     sql = text(
-                        "CALL AssignAuthorWithAdvisorByCodes(:p_advisor_code, :p_thesis_id, :p_assignation_date);"
+                        "CALL AssignAdvisorsToThesisByCodes(:p_advisor_code, :p_thesis_id, :p_assignation_date);"
                     )
                     params = {
                         "p_thesis_id": values[0],

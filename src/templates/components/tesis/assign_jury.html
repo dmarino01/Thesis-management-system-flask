@@ -15,17 +15,14 @@
             <h6 class="m-0 font-weight-bold text-primary">Asignar Revisores de Tesis</h6>
         </div>
         <div class="card-body">
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-            <br />
-            {% for message in messages %}
-            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-                id="myAlert">
-                <strong>{{ message }}</strong>
-                <div class="progress-container">
-                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             {% endfor %}
             {% endif %}
@@ -40,16 +37,18 @@
                             <label for="mySelect">Seleccionar Revisor</label>
                             <select class="form-control" id="mySelect" name="reviewer">
                                 {% if left_reviewers %}
-                                    <option value="">Seleccionar revisor...</option>
-                                    {% for reviewer in left_reviewers %}
-                                        <option value="{{ reviewer.reviewer_id }}" {% if thesis.project_id != 0 and reviewer.grade != "DR" %} disabled {% endif %}>
-                                            {{ reviewer.reviewer_code }} | {{ reviewer.grade }} {{ reviewer.firstname }} {{ reviewer.lastname }} | {{ reviewer.username }}
-                                        </option>
-                                    {% endfor %}
+                                <option value="">Seleccionar revisor...</option>
+                                {% for reviewer in left_reviewers %}
+                                <option value="{{ reviewer.reviewer_id }}" {% if thesis.project_id !=0 and
+                                    reviewer.grade !="DR" %} disabled {% endif %}>
+                                    {{ reviewer.reviewer_code }} | {{ reviewer.grade }} {{ reviewer.firstname }} {{
+                                    reviewer.lastname }} | {{ reviewer.username }}
+                                </option>
+                                {% endfor %}
                                 {% else %}
-                                    <option value="">No hay revisores...</option>
+                                <option value="">No hay revisores...</option>
                                 {% endif %}
-                            </select>                            
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-4">

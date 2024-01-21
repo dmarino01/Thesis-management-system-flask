@@ -48,13 +48,13 @@ def view_thesis_page(id):
         )
         review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
         status_review = ControllerReview.getStatusReview(db, id)
-        return render_template(
-            "myThesis/detail.html",
-            thesis=thesis,
-            recommendations=recommendations,
-            review_details=review_details,
-            status_review=status_review,
-        )
+        template_vars = {
+            "thesis": thesis,
+            "recommendations": recommendations,
+            "review_details": review_details,
+            "status_review": status_review,
+        }
+        return render_template("myThesis/detail.html", **template_vars)
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -67,11 +67,11 @@ def view_dissertation_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
         dissertation_exists = ControllerThesis.check_dissertation_exists(db, id)
-        return render_template(
-            "myThesis/dissertation.html",
-            thesis=thesis,
-            dissertation_exists=dissertation_exists,
-        )
+        template_vars = {
+            "thesis": thesis,
+            "dissertation_exists": dissertation_exists,
+        }
+        return render_template("myThesis/dissertation.html", **template_vars)
     except Exception as ex:
         print(f"Error: {ex}")
         raise Exception(ex)
@@ -84,12 +84,12 @@ def sign_review_thesis_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     result = ControllerThesis.get_link_sign(db, id)
     sign_if_exists = ControllerThesis.get_sign_if_exists(db, id)
-    return render_template(
-        "myThesis/sign_review.html",
-        thesis=thesis,
-        sign_if_exists=sign_if_exists,
-        result=result,
-    )
+    template_vars = {
+        "thesis": thesis,
+        "sign_if_exists": sign_if_exists,
+        "result": result,
+    }
+    return render_template("myThesis/sign_review.html", **template_vars)
 
 
 # Save sign of thesis review
@@ -101,12 +101,13 @@ def save_sign(id):
             image_file = request.files["sign"]
 
             if image_file.filename == "":
-                flash("Sin archivo seleccionado...")
+                flash("Sin archivo seleccionado...", "danger")
                 return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
             if not allowed_img(image_file.filename):
                 flash(
-                    "Invalid file type. Please upload an image file (e.g., .jpg, .png, .jpeg)."
+                    "Formato invalido. Seleccione una imagen (e.g., .jpg, .png, .jpeg).",
+                    "danger",
                 )
                 return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
@@ -126,9 +127,8 @@ def save_sign(id):
             ControllerThesis.createSignThesis(db, new_filename_sign, id)
 
         return redirect(url_for("thesis.myThesis"))
-
     except Exception as ex:
-        flash(f"An error occurred: {ex}")
+        flash(f"An error occurred: {ex}", "danger")
         return redirect(url_for("thesis.sign_review_thesis_page", id=id))
 
 
@@ -217,12 +217,13 @@ def update_thesis(id):
                 new_filename_turnitin,
                 turnitin_porcentaje,
             )
-            return redirect(url_for("thesis.edit_thesis_form", id=id))
+            flash("Tesis editada correctamente", "success")
+            return redirect(url_for("thesis.myThesis", id=id))
         else:
-            flash("No deben haber campos vacios...")
+            flash("No deben haber campos vacios...", "danger")
             return redirect(url_for("thesis.edit_thesis_form", id=id))
     except Exception as ex:
-        flash(f"Error updating thesis: {str(ex)}")
+        flash(f"Error updating thesis: {str(ex)}", "danger")
         return redirect(url_for("thesis.edit_thesis_form", id=id))
 
 
@@ -289,10 +290,10 @@ def save_thesis():
                 )
                 return redirect(url_for("thesis.myThesis"))
             else:
-                flash("Invalid file format. Please upload a PDF file.")
+                flash("Formato invalido. Seleccione un archivo PDF.", "danger")
                 return redirect(url_for("thesis.myThesis"))
         else:
-            flash("No deben haber campos vacios...")
+            flash("No deben haber campos vacios.", "danger")
             return redirect(url_for("thesis.myThesis"))
     except Exception as ex:
         raise Exception(ex)
@@ -372,10 +373,10 @@ def save_dissertation_thesis():
 
                 return redirect(url_for("thesis.myThesis"))
             else:
-                flash("Invalid file format. Please upload a PDF file.")
+                flash("Formato invalido. Seleccione un archivo PDF.", "danger")
                 return redirect(url_for("thesis.myThesis"))
         else:
-            flash("No deben haber campos vacios...")
+            flash("No deben haber campos vacios.", "danger")
             return redirect(url_for("thesis.myThesis"))
     except Exception as ex:
         raise Exception(ex)
@@ -398,10 +399,10 @@ def desactivate_thesis(id):
                 print("Error deleting file:", str(e))
 
             ControllerThesis.desactivate_thesis(db, id)
-            flash("Tesis Eliminado Exitosamente...")
+            flash("Tesis Eliminado Exitosamente...", "success")
             return redirect(url_for("thesis.myThesis"))
         else:
-            flash("No se pudo eliminar la Tesis...")
+            flash("No se pudo eliminar la Tesis...", "danger")
             return redirect(url_for("thesis.myThesis"))
     except Exception as ex:
         raise Exception(ex)
@@ -421,13 +422,13 @@ def report_ptsr():
         total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(
             db
         )
+        template_vars = {
+            "total_thesis": total_thesis,
+            "thesis_without_reviewers": thesis_without_reviewers,
+            "total_thesis_without_reviewers": total_thesis_without_reviewers,
+        }
         thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
-        return render_template(
-            "report/thesis_without_reviewers.html",
-            total_thesis=total_thesis,
-            thesis_without_reviewers=thesis_without_reviewers,
-            total_thesis_without_reviewers=total_thesis_without_reviewers,
-        )
+        return render_template("report/thesis_without_reviewers.html", **template_vars)
     except Exception as ex:
         raise Exception(ex)
 

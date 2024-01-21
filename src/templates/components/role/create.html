@@ -33,16 +33,17 @@
                 <h6 class="mb-4">Crear Nuevo Registro</h6>
                 <form action="/save_role" method="POST">
 
-                    {% with messages = get_flashed_messages() %}
-                        {% for message in messages %}
-                        <div class="alert alert-primary alert-dismissible position-relative" role="alert" id="myAlert">
-                            <strong>{{ message }}</strong>
-                            <div class="progress-container">
-                                <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor %}
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     {% endwith %}
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

@@ -62,23 +62,23 @@
                             <td>{{ item.submission_date }}</td>
                             <td class="align-middle">
                                 {% if item.thesis_status_id == 1 %}
-                                <span class="badge bg-warning">EN PROCESO</span>
+                                <span class="badge bg-warning text-white">EN PROCESO</span>
                                 {% elif item.thesis_status_id == 2 %}
-                                <span class="badge bg-success">APROBADO</span>
+                                <span class="badge bg-success text-white">APROBADO</span>
                                 {% elif item.thesis_status_id == 3 %}
-                                <span class="badge bg-primary">RECHAZADO</span>
+                                <span class="badge bg-primary text-white">RECHAZADO</span>
                                 {% elif item.thesis_status_id == 4 %}
-                                <span class="badge bg-primary">EN REVISION</span>
+                                <span class="badge bg-primary text-white">EN REVISION</span>
                                 {% endif %}
                             </td>
                             <td class="align-middle">
                                 {% if item.rating is not none %}
                                 {{ item.rating }}
                                 {% else %}
-                                <span class="badge bg-warning">SIN NOTA</span>
+                                <span class="badge bg-warning text-white">SIN NOTA</span>
                                 {% endif %}
                             </td>
-                            <td class="col-2">
+                            <td class="col-2 align-middle">
                                 <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
                                         class="fa fa-eye"></i> Ver</a>
                             </td>

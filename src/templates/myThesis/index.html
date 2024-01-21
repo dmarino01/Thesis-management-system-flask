@@ -25,17 +25,14 @@
                 PROYECTO DE TESIS</a>
         </div>
         <div class="card-body">
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-            <br />
-            {% for message in messages %}
-            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-                id="myAlert">
-                <strong>{{ message }}</strong>
-                <div class="progress-container">
-                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             {% endfor %}
             {% endif %}
@@ -109,7 +106,7 @@
                                 <span class="badge bg-info  text-white">SIN NOTA</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center col-2">
+                            <td class="text-center col-2 align-middle">
                                 <div class="btn-container">
                                     {% if item.thesis_status_id == 2 and item.project_id == 0 %}
                                     <a class="btn btn-sm btn-success"
