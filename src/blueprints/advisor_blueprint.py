@@ -155,8 +155,7 @@ def upload_advisor_assignations():
             return redirect(url_for("advisor.assign_author_advisor_form"))
         if csv_file:
             data = ControllerAdvisor.process_relations_csv(db, separator, codificator, csv_file)
-            flash("Relaciones Subidas Exitosamente...")
             return redirect(url_for("advisor.assign_author_advisor_form"))
     except Exception as ex:
-        flash("Error, duplicado o campo invalido...")
+        flash(str(ex))
         return redirect(url_for("advisor.assign_author_advisor_form"))

@@ -202,27 +202,17 @@ def upload_reviewer_assignations():
         if "csv_file" not in request.files:
             flash("No file part...")
             return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
-        
         csv_file = request.files["csv_file"]
         separator = request.form["Select_separator"]
         codificator = request.form["Select_codificator"]
-
         if csv_file.filename == "":
             flash("Sin archivo seleccionado...")
             return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
-        
         if csv_file:
             data = ControllerReviewer.process_relations_csv(db, separator, codificator, csv_file)
-            
-            if data == 200:
-                flash("Relaciones Subidas Exitosamente...")
-                return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
-            else:
-                flash("Posible Error al Subir las Relaciones")  # Display the specific error message returned
-                return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
-    
+            return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
     except Exception as ex:  
-        flash(str(ex))  # Display the caught exception message
+        flash(str(ex))
         return redirect(url_for("reviewer.assign_reviewer_thesis_form"))
 
 

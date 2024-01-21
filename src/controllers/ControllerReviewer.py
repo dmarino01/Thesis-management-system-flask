@@ -1,10 +1,9 @@
-import csv
-from datetime import date, datetime
-from io import StringIO
+from datetime import date
+from flask import flash
 from models.Reviewer import Reviewer
 from models.AssignedReviewer import AssignedReviewer
 from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from werkzeug.security import generate_password_hash
 
 
@@ -141,8 +140,7 @@ class ControllerReviewer:
                 return None
         except Exception as ex:
             raise Exception(ex)
-        
-    
+
     # Get Reviewers by Thesis ID
     @classmethod
     def get_reviewers_by_thesis_id(cls, db, id):
@@ -169,25 +167,24 @@ class ControllerReviewer:
                 return None
         except Exception as ex:
             raise Exception(ex)
-        
-    
-    #Obtain number of reviewer by thesis id
+
+    # Obtain number of reviewer by thesis id
     @classmethod
     def getTotalReviewersByThesisId(cls, db, id):
         try:
-            session = db.session()    
-            sql = text('CALL GetTotalReviewersByThesisId(:p_thesis_id);')
+            session = db.session()
+            sql = text("CALL GetTotalReviewersByThesisId(:p_thesis_id);")
             result = session.execute(sql, {"p_thesis_id": id})
             count = result.fetchone()[0]
             result.close()
             return count
         except Exception as ex:
             raise Exception(ex)
-        
-    #Obtain reviewer no assigned to thesis 
-    @classmethod    
+
+    # Obtain reviewer no assigned to thesis
+    @classmethod
     def getLeftReviewersToAssign(cls, db, id):
-        try:  
+        try:
             session = db.session()
             sql = text("CALL getLeftReviewersToAssign(:p_thesis_id)")
             result = session.execute(sql, {"p_thesis_id": id})
@@ -215,7 +212,6 @@ class ControllerReviewer:
                 return None
         except Exception as ex:
             raise Exception(ex)
-        
 
     # Update an reviewer info
     @classmethod
@@ -342,15 +338,8 @@ class ControllerReviewer:
                     session.execute(sql, params)
                     session.commit()
                 return {"message": "Relations uploaded successfully"}, 200
-
-        except SQLAlchemyError as e:
-            print(f"SQLAlchemyError occurred: {e}")
-            return {"error": "Database error occurred"}, 500
-
-        except Exception as e:
-            print(f"Exception occurred: {e}")
-            return {"error": str(e)}, 500
-
+        except Exception as ex:
+            raise Exception(ex)
 
     # Assign thesis - reviewers relation
     @classmethod
@@ -359,30 +348,31 @@ class ControllerReviewer:
             assignation_date = date.today().strftime("%Y-%m-%d")
             session = db.session()
             sql = text(
-                "INSERT INTO reviewer_thesis "
-                "(reviewer_id, thesis_id, reviewer_role_id, assignation_date) "
-                "VALUES "
-                "(:reviewer_id, :thesis_id, :reviewer_role_id, :assignation_date)"
+                "CALL AssignAuthorWithReviewerByCodes(:p_reviewer_id, :p_thesis_id, :p_reviewer_role_id, :p_assignation_date)"
             )
             params = {
-                "thesis_id": id,
-                "reviewer_id": reviewer,
-                "reviewer_role_id": role,
-                "assignation_date": assignation_date
+                "p_thesis_id": id,
+                "p_reviewer_id": reviewer,
+                "p_reviewer_role_id": role,
+                "p_assignation_date": assignation_date,
             }
             session.execute(sql, params)
             session.commit()
+            session.close()
+            flash("Reviewer assignation created successfully...")
             return {"message": "Reviewer assignation created successfully"}, 200
         except Exception as ex:
             raise Exception(ex)
-        
+
     # Delete thesis - reviewers relation
     @classmethod
     def deleteRelationReviewerThesis(cls, db, reviewer_id, thesis_id):
         try:
             assignation_date = date.today().strftime("%Y-%m-%d")
             session = db.session()
-            sql = text("DELETE FROM reviewer_thesis WHERE reviewer_id = :reviewer_id AND thesis_id = :thesis_id;")
+            sql = text(
+                "DELETE FROM reviewer_thesis WHERE reviewer_id = :reviewer_id AND thesis_id = :thesis_id;"
+            )
             params = {"reviewer_id": reviewer_id, "thesis_id": thesis_id}
             session.execute(sql, params)
             session.commit()

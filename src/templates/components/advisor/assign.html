@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Asignar Asesorando a Autores {% endblock %}
+{% block title %} Asignar Asesores a Tesis {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -9,13 +9,17 @@
     {% if messages %}
     <br />
     {% for message in messages %}
-    <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
-        id="myAlert">
-        <strong>{{ message }}</strong>
-        <div class="progress-container">
-            <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="custom-primary-button alert alert-primary alert-dismissible position-relative" role="alert"
+                id="myAlert">
+                <strong>{{ message }}</strong>
+                <div class="progress-container">
+                    <div class="progress-bar" role="progressbar" id="myProgressBar"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
     {% endif %}
@@ -23,7 +27,7 @@
 
     <div class="row g-4">
         <div class="col-sm-12 col-xl-6">
-            <h1 class="h3 mb-2 text-gray-800">Asignar Asesorando a Autores</h1>
+            <h1 class="h3 mb-2 text-gray-800">Asignar Asesores a Tesis</h1>
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
                     <h6 class="m-0 font-weight-bold text-primary">Ingresar Relación por Archivo CSV</h6>
@@ -31,9 +35,9 @@
                 <div class="card-body">
                     <div style="display: inline-block;">
                         <h6 style="display: inline;">Archivo de ejemplo</h6>
-                        <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_autor-asesor.csv') }}"
+                        <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_asesores-tesis.csv') }}"
                             style="display: inline; margin-left: 20px;" download>
-                            plantilla_relacion_autor-asesor.csv</a>
+                            plantilla_relacion_asesores-tesis.csv</a>
                     </div><br><br>
 
                     <form method="POST" action="{{ url_for('advisor.upload_advisor_assignations') }}"
@@ -41,30 +45,32 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv" required>
+                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv"
+                                    required>
                                 <label class="custom-file-label" for="csv_file">Escoja un archivo</label>
                             </div>
                             <div class="input-group-append ml-1">
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Subir</button>
                             </div>
                         </div>
-                        
+
                         <br>
                         No se incluirá la 1era línea del CSV file
                         <br><br>
                         <div class="form-floating mb-3">
-                            <select style="width: 150px;" class="form-select mb-3" id="Select_separator"
+                            <label for="Select_separator">Separador CSV</label>
+                            <select style="width: 150px;" class="form-control mb-3" id="Select_separator"
                                 name="Select_separator">
                                 <option value=",">,</option>
                                 <option value=";" selected="">;</option>
                                 <option value=":">:</option>
                                 <option value="\t">\t</option>
                             </select>
-                            <label for="Select_separator">Separador CSV</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <select style="width: 150px;" class="form-select mb-3" id="Select_codificator"
+                            <label for="Select_codificator">Codificación</label>
+                            <select style="width: 150px;" class="form-control mb-3" id="Select_codificator"
                                 name="Select_codificator">
                                 <option value="UTF-8" selected="">UTF-8</option>
                                 <option value="WINDOWS-1252">WINDOWS-1252</option>
@@ -152,7 +158,6 @@
                                 <option value="CP50221">CP50221</option>
                                 <option value="CP50222">CP50222</option>
                             </select>
-                            <label for="Select_codificator">Codificación</label>
                     </form>
                 </div>
             </div>
