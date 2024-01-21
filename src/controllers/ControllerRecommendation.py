@@ -18,8 +18,8 @@ class ControllerRecommendation:
                     "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
                     "INNER JOIN AUTHOR Aut ON Aut.author_id = AT.author_id "
                     "INNER JOIN PERSON P ON P.person_id = Aut.person_id "
-                    "INNER JOIN AUTHOR_ADVISOR A_A ON Aut.author_id = A_A.author_id "
-                    "INNER JOIN ADVISOR Adv ON Adv.advisor_id = A_A.advisor_id "
+                    "INNER JOIN ADVISOR_THESIS A_T ON t.thesis_id = A_T.thesis_id "
+                    "INNER JOIN ADVISOR Adv ON Adv.advisor_id = A_T.advisor_id "
                     "INNER JOIN PERSON PA ON PA.person_id = Adv.person_id "
                     "WHERE T.is_deleted = 0 AND P.is_deleted = 0 AND PA.person_id = :p_person_id"
             )
