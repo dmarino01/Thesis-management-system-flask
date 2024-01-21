@@ -65,8 +65,11 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input class="form-control" type="file" id="pdf_file" name="pdf_file" accept=".pdf">
-                                <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                                <div class="custom-file">
+                                    <input class="form-control" type="file" id="pdf_file" name="pdf_file" accept=".pdf"
+                                        onchange="updateInputFileLabel1()">
+                                    <label class="custom-file-label" for="pdf_file">Escoja un archivo</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -78,8 +81,8 @@
                         <div class="mb-3">
                             <label for="pdf_turnitin" class="form-label">Subir Reporte de Turnitín</label>
                             <div class="custom-file">
-                                <input class="form-control" type="file" id="pdf_turnitin"
-                                name="pdf_turnitin" accept=".pdf">
+                                <input class="form-control" type="file" id="pdf_turnitin" name="pdf_turnitin"
+                                    accept=".pdf" onchange="updateInputFileLabel2()">
                                 <label class="custom-file-label" for="pdf_turnitin">Escoja un archivo</label>
                             </div>
                         </div>
@@ -88,7 +91,8 @@
                         <div class="mb-3">
                             <label for="turnitin_porcentaje" class="form-label">% de Turnitín (máx 20)</label>
                             <input class="form-control" type="number" name="turnitin_porcentaje"
-                                id="turnitin_porcentaje" value="{{ thesis.turnitin_porcentaje }}" min="0" max="20" oninput="checkValue(this)">
+                                id="turnitin_porcentaje" value="{{ thesis.turnitin_porcentaje }}" min="0" max="20"
+                                oninput="checkValue(this)">
                         </div>
                     </div>
                 </div>
@@ -135,6 +139,18 @@
                 input.value = 20;
             }
         }
+    }
+    function updateInputFileLabel1() {
+        var input = document.getElementById('pdf_file');
+        var label = input.nextElementSibling;
+        var fileName = input.files[0].name;
+        label.innerHTML = fileName;
+    }
+    function updateInputFileLabel2() {
+        var input = document.getElementById('pdf_turnitin');
+        var label = input.nextElementSibling;
+        var fileName = input.files[0].name;
+        label.innerHTML = fileName;
     }
 </script>
 

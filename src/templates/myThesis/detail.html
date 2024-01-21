@@ -23,7 +23,7 @@
     {% else %}
     <h3>Ver Sustentación de Tesis</h3>
     {% endif %}
-    <div class="card shadow mb-4"  style="background-color: #f2f2f2;">
+    <div class="card shadow mb-4" style="background-color: #f2f2f2;">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
@@ -37,13 +37,13 @@
                             <p class="card-text">Título: {{ thesis.title }}</p>
                             <p class="card-text">Estado:
                                 {% if thesis.thesis_status_id == 1 %}
-                                <span class="badge bg-warning">EN PROCESO</span>
+                                <span class="badge bg-warning text-white">EN PROCESO</span>
                                 {% elif thesis.thesis_status_id == 2 %}
-                                <span class="badge bg-success">APROBADO</span>
+                                <span class="badge bg-success text-white">APROBADO</span>
                                 {% elif thesis.thesis_status_id == 3 %}
-                                <span class="badge bg-primary">RECHAZADO</span>
+                                <span class="badge bg-primary text-white">RECHAZADO</span>
                                 {% elif thesis.thesis_status_id == 4 %}
-                                <span class="badge bg-primary">EN REVISION</span>
+                                <span class="badge bg-primary text-white">EN REVISION</span>
                                 {% endif %}
                             </p>
                             <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
@@ -58,7 +58,7 @@
                             <p class="card-text">Abstract: {{ thesis.abstract }}</p>
 
                             <p class="card-text d-flex">
-                               <b> Porcentaje de Turnitin: {{ thesis.turnitin_porcentaje }}</b>
+                                <b> Porcentaje de Turnitin: {{ thesis.turnitin_porcentaje }}</b>
                             </p>
 
                             <a href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}"
@@ -83,7 +83,7 @@
                             <h5 style="display: inline;">Por Calificar...</h5>
                             {% else %}
                             <h5 style="display: inline;"><b>{{ thesis.rating }} | {{ status_review }}</b>
-                            {% endif %}
+                                {% endif %}
                         </div>
                     </div><br>
                     <h4>Observación de los Revisores</h4>
@@ -150,7 +150,11 @@
                     </div>
                     <br>
                     {% if current_user.role != "Revisor" %}
-                    <h4>Recomendaciones del Asesor</h4>
+                    
+                    <h4>Recomendaciones del Asesor {% if current_user.role == "Asesor" and thesis.thesis_status_id == 1 %}| <a class="btn btn-sm btn-danger"
+                            href="/authorize_review/{{ thesis.thesis_id }}" onclick="return confirmAuthorize();"><i
+                                class="fa fa-trash"></i> AUTORIZAR REVISIÓN</a>{% endif %}</h4>
+                    
                     <div class="card">
                         <div class="card-body">
                             {% if recommendations %}
@@ -206,7 +210,7 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <textarea class="form-control" style="height: 100px;" id="text" name="text"
                                 placeholder="Ingresar Texto..."></textarea>
-                            
+
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <button type="submit" class="btn btn-success">
@@ -223,6 +227,14 @@
 {% endblock %}
 
 {% block customJS %}
+<script>
+    function confirmAuthorize() {
+        return confirm('¿Seguro que quieres autorizar la revisión de esta Tesis?');
+    }
+    function confirmDelete() {
+        return confirm('¿Seguro que quieres eliminar este comentario?');
+    }
+</script>
 <script>
     // Get the submission date from the template (assuming it's in YYYY-MM-DD format)
     var submissionDate = new Date("{{ thesis.submission_date }}");

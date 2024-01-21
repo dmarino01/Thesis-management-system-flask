@@ -116,3 +116,16 @@ class ControllerRecommendation:
             return {"message": "Recommendation deleted successfully"}, 200
         except Exception as ex:
             raise Exception(ex)
+
+
+    @classmethod
+    def authorize_review(cls, db, id):
+        try:
+            session = db.session()
+            sql = text("CALL AuthorizeReview(:id)")
+            params = {"id": id}
+            session.execute(sql, params)
+            session.commit()
+            return {"message": "Authorization of thesis was successful"}, 200
+        except Exception as ex:
+            raise Exception(ex)

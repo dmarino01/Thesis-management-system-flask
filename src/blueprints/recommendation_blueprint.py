@@ -39,3 +39,13 @@ def desactivate_recommendation(id, thesis_id):
         return redirect(url_for('thesis.view_thesis_page', id=thesis_id))
     except Exception as ex:
         raise Exception(ex)
+    
+
+@recommendation_bp.route('/authorize_review/<int:id>')
+@login_required
+def authorize_review(id):
+    try:
+        ControllerRecommendation.authorize_review(db, id)
+        return redirect(url_for('thesis.view_thesis_page', id=id))
+    except Exception as ex:
+        raise Exception(ex)

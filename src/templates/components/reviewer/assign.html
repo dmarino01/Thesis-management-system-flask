@@ -39,7 +39,7 @@
                         <strong>Solo se aceptara Grado de Doctor (DR) para asignar a una tesis.</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
+
                     <div style="display: inline-block;">
                         <h6 style="display: inline;">Archivo de ejemplo</h6>
                         <a href="{{ url_for('download_file', filename='file/plantillas_csv/plantilla_relacion_revisores-tesis.csv') }}"
@@ -52,7 +52,8 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv" required>
+                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv"
+                                    onchange="updateInputFileLabel()" required>
                                 <label class="custom-file-label" for="csv_file">Escoja un archivo</label>
                             </div>
                             <div class="input-group-append ml-1">
@@ -174,4 +175,15 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    function updateInputFileLabel() {
+        var input = document.getElementById('csv_file');
+        var label = input.nextElementSibling;
+        var fileName = input.files[0].name;
+        label.innerHTML = fileName;
+    }
+</script>
 {% endblock %}

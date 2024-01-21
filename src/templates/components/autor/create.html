@@ -117,7 +117,8 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv" required>
+                                <input type="file" class="custom-file-input" id="csv_file" name="csv_file" accept=".csv"
+                                    onchange="updateInputFileLabel()" required>
                                 <label class="custom-file-label" for="csv_file">Escoja un archivo</label>
                             </div>
                             <div class="input-group-append ml-1">
@@ -136,7 +137,7 @@
                                 <option value=":">:</option>
                                 <option value="\t">\t</option>
                             </select>
-                            
+
                         </div>
 
                         <div class="form-group">
@@ -239,4 +240,12 @@
 {% endblock %}
 
 {% block customJS %}
+<script>
+    function updateInputFileLabel() {
+        var input = document.getElementById('csv_file');
+        var label = input.nextElementSibling;
+        var fileName = input.files[0].name;
+        label.innerHTML = fileName;
+    }
+</script>
 {% endblock %}
