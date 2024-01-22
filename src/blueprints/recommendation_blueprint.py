@@ -49,3 +49,13 @@ def authorize_review(id):
         return redirect(url_for('thesis.view_thesis_page', id=id))
     except Exception as ex:
         raise Exception(ex)
+    
+
+@recommendation_bp.route('/clearing_recommendation/<int:id>/<int:thesis_id>')
+@login_required
+def clearing_recommendation(id, thesis_id):
+    try:
+        ControllerRecommendation.clear_recommendation(db, id)
+        return redirect(url_for('thesis.view_thesis_page', id=thesis_id))
+    except Exception as ex:
+        raise Exception(ex)
