@@ -422,12 +422,12 @@ def report_ptsr():
         total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(
             db
         )
+        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
         template_vars = {
             "total_thesis": total_thesis,
             "thesis_without_reviewers": thesis_without_reviewers,
             "total_thesis_without_reviewers": total_thesis_without_reviewers,
         }
-        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
         return render_template("report/thesis_without_reviewers.html", **template_vars)
     except Exception as ex:
         raise Exception(ex)
