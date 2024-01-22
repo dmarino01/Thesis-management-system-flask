@@ -1,5 +1,5 @@
 import base64
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import current_user, login_user, logout_user, login_required
 from controllers.ControllerUser import ControllerUser
 from controllers.ControllerAdmin import ControllerAdmin
@@ -16,22 +16,25 @@ user_bp = Blueprint('user', __name__)
 # Route for Login in
 @user_bp.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        user = User(0, request.form['username'], request.form['password'], 0, 0, 0)
-        logged_user = ControllerUser.login(db, user)
-        if logged_user != None:
-            if logged_user.password:
-                login_user(logged_user)
-                #flash('Login exitoso!', 'success')
-                return redirect(url_for('home'))
+    try:
+        if request.method == 'POST':
+            user = User(0, request.form['username'], request.form['password'], 0, 0, 0)
+            logged_user = ControllerUser.login(db, user)
+            if logged_user != None:
+                if logged_user.password:
+                    login_user(logged_user)
+                    #flash('Login exitoso!', 'success')
+                    return redirect(url_for('home'))
+                else:
+                    flash('Contraseña Inválida...', 'danger')
+                    return render_template("auth/login.html")
             else:
-                flash('Contraseña Inválida...', 'danger')
+                flash('Usuario No Encontrado...', 'danger')
                 return render_template("auth/login.html")
         else:
-            flash('Usuario No Encontrado...', 'danger')
             return render_template("auth/login.html")
-    else:
-        return render_template("auth/login.html")
+    except Exception as ex:
+        raise Exception(ex)
 
 
 # Route for Logout

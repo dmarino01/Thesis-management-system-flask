@@ -11,6 +11,15 @@
         font-size: 0.875rem;
         /* Adjust the font size as needed */
     }
+
+    @media (max-width: 767px) {
+
+        /* Apply margin only on small screens */
+        .small-screen-margin {
+            margin-bottom: 10px;
+            /* Adjust the margin as needed */
+        }
+    }
 </style>
 {% endblock %}
 
@@ -27,68 +36,16 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 col-sm-12">
-                    {% if thesis.project_id == 0 %}
-                    <h4>Detalles del Proyecto de Tesis</h4>
-                    {% else %}
-                    <h4>Detalles del Sustentación de Tesis</h4>
-                    {% endif %}
+
+                    <h4><b>Juicio de los Revisores</b></h4>
                     <div class="card">
                         <div class="card-body">
-                            <p class="card-text">Título: {{ thesis.title }}</p>
-                            <p class="card-text">Estado:
-                                {% if thesis.thesis_status_id == 1 %}
-                                <span class="badge bg-warning text-white">EN PROCESO</span>
-                                {% elif thesis.thesis_status_id == 2 %}
-                                <span class="badge bg-success text-white">APROBADO</span>
-                                {% elif thesis.thesis_status_id == 3 %}
-                                <span class="badge bg-primary text-white">RECHAZADO</span>
-                                {% elif thesis.thesis_status_id == 4 %}
-                                <span class="badge bg-primary text-white">EN REVISION</span>
-                                {% endif %}
-                            </p>
-                            <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
-                            <p class="card-text">Año de Inicio:
-                                <span id="submissionDate"> {{ thesis.submission_date }}</span>
-                                <span id="submission_daysOld"></span>
-                            </p>
-                            <p class="card-text">Ultima actualización:
-                                <span id="last_updateDate"> {{ thesis.last_update_date }}</span>
-                                <span id="last_update_daysOld"></span>
-                            </p>
-                            <p class="card-text">Abstract: {{ thesis.abstract }}</p>
-
-                            <p class="card-text d-flex">
-                                <b> Porcentaje de Turnitin: {{ thesis.turnitin_porcentaje }}</b>
-                            </p>
-
-                            <a href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}"
-                                class="btn btn-primary" download><i class="fa fa-download"></i> Descargar Archivo</a>
-                            {% if thesis.turnitin_link is not none %}
-                            <a href="{{ url_for('download_file', filename='file/turnitin/' + thesis.turnitin_link) }}"
-                                class="btn btn-danger" download><i class="fa fa-download"></i> Descargar Reporte
-                                Turnitín</a>
-                            {% endif %}
-                            {% if thesis.article_link is not none %}
-                            <a href="{{ url_for('download_file', filename='file/article/' + thesis.article_link) }}"
-                                class="btn btn-success" download><i class="fa fa-download"></i> Descargar Artículo de
-                                Revisión</a>
-                            {% endif %}
-                        </div>
-                    </div><br>
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 style="display: inline; margin-right: 10px;">Calificación Final: </h4>
+                            <h4 style="display: inline; margin-right: 10px;"><b>Calificación Final: </b></h4>
                             {% if thesis.rating is none %}
                             <h5 style="display: inline;">Por Calificar...</h5>
                             {% else %}
                             <h5 style="display: inline;"><b>{{ thesis.rating }} | {{ status_review }}</b>
-                                {% endif %}
-                        </div>
-                    </div><br>
-                    <h4>Observación de los Revisores</h4>
-                    <div class="card">
-                        <div class="card-body">
+                            {% endif %}
                             {% if review_details %}
                             {% for item in review_details %}
                             <div class="d-flex align-items-center border-bottom py-3">
@@ -138,17 +95,183 @@
                             {% endif %}
                         </div>
                     </div>
+                    <br>
 
+                    <div id="Comentarios">
+                        {% if current_user.role != "Revisor" %}
+                        <h4><b>Recomendaciones del Asesor</b> {% if current_user.role == "Asesor" and
+                            thesis.thesis_status_id == 1
+                            %}| <a class="btn btn-sm btn-primary mr-1 small-screen-margin"
+                                href="/create_recommendation_form/{{ thesis.thesis_id }}"><i class="fa fa-pen-to-square"></i>
+                                AÑADIR
+                                OBSERVACIONES POR SECCIÓN</a><a class="btn btn-sm btn-danger"
+                                href="/authorize_review/{{ thesis.thesis_id }}" onclick="return confirmAuthorize();"><i
+                                    class="fa fa-medal"></i> AUTORIZAR REVISIÓN</a>{%
+                            endif %}</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                {% if recommendations %}
+                                {% for item in recommendations %}
+                                <div class="d-flex align-items-center border-bottom py-3">
+                                    <div class="ms-3 w-100">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
 
+                                            <div class="d-flex align-items-center">
+                                                {% if item.image == None %}
+                                                <img class="rounded-circle"
+                                                    src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
+                                                    style="width: 40px; height: 40px; margin-right: 10px;">
+                                                {% else %}
+                                                <img class="rounded-circle flex-shrink-0"
+                                                    src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
+                                                    style="width: 40px; height: 40px; margin-right: 10px;">
+                                                {% endif %}
+                                                <h6 class="mb-0"><b>{{ item.firstname }} {{ item.lastname }}</b></h6>
+                                            </div>
+                                            <small class="recommendation-date"><b>{{ item.recommendation_date }} <span
+                                                        class="recommendation_daysOld_{{ loop.index }}"></span></b></small>
+                                        </div>
+
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <span style="text-align: justify; margin-right: 10px;">{{
+                                                item.recommendation_text }}</span>
+                                            <div class="ms-auto">
+                                                {% if current_user.role == 'Asesor' %}
+                                                {% if item.status == 0 %}
+                                                <p style="color: red;" class="text-center">(Observación Pendiente)</p>
+                                                {%else%}
+
+                                                <p style="color: green;" class="text-center">(Observación Levantada)</p>
+
+                                                {% endif %}
+                                                {% if item.status == 0 %}
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <a class="btn btn-sm btn-success btn-block"
+                                                            href="/clearing_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
+                                                            onclick="return confirmClear();"
+                                                            title="Considerar observación como levantada">
+                                                            <i class="fa fa-star"></i> Aprobar Observacion
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <a class="btn btn-sm btn-danger btn-block"
+                                                            href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
+                                                            onclick="return confirmDelete();"
+                                                            title="Eliminar observación">
+                                                            <i class="fa fa-trash"></i> Eliminar Observacion
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    // Get the recommendation date from the template and convert it to a Date object
+                                    var recommendationDate = new Date("{{ item.recommendation_date | safe }}");
+                                    var today = new Date();
+                                    // Calculate the difference in milliseconds
+                                    var differenceInTime = today - recommendationDate;
+                                    // Calculate days difference
+                                    var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+                                    // Display the number of days
+                                    document.querySelector(".recommendation_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
+                                </script>
+                                {% endfor %}
+                                {% else %}
+                                <p>No hay resultados encontrados.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <br>
+                        {% endif %}
+                        {% if current_user.role == "Asesor" or current_user.role == "Admin" %}
+                        <form action="{{url_for('recommendation.save_recommendation', id=thesis.thesis_id)}}"
+                            method="POST">
+                            <div class="form-floating mb-3">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <textarea class="form-control" style="height: 100px;" id="text" name="text"
+                                    placeholder="Añadir Comentario General..."></textarea>
+
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-save"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
 
                 </div>
                 <br>
                 <div class="col-md-6 col-sm-12">
-                    <h4>Ver Archivo</h4>
+                    <div>
+                        {% if thesis.project_id == 0 %}
+                        <h4><b>Detalles del Proyecto de Tesis</b></h4>
+                        {% else %}
+                        <h4><b>Detalles del Sustentación de Tesis</b></h4>
+                        {% endif %}
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">Título: {{ thesis.title }}</p>
+                                <p class="card-text">Estado:
+                                    {% if thesis.thesis_status_id == 1 %}
+                                    <span class="badge bg-warning text-white">EN PROCESO</span>
+                                    {% elif thesis.thesis_status_id == 2 %}
+                                    <span class="badge bg-success text-white">APROBADO</span>
+                                    {% elif thesis.thesis_status_id == 3 %}
+                                    <span class="badge bg-primary text-white">RECHAZADO</span>
+                                    {% elif thesis.thesis_status_id == 4 %}
+                                    <span class="badge bg-primary text-white">EN REVISION</span>
+                                    {% endif %}
+                                </p>
+                                <p class="card-text">Autor: {{ thesis.firstname }} {{ thesis.lastname }}</p>
+                                <p class="card-text">Año de Inicio:
+                                    <span id="submissionDate"> {{ thesis.submission_date }}</span>
+                                    <span id="submission_daysOld"></span>
+                                </p>
+                                <p class="card-text">Ultima actualización:
+                                    <span id="last_updateDate"> {{ thesis.last_update_date }}</span>
+                                    <span id="last_update_daysOld"></span>
+                                </p>
+                                <p class="card-text">Abstract: {{ thesis.abstract }}</p>
+
+                                <p class="card-text d-flex">
+                                    <b> Porcentaje de Turnitin: {{ thesis.turnitin_porcentaje }}</b>
+                                </p>
+
+                                <a href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}"
+                                    class="btn btn-primary" download><i class="fa fa-download"></i> Descargar
+                                    Archivo</a>
+                                {% if thesis.turnitin_link is not none %}
+                                <a href="{{ url_for('download_file', filename='file/turnitin/' + thesis.turnitin_link) }}"
+                                    class="btn btn-danger" download><i class="fa fa-download"></i> Descargar Reporte
+                                    Turnitín</a>
+                                {% endif %}
+                                {% if thesis.article_link is not none %}
+                                <a href="{{ url_for('download_file', filename='file/article/' + thesis.article_link) }}"
+                                    class="btn btn-success" download><i class="fa fa-download"></i> Descargar Artículo
+                                    de
+                                    Revisión</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h4><b>Ver Archivo</b></h4>
                     <div class="card">
                         <div class="card-body">
                             <object data="{{ url_for('static', filename='file/thesis/' + thesis.pdf_link) }}"
-                                type="application/pdf" width="100%" height="500px">
+                                type="application/pdf" width="100%" height="800px">
                                 <p>Unable to display PDF file.
                                     <a
                                         href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}">Download</a>
@@ -158,105 +281,10 @@
                         </div>
                     </div>
                     <br>
-                    {% if current_user.role != "Revisor" %}
-
-                    <h4>Recomendaciones del Asesor {% if current_user.role == "Asesor" and thesis.thesis_status_id == 1
-                        %}| <a class="btn btn-sm btn-danger" href="/authorize_review/{{ thesis.thesis_id }}"
-                            onclick="return confirmAuthorize();"><i class="fa fa-medal"></i> AUTORIZAR REVISIÓN</a>{%
-                        endif %}</h4>
-
-                    <div class="card">
-                        <div class="card-body">
-                            {% if recommendations %}
-                            {% for item in recommendations %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <div class="ms-3 w-100">
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-
-                                        <div class="d-flex align-items-center">
-                                            {% if item.image == None %}
-                                            <img class="rounded-circle"
-                                                src="{{ url_for('static', filename='img/user.jpg') }}" alt=""
-                                                style="width: 40px; height: 40px; margin-right: 10px;">
-                                            {% else %}
-                                            <img class="rounded-circle flex-shrink-0"
-                                                src="data:image/png;base64,{{ item.image|b64encode }}" alt=""
-                                                style="width: 40px; height: 40px; margin-right: 10px;">
-                                            {% endif %}
-                                            <h6 class="mb-0"><b>{{ item.firstname }} {{ item.lastname }}</b></h6>
-                                        </div>
-                                        <small class="recommendation-date"><b>{{ item.recommendation_date }} <span
-                                                    class="recommendation_daysOld_{{ loop.index }}"></span></b></small>
-                                    </div>
-
-                                    <div class="d-flex w-100 justify-content-between align-items-center">
-                                        <span style="text-align: justify; margin-right: 10px;">{{
-                                            item.recommendation_text }}</span>
-                                        <div class="ms-auto">
-                                            {% if current_user.role == 'Asesor' %}
-                                            {% if item.status == 0 %}
-                                            <small style="color: red;">
-                                                <p class="text-center">(Observación Pendiente)</p>
-                                            </small>
-                                            {%else%}
-                                            <small style="color: green;">
-                                                <p class="text-center">(Observación Levantada)</p>
-                                            </small>
-                                            {% endif %}
-                                            {% if item.status == 0 %}
-                                            <a class="btn btn-sm btn-primary"
-                                                href="/clearing_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
-                                                onclick="return confirmClear();"
-                                                title="Considerar observación como levantada"><i
-                                                    class="fa fa-star"></i></a>
-                                            <a class="btn btn-sm btn-danger"
-                                                href="/desactivate_recommendation/{{ item.recommendation_id }}/{{ item.thesis_id }}"
-                                                onclick="return confirmDelete();" title="Eliminar observación"><i
-                                                    class="fa fa-trash"></i></a>
-                                            {% endif %}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
 
 
 
-                            <script>
-                                // Get the recommendation date from the template and convert it to a Date object
-                                var recommendationDate = new Date("{{ item.recommendation_date | safe }}");
-                                var today = new Date();
-                                // Calculate the difference in milliseconds
-                                var differenceInTime = today - recommendationDate;
-                                // Calculate days difference
-                                var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-                                // Display the number of days
-                                document.querySelector(".recommendation_daysOld_{{ loop.index }}").innerText = "(hace " + differenceInDays + " días)";
-                            </script>
-                            {% endfor %}
-                            {% else %}
-                            <p>No hay resultados encontrados.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    {% endif %}
-                    {% if current_user.role == "Asesor" or current_user.role == "Admin" %}
-                    <form action="{{url_for('recommendation.save_recommendation', id=thesis.thesis_id)}}" method="POST">
-                        <div class="form-floating mb-3">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <textarea class="form-control" style="height: 100px;" id="text" name="text"
-                                placeholder="Ingresar Texto..."></textarea>
-
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> Guardar
-                            </button>
-                        </div>
-                    </form>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -267,7 +295,7 @@
 {% block customJS %}
 <script>
     function confirmAuthorize() {
-        return confirm('¿Seguro que quieres autorizar la revisión de esta Tesis?');
+        return confirm('¿Seguro que quieres autorizar la revisión de esta Tesis?, No se podra deshacer la acción.');
     }
     function confirmDelete() {
         return confirm('¿Seguro que quieres eliminar este comentario?');

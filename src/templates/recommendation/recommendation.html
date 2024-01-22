@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %} Agregar Recomendaciones {% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    {% if thesis.project_id != 0 %}
+    <h2>Recomendar en Tesis</h2>
+    {% else %}
+    <h2>Recomendar en Proyecto de Tesis</h2>
+    {% endif %}
+
+    <div class="card shadow mb-4" style="background-color: #fffcfc;">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">
+                {% if thesis.project_id != 0 %}
+                Ingrese comentarios por secciones de Tesis
+                {% else %}
+                Ingrese comentarios por secciones del Proyecto de Tesis
+                {% endif %}
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <form action="{{url_for('recommendation.save_multiple_recommendations', id=thesis.thesis_id)}}"
+                        method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="form-floating mb-3">
+                            <label for="introduccion">Introducción</label>
+                            <textarea class="form-control" style="height: 100px;" id="introduccion" name="introduccion"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="antecedentes">Antecedentes</label>
+                            <textarea class="form-control" style="height: 100px;" id="antecedentes" name="antecedentes"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="objetivo">Objetivo o Hipotesis</label>
+                            <textarea class="form-control" style="height: 100px;" id="objetivo" name="objetivo"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="metodo">Método</label>
+                            <textarea class="form-control" style="height: 100px;" id="metodo" name="metodo"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="resultados">Resultados</label>
+                            <textarea class="form-control" style="height: 100px;" id="resultados" name="resultados"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="discusion">Discusión</label>
+                            <textarea class="form-control" style="height: 100px;" id="discusion" name="discusion"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <label for="conclusion">Conclusión</label>
+                            <textarea class="form-control" style="height: 100px;" id="conclusion" name="conclusion"
+                                placeholder="Ingrese comentario..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Guardar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Ver Archivo</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <object data="{{ url_for('static', filename='file/thesis/' + thesis.pdf_link) }}"
+                                type="application/pdf" width="100%" height="1000px">
+                                <p>Unable to display PDF file.
+                                    <a
+                                        href="{{ url_for('download_file', filename='file/thesis/' + thesis.pdf_link) }}">Download</a>
+                                    instead.
+                                </p>
+                            </object>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+{% endblock %}

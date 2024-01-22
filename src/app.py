@@ -1,6 +1,7 @@
 import base64
 from flask import Flask, render_template, redirect, request, url_for, send_from_directory
 from flask_login import LoginManager, login_required
+from datetime import timedelta
 from jinja2 import Environment, FileSystemLoader
 from config import Config, db, csrf
 
@@ -22,6 +23,9 @@ from blueprints.recommendation_blueprint import recommendation_bp
 app = Flask(__name__)
 
 app.config.from_object(Config)
+
+app.config['SESSION_COOKIE_NAME'] = 'session'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
 
 UPLOAD_FOLDER = '/static/file/thesis/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
