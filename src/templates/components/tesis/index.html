@@ -14,9 +14,11 @@
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
             <h6 class="m-0 font-weight-bold text-primary">Mantenedor de Tesis</h6>
             <div class="btn-group">
-                <a class="btn btn-primary" href="/assign_author_advisor_form"><i class="fa fa-bolt"></i> Asignar Asesor Masivamente</a>
-                <span class="mx-2"></span>    
-                <a class="btn btn-secondary" href="/assign_reviewer_thesis_form"><i class="fa fa-bolt"></i> Asignar Jurados Masivamente</a>
+                <a class="btn btn-primary" href="/assign_author_advisor_form"><i class="fa fa-bolt"></i> Asignar Asesor
+                    Masivamente</a>
+                <span class="mx-2"></span>
+                <a class="btn btn-secondary" href="/assign_reviewer_thesis_form"><i class="fa fa-bolt"></i> Asignar
+                    Jurados Masivamente</a>
             </div>
         </div>
         <div class="card-body">
@@ -32,7 +34,7 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-        
+
             <div class="d-flex mb-3">
                 <label for="projectFilter" class="col-md-1 mb-0 me-2">Filtrar por: </label>
                 <div class="col-md-3 me-2">
@@ -103,12 +105,31 @@
                                 <span class="badge bg-warning text-white">SIN NOTA</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center col-2 align-middle">
+                            <td class="text-center col-1 align-middle">
                                 <div class="btn-container">
-                                    <a class="btn btn-sm btn-primary" href="/admin_assigns_advisor_page/{{ item.thesis_id }}">
-                                        <i class="fas fa-chalkboard-user"></i> Asesor</a>
-                                    <a class="btn btn-sm btn-secondary" href="/admin_assigns_jury_page/{{ item.thesis_id }}">
-                                        <i class="fas fa-gavel"></i> Jurado</a>
+
+                                    <div class="row">
+                                        <div class="col mb-1">
+                                            <a class="btn btn-sm btn-primary"
+                                                href="/admin_assigns_advisor_page/{{ item.thesis_id }}">
+                                                <i class="fas fa-chalkboard-user"></i> Asesor
+                                            </a>
+                                        </div>
+                                        <div class="col mb-1">
+                                            <a class="btn btn-sm btn-secondary"
+                                                href="/admin_assigns_jury_page/{{ item.thesis_id }}">
+                                                <i class="fas fa-gavel"></i> Jurado
+                                            </a>
+                                        </div>
+                                        {% if item.rating is not none %}
+                                        <div class="col">
+                                            <a class="btn btn-sm btn-danger" href="/admin_generates_tesis">
+                                                <i class="fas fa-print"></i> Acta
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
                                 </div>
                             </td>
                         </tr>

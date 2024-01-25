@@ -7,8 +7,9 @@ from flask import (
     request,
     redirect,
     url_for,
-    flash,
+    flash
 )
+from reportlab.pdfgen import canvas
 from flask_login import login_required
 import pandas as pd
 from controllers.ControllerThesis import ControllerThesis
@@ -538,3 +539,105 @@ def admin_assigns_advisor_page(id):
         "total_assigned_advisor": total_assigned_advisor,
     }
     return render_template("components/tesis/assign_advisor.html", **template_vars)
+
+
+@thesis_bp.route("/admin_generates_tesis")
+@login_required
+def generate_pdf():
+    # Create a BytesIO buffer to store the PDF
+    from io import BytesIO
+    buffer = BytesIO()
+
+    # Create the PDF object, using BytesIO as its "file"
+    p = canvas.Canvas(buffer)
+
+    # Add content to the PDF
+    institution_name = "UNT"
+    academic_program = "[Nombre del Programa Académico]"
+    date = "[Fecha]"
+    thesis_title = "[Título de la Tesis]"
+    student_name = "[Nombre del Estudiante]"
+    academic_degree = "[Grado Académico]"
+    defense_date = "[Fecha de Defensa]"
+    defense_time = "[Hora de Defensa]"
+    defense_location = "[Lugar de Defensa]"
+    evaluators = [
+        ("[Nombre del Primer Evaluador]", "[Cargo del Primer Evaluador]"),
+        ("[Nombre del Segundo Evaluador]", "[Cargo del Segundo Evaluador]"),
+        ("[Nombre del Tercer Evaluador]", "[Cargo del Tercer Evaluador]")
+    ]
+    advisor_name = "[Nombre del Asesor de Tesis]"
+
+    p.setFont("Helvetica", 12)
+    p.drawCentredString(300, 750, institution_name)
+    p.drawCentredString(300, 730, academic_program)
+    p.drawCentredString(300, 710, date)
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawCentredString(300, 670, "ACTA DE DEFENSA DE TESIS")
+
+    p.setFont("Helvetica", 12)
+    p.drawString(50, 640, f"En {institution_name}, se llevó a cabo la defensa de la tesis titulada '{thesis_title}',")
+    p.drawString(50, 625, f"presentada por el estudiante {student_name}, con el fin de obtener el grado de {academic_degree} en {academic_program}.")
+
+    p.drawString(50, 590, f"La defensa se llevó a cabo el {defense_date} a las {defense_time} en {defense_location}.")
+    p.drawString(50, 575, "El tribunal evaluador estuvo conformado por los siguientes miembros:")
+
+    y_position = 555
+    for evaluator in evaluators:
+        p.drawString(50, y_position, f"{evaluator[0]}, {evaluator[1]}")
+        y_position -= 15
+
+    p.drawString(50, 510, "El estudiante presentó de manera oral y escrita los resultados de su investigación,")
+    p.drawString(50, 495, "exponiendo los objetivos, metodología, resultados obtenidos y conclusiones de la tesis.")
+    p.drawString(50, 480, "Posteriormente, los miembros del tribunal realizaron preguntas y comentarios,")
+    p.drawString(50, 465, "generando un intercambio constructivo que permitió evaluar la calidad y profundidad del trabajo realizado.")
+
+    p.drawString(50, 430, "Luego de la exposición y la deliberación del tribunal, se llegó a las siguientes conclusiones:")
+
+    conclusions = [
+        "1. Se considera que la tesis cumple con los requisitos establecidos para obtener el grado de.",
+        f"   {academic_degree}.",
+        "2. Los resultados presentados demuestran un conocimiento profundo del tema de investigación y",
+        "   muestran un aporte significativo al campo académico.",
+        "3. El estudiante demostró habilidades para la investigación, análisis crítico y capacidad de expresión oral."
+    ]
+
+    y_position = 410
+    for conclusion in conclusions:
+        p.drawString(50, y_position, conclusion)
+        y_position -= 15
+
+    p.drawString(50, 365, f"En base a lo anterior, se recomienda otorgar el grado de {academic_degree} al estudiante {student_name}.")
+
+    p.drawString(50, 330, "El acta queda firmada por los miembros del tribunal:")
+
+    signatures = [
+        ("[Firma y Nombre del Primer Evaluador]", ""),
+        ("[Firma y Nombre del Segundo Evaluador]", ""),
+        ("[Firma y Nombre del Tercer Evaluador]", ""),
+        ("[Firma y Nombre del Estudiante]", ""),
+        ("[Firma y Nombre del Asesor de Tesis]", "")
+    ]
+
+    y_position = 310
+    for signature in signatures:
+        p.drawString(50, y_position, signature[0])
+        y_position -= 15
+
+    p.drawString(50, 260, "Fecha: _________")
+
+    # Save the PDF to the buffer
+    p.showPage()
+    p.save()
+
+    # Move the buffer's pointer to the beginning
+    buffer.seek(0)
+
+    # Set up the response to return the PDF
+    response = make_response(buffer.read())
+    response.mimetype = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=acta_defensa_tesis.pdf'
+
+    return response
+
