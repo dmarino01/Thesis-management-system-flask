@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from io import BytesIO
+import locale
 from flask import (
     Blueprint,
     make_response,
@@ -10,7 +10,8 @@ from flask import (
     url_for,
     flash
 )
-from reportlab.pdfgen import canvas
+
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 from flask_login import login_required
 import pandas as pd
 from controllers.ControllerThesis import ControllerThesis
@@ -19,6 +20,16 @@ from controllers.ControllerReview import ControllerReview
 from controllers.ControllerReviewer import ControllerReviewer
 from controllers.ControllerAdvisor import ControllerAdvisor
 from werkzeug.utils import secure_filename
+
+from xhtml2pdf import pisa
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, SimpleDocTemplate
+
+from io import BytesIO
+
 import uuid
 from config import db
 
@@ -48,8 +59,7 @@ def view_thesis_page(id):
         recommendations = ControllerRecommendation.get_recommendations_by_thesis_id(
             db, id
         )
-        review_details = ControllerReview.get_review_details_by_thesis_id(
-            db, id)
+        review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
         status_review = ControllerReview.getStatusReview(db, id)
         template_vars = {
             "thesis": thesis,
@@ -69,8 +79,7 @@ def view_thesis_page(id):
 def view_dissertation_page(id):
     try:
         thesis = ControllerThesis.get_thesis_by_id(db, id)
-        dissertation_exists = ControllerThesis.check_dissertation_exists(
-            db, id)
+        dissertation_exists = ControllerThesis.check_dissertation_exists(db, id)
         template_vars = {
             "thesis": thesis,
             "dissertation_exists": dissertation_exists,
@@ -122,8 +131,7 @@ def save_sign(id):
             filename = secure_filename(image_file.filename)
             new_filename_sign = f"{unique_id}_{filename}"
 
-            sign_path = os.path.join(
-                UPLOAD_FOLDER_SIGNATURE, new_filename_sign)
+            sign_path = os.path.join(UPLOAD_FOLDER_SIGNATURE, new_filename_sign)
 
             # Save the file to the signature folder
             image_file.save(sign_path)
@@ -191,8 +199,7 @@ def update_thesis(id):
         if pdf_turnitin and pdf_turnitin.filename != "":
             os.makedirs(UPLOAD_FOLDER_TURNITIN, exist_ok=True)
             # Delete old pdf
-            file_path1 = os.path.join(
-                UPLOAD_FOLDER_TURNITIN, old_turnitin_link)
+            file_path1 = os.path.join(UPLOAD_FOLDER_TURNITIN, old_turnitin_link)
             if os.path.exists(file_path1):
                 os.remove(file_path1)
             else:
@@ -208,8 +215,7 @@ def update_thesis(id):
                 f"{unique_id}_{filename_turnitin_without_extension}{extension}"
             )
             # Save path and file
-            pdf_path1 = os.path.join(
-                UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
+            pdf_path1 = os.path.join(UPLOAD_FOLDER_TURNITIN, new_filename_turnitin)
             pdf_turnitin.save(pdf_path1)
         else:
             new_filename_turnitin = old_turnitin_link
@@ -360,8 +366,7 @@ def save_dissertation_thesis():
                 turnitin_path = os.path.join(
                     UPLOAD_FOLDER_TURNITIN, new_filename_turnitin
                 )
-                article_path = os.path.join(
-                    UPLOAD_FOLDER_ARTICLE, new_filename_article)
+                article_path = os.path.join(UPLOAD_FOLDER_ARTICLE, new_filename_article)
 
                 pdf_file.save(pdf_path)
                 pdf_turnitin.save(turnitin_path)
@@ -430,8 +435,7 @@ def report_ptsr():
         total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(
             db
         )
-        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(
-            db)
+        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
         template_vars = {
             "total_thesis": total_thesis,
             "thesis_without_reviewers": thesis_without_reviewers,
@@ -448,8 +452,7 @@ def report_ptsr():
 def report_ptsc():
     try:
         total_thesis = ControllerThesis.getTotalThesis(db)
-        total_thesis_without_reviews = ControllerThesis.getTotalThesisWithoutReviews(
-            db)
+        total_thesis_without_reviews = ControllerThesis.getTotalThesisWithoutReviews(db)
         thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
         return render_template(
             "report/thesis_without_reviews.html",
@@ -466,8 +469,7 @@ def report_ptsc():
 @login_required
 def download_excel_tesis_sin_revisores():
     try:
-        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(
-            db)
+        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
         # Create a DataFrame from the fetched data
         df = pd.DataFrame(thesis_without_reviewers)
         # Convert DataFrame to Excel
@@ -513,8 +515,7 @@ def allowed_img(filename):
 def tesis():
     project_filter = request.args.get("project_filter")
     status_filter = request.args.get("status_filter")
-    data = ControllerThesis.getThesisForAdmin(
-        db, project_filter, status_filter)
+    data = ControllerThesis.getThesisForAdmin(db, project_filter, status_filter)
     return render_template("components/tesis/index.html", thesis=data)
 
 
@@ -525,8 +526,7 @@ def admin_assigns_jury_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     left_reviewers = ControllerReviewer.getLeftReviewersToAssign(db, id)
     assigned_reviewers = ControllerReviewer.getReviewersByThesisId(db, id)
-    total_assigned_reviewer = ControllerReviewer.getTotalReviewersByThesisId(
-        db, id)
+    total_assigned_reviewer = ControllerReviewer.getTotalReviewersByThesisId(db, id)
     template_vars = {
         "thesis": thesis,
         "left_reviewers": left_reviewers,
@@ -543,8 +543,7 @@ def admin_assigns_advisor_page(id):
     thesis = ControllerThesis.get_thesis_by_id(db, id)
     left_advisors = ControllerAdvisor.getLeftAdvisorsToAssign(db, id)
     assigned_advisors = ControllerAdvisor.getAdvisorsByThesisId(db, id)
-    total_assigned_advisor = ControllerAdvisor.getTotalAdvisorsByThesisId(
-        db, id)
+    total_assigned_advisor = ControllerAdvisor.getTotalAdvisorsByThesisId(db, id)
     template_vars = {
         "thesis": thesis,
         "left_advisors": left_advisors,
@@ -554,110 +553,67 @@ def admin_assigns_advisor_page(id):
     return render_template("components/tesis/assign_advisor.html", **template_vars)
 
 
-@thesis_bp.route("/admin_generates_tesis")
+@thesis_bp.route("/admin_generates_tesis/<int:id>")
 @login_required
-def generate_pdf():
+def generate_pdf(id):
+    # Define your data
+    institution_name = "UNT"
+    academic_program = "Nombre del Programa Académico"
+    date = "Fecha"
+    thesis_title = "Título de la Tesis"
+    student_name = "Nombre del Estudiante"
+    academic_degree = "Grado Académico"
+    defense_date = "Fecha de Defensa"
+    defense_time = "Hora de Defensa"
+    defense_location = "Lugar de Defensa"
+    
+    review_details = ControllerReview.get_review_details_by_thesis_id(db, id)
+    signatures = ControllerReview.get_review_details_by_thesis_id(db, id)
+    thesis_details = ControllerThesis.get_thesis_by_id(db, id)
+    status_review = ControllerReview.getStatusReview(db, id)
+    last_date = ControllerReview.getLastReviewDate(db, id)
+    advisor_name = "Nombre del Asesor de Tesis"
+    formatted_date = last_date.review_date.strftime('%d de %B de %Y a las %H:%M:%S')
+    conclusions = [
+        "Se considera que la tesis cumple con los requisitos establecidos para obtener el grado de" f"{academic_degree}.",
+        "Los resultados presentados demuestran un conocimiento profundo del tema de investigación y un aporte significativo al campo académico.",
+        "El estudiante demostró habilidades para la investigación, análisis crítico y capacidad de expresión oral."
+    ]
+    template_vars = {
+        "institution_name":institution_name,
+        "academic_program":academic_program,
+        "date":date,
+        "thesis_title":thesis_title,
+        "student_name":student_name,
+        "academic_degree":academic_degree,
+        "defense_date":defense_date,
+        "defense_time":defense_time,
+        "defense_location":defense_location,
+        "advisor_name":advisor_name,
+        "review_details":review_details,
+        "signatures":signatures,
+        "conclusions":conclusions,
+        "thesis_details":thesis_details,
+        "status_review":status_review,
+        "last_date":formatted_date,
+    }
+    # Render the HTML template
+    html_content = render_template('components/tesis/acta.html', **template_vars)
+
     # Create a BytesIO buffer to store the PDF
     buffer = BytesIO()
 
-    # Create the PDF object, using BytesIO as its "file"
-    p = canvas.Canvas(buffer)
+    # Convert HTML to PDF using xhtml2pdf
+    pisa_status = pisa.CreatePDF(html_content, dest=buffer)
 
-    # Add content to the PDF
-    institution_name = "UNT"
-    academic_program = "[Nombre del Programa Académico]"
-    date = "[Fecha]"
-    thesis_title = "[Título de la Tesis]"
-    student_name = "[Nombre del Estudiante]"
-    academic_degree = "[Grado Académico]"
-    defense_date = "[Fecha de Defensa]"
-    defense_time = "[Hora de Defensa]"
-    defense_location = "[Lugar de Defensa]"
-    evaluators = [
-        ("[Nombre del Primer Evaluador]", "[Cargo del Primer Evaluador]"),
-        ("[Nombre del Segundo Evaluador]", "[Cargo del Segundo Evaluador]"),
-        ("[Nombre del Tercer Evaluador]", "[Cargo del Tercer Evaluador]")
-    ]
-    advisor_name = "[Nombre del Asesor de Tesis]"
-
-    p.setFont("Helvetica", 12)
-    p.drawCentredString(300, 750, institution_name)
-    p.drawCentredString(300, 730, academic_program)
-    p.drawCentredString(300, 710, date)
-
-    p.setFont("Helvetica-Bold", 16)
-    p.drawCentredString(300, 670, "ACTA DE DEFENSA DE TESIS")
-
-    p.setFont("Helvetica", 12)
-    p.drawString(
-        50, 640, f"En {institution_name}, se llevó a cabo la defensa de la tesis titulada '{thesis_title}',")
-    p.drawString(
-        50, 625, f"presentada por el estudiante {student_name}, con el fin de obtener el grado de {academic_degree} en {academic_program}.")
-
-    p.drawString(
-        50, 590, f"La defensa se llevó a cabo el {defense_date} a las {defense_time} en {defense_location}.")
-    p.drawString(
-        50, 575, "El tribunal evaluador estuvo conformado por los siguientes miembros:")
-
-    y_position = 555
-    for evaluator in evaluators:
-        p.drawString(50, y_position, f"{evaluator[0]}, {evaluator[1]}")
-        y_position -= 15
-
-    p.drawString(
-        50, 520, "El estudiante presentó de manera oral y escrita los resultados de su investigación,")
-    p.drawString(
-        50, 505, "exponiendo los objetivos, metodología, resultados obtenidos y conclusiones de la tesis.")
-    p.drawString(
-        50, 490, "Posteriormente, los miembros del tribunal realizaron preguntas y comentarios,")
-    p.drawString(
-        50, 475, "generando un intercambio constructivo que permitió evaluar la calidad y profundidad del trabajo realizado.")
-
-    p.drawString(
-        50, 440, "Luego de la exposición y la deliberación del tribunal, se llegó a las siguientes conclusiones:")
-
-    conclusions = [
-        "1. Se considera que la tesis cumple con los requisitos establecidos para obtener el grado de.",
-        f"   {academic_degree}.",
-        "2. Los resultados presentados demuestran un conocimiento profundo del tema de investigación y",
-        "   muestran un aporte significativo al campo académico.",
-        "3. El estudiante demostró habilidades para la investigación, análisis crítico y capacidad de expresión oral."
-    ]
-
-    y_position = 420
-    for conclusion in conclusions:
-        p.drawString(50, y_position, conclusion)
-        y_position -= 15
-
-    p.drawString(
-        50, 370, f"En base a lo anterior, se recomienda otorgar el grado de {academic_degree} al estudiante {student_name}.")
-
-    p.drawString(
-        50, 335, "El acta queda firmada por los miembros del tribunal:")
-
-    signatures = [
-        ("[Firma y Nombre del Primer Evaluador]", ""),
-        ("[Firma y Nombre del Segundo Evaluador]", ""),
-        ("[Firma y Nombre del Tercer Evaluador]", ""),
-        ("[Firma y Nombre del Estudiante]", ""),
-        ("[Firma y Nombre del Asesor de Tesis]", "")
-    ]
-
-    y_position = 315
-    for signature in signatures:
-        p.drawString(50, y_position, signature[0])
-        y_position -= 15
-
-    p.drawString(50, 265, "Fecha: _________")
-
-    # Save the PDF to the buffer
-    p.showPage()
-    p.save()
+    # Check if the conversion was successful
+    if pisa_status.err:
+        return "Error converting HTML to PDF"
 
     # Move the buffer's pointer to the beginning
     buffer.seek(0)
 
-    # Set up the response to display the PDF in the browser
+    # Set up the response to return the PDF
     response = make_response(buffer.read())
     response.mimetype = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline; filename=acta_defensa_tesis.pdf'

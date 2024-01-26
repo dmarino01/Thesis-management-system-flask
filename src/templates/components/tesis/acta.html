@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACTA DE DEFENSA DE TESIS</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 12px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* Add any additional styles here */
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>UNIVERSIDAD NACIONAL DE TRUJILLO</h1>
+        <h1>ESCUELA DE POSGRADO</h1>
+        <h1>ACTA DE DEFENSA DE TESIS</h1>
+        <p>En {{ institution_name }}, se llevó a cabo la defensa de la tesis titulada "{{ thesis_details.title }}",
+            presentada por el estudiante {{ thesis_details.firstname }} {{ thesis_details.lastname }}, con el fin de
+            obtener el grado de {{ academic_degree }} en {{ academic_program }}.</p>
+
+            <p>La defensa se llevó a cabo el {{ last_date }}.</p>
+
+
+        <p>El tribunal evaluador estuvo conformado por los siguientes miembros:</p> 
+        <ul>
+            {% for item in review_details %}
+            <li>{{ item.firstname }} {{ item.lastname }}, con el cargo de {{ item.role }}</li>
+            {% endfor %}
+        </ul>
+    
+        <p>El estudiante presentó de manera oral y escrita los resultados de su investigación, exponiendo los objetivos,
+            metodología, resultados obtenidos y conclusiones de la tesis.</p>
+
+        <p>Posteriormente, los miembros del tribunal realizaron preguntas y comentarios, generando un intercambio
+            constructivo que permitió evaluar la calidad y profundidad del trabajo realizado.</p>
+
+        <p>Luego de la exposición y la deliberación del tribunal, se decidio que el estado de la tesis es <b>{{status_review}}</b>, en base a las siguientes conclusiones:</p>
+        <ol>
+            {% for conclusion in conclusions %}
+            <li>{{ conclusion }}</li>
+            {% endfor %}
+        </ol>
+
+        <p>En base a lo anterior, se otorga el grado de {{ academic_degree }} al estudiante {{ thesis_details.firstname
+            }} {{ thesis_details.lastname }}.</p>
+
+        <p>El acta queda firmada por los miembros del tribunal:</p>
+        <ul>
+            {% for item in signatures %}
+            <li>{{ item.firstname }} {{ item.lastname }}: _______</li>
+            {% endfor %}
+        </ul>
+
+        <p>Fecha: _________</p>
+    </div>
+</body>
+
+</html>

@@ -122,11 +122,15 @@ class ControllerReview:
         try:
             session = db.session()
             sql = text(
-                "select p.firstname, p.lastname, p.image, r.rating, r.review_date, r.comment "
+                "select DISTINCT  p.firstname, p.lastname, p.image, r.rating, r.review_date, r.comment, r_r.role "
                 "from review r "
-                "inner join reviewer rw on rw.reviewer_id = r.reviewer_id "
-                "inner join person p on rw.person_id = p.person_id "
-                "where thesis_id = :p_thesis_id; "
+                "inner join thesis t on t.thesis_id = r.thesis_id "
+                "inner join reviewer_thesis r_t on r_t.thesis_id = t.thesis_id "
+                "inner join reviewer_role r_r on r_r.id = r_t.reviewer_role_id "
+                "inner join reviewer rw on rw.reviewer_id = r_t.reviewer_id "
+                "inner join person p on p.person_id = rw.person_id "
+                "where r_t.thesis_id = :p_thesis_id "
+                "GROUP BY p.firstname, p.lastname, p.image; "
             )
             params = {
                 "p_thesis_id": id,
@@ -150,5 +154,33 @@ class ControllerReview:
             status_review = result.scalar()
             result.close()
             return status_review
+        except Exception as ex:
+            raise Exception(ex)
+        
+
+    @classmethod
+    def getLastReviewDate(cls, db, id):
+        try:
+            session = db.session()
+
+            sql = text(
+                "SELECT p.firstname, p.lastname, p.image, r.rating, MAX(r.review_date) as review_date, r.comment, r_r.role "
+                "FROM review r "
+                "INNER JOIN thesis t ON t.thesis_id = r.thesis_id "
+                "INNER JOIN reviewer_thesis r_t ON r_t.thesis_id = t.thesis_id "
+                "INNER JOIN reviewer_role r_r ON r_r.id = r_t.reviewer_role_id "
+                "INNER JOIN reviewer rw ON rw.reviewer_id = r_t.reviewer_id "
+                "INNER JOIN person p ON p.person_id = rw.person_id "
+                "WHERE r_t.thesis_id = :p_thesis_id "
+                "ORDER BY r.review_date DESC "
+                "LIMIT 1; "
+                )
+            params = { 
+                "p_thesis_id": id,
+            }
+            result = session.execute(sql, params)
+            last_date = result.fetchone()
+            result.close()
+            return last_date
         except Exception as ex:
             raise Exception(ex)
