@@ -66,6 +66,7 @@
                         <tr align="center">
                             <th scope="col">ID</th>
                             <th scope="col">Título</th>
+                            <th scope="col">Mención</th>
                             <th scope="col">Autor</th>
                             <th scope="col">Fecha Inicio</th>
                             <th scope="col">Fecha Termino</th>
@@ -84,6 +85,7 @@
                             {% else %}
                             <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
+                            <td>{{ item.mention }}</td>
                             <td>{{ item.firstname }} {{ item.lastname }}</td>
                             <td>{{ item.submission_date }}</td>
                             <td>{{ item.expiration_date }}</td>
@@ -121,9 +123,9 @@
                                                 <i class="fas fa-gavel"></i> Jurado
                                             </a>
                                         </div>
-                                        {% if item.rating is not none %}
+                                        {% if item.project_id !=0 and item.rating is not none %}
                                         <div class="col">
-                                            <a class="btn btn-sm btn-danger" href="/admin_generates_tesis/{{ item.thesis_id }}">
+                                            <a class="btn btn-sm btn-danger" href="/admin_generates_tesis/{{ item.thesis_id }}" target="_blank">
                                                 <i class="fas fa-print"></i> Acta
                                             </a>
                                         </div>

@@ -38,6 +38,8 @@ class Thesis:
         article_link,
         thesis_status_id,
         project_id,
+        mention_id,
+        mention,
         author_id,
         firstname,
         lastname,
@@ -56,6 +58,8 @@ class Thesis:
         self.article_link = article_link
         self.thesis_status_id = thesis_status_id
         self.project_id = project_id
+        self.mention_id = mention_id
+        self.mention = mention
         self.author_id = author_id
         self.firstname = firstname
         self.lastname = lastname

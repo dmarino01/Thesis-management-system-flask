@@ -94,7 +94,7 @@ def update_advisor(id):
             return redirect(url_for('advisor.advisor'))
         else:
             flash("No deben haber campos vacios...", "danger")
-            return redirect(url_for('advisor.create_advisor_form'))
+            return redirect(url_for('advisor.advisor'))
     except Exception as ex:
         flash("No se pudo editar el Advisor...", "danger")
         return redirect(url_for('advisor.edit_advisor_form', id=id))

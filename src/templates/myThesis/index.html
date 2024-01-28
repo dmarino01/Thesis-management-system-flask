@@ -69,6 +69,7 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Titulo</th>
+                            <th scope="col">Mención</th>
                             <th scope="col">Fecha de Inicio</th>
                             <th scope="col">Fecha de Termino</th>
                             <th scope="col">Estado</th>
@@ -86,6 +87,7 @@
                             {% else %}
                             <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
+                            <td>{{ item.mention }}</td>
                             <td>{{ item.submission_date }}</td>
                             <td>{{ item.expiration_date }}</td>
                             <td class="align-middle">

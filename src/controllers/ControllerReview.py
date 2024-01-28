@@ -13,8 +13,9 @@ class ControllerReview:
             session = db.session()
             # sql = text("CALL GetThesisByReviewer(:person_id);")
             sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, Aut.author_id, P.firstname, P.lastname "
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name ,Aut.author_id, P.firstname, P.lastname "
                 "FROM thesis T "
+                "INNER JOIN MENTION M ON M.id = T.mention_id "
                 "INNER JOIN AUTHOR_THESIS AT ON T.thesis_id = AT.thesis_id "
                 "INNER JOIN AUTHOR Aut ON Aut.author_id = AT.author_id "
                 "INNER JOIN PERSON P ON P.person_id = Aut.person_id "
@@ -62,6 +63,8 @@ class ControllerReview:
                         row[13],
                         row[14],
                         row[15],
+                        row[16],
+                        row[17]
                     )
                     thesiss.append(thesis)
                 return thesiss

@@ -42,6 +42,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Autor</th>
                             <th scope="col">Titulo</th>
+                            <th scope="col">Mención</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Nota</th>
@@ -51,14 +52,15 @@
                     <tbody>
                         {% if thesis %}
                         {% for item in thesis %}
-                        <tr data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
+                        <tr align="center" data-project-id="{{ item.project_id }}" data-status-id="{{ item.thesis_status_id }}">
                             <td>{{ item.thesis_id }}</td>
-                            <td align="center">{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.firstname }} {{ item.lastname }}</td>
                             {% if item.project_id == 0 %}
                             <td><strong>PROJECTO: </strong>{{ item.title }}</td>
                             {% else %}
                             <td><strong>SUSTENTACIÓN: </strong> {{ item.title }}</td>
                             {% endif %}
+                            <td>{{ item.mention }}</td>
                             <td>{{ item.submission_date }}</td>
                             <td class="align-middle">
                                 {% if item.thesis_status_id == 1 %}
@@ -71,14 +73,14 @@
                                 <span class="badge bg-primary text-white">EN REVISION</span>
                                 {% endif %}
                             </td>
-                            <td align="center" class="align-middle">
+                            <td class="align-middle">
                                 {% if item.rating is not none %}
                                 {{ item.rating }}
                                 {% else %}
                                 <span class="badge bg-warning text-white">SIN NOTA</span>
                                 {% endif %}
                             </td>
-                            <td align="center" class="col-2 align-middle">
+                            <td class="col-2 align-middle">
                                 <a class="btn btn-sm btn-primary" href="/view_thesis_page/{{ item.thesis_id }}"><i
                                         class="fa fa-eye"></i> Ver</a>
                             </td>

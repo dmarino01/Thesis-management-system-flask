@@ -1,5 +1,7 @@
 from flask_login import current_user
 from models.Thesis import Thesis
+from models.Unit import Unit
+from models.Mention import Mention
 from sqlalchemy import text
 
 
@@ -12,8 +14,9 @@ class ControllerThesis:
             session = db.session()
             
             sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
+                "INNER JOIN MENTION M ON M.id = T.mention_id "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
                 "INNER JOIN PERSON P ON P.person_id = A.person_id "
@@ -60,6 +63,8 @@ class ControllerThesis:
                         row[13],
                         row[14],
                         row[15],
+                        row[16],
+                        row[17]
                     )
                     thesiss.append(thesis)
                 return thesiss
@@ -74,8 +79,9 @@ class ControllerThesis:
         try:
             session = db.session()
             sql = text(
-                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
+                "INNER JOIN MENTION M ON M.id = T.mention_id "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
                 "INNER JOIN PERSON P ON P.person_id = A.person_id "
@@ -101,9 +107,11 @@ class ControllerThesis:
                     "article_link": row[10],
                     "thesis_status_id": row[11],
                     "project_id": row[12],
-                    "author_id": row[13],
-                    "firstname": row[14],
-                    "lastname": row[15],
+                    "mention_id": row[13],
+                    "mention": row[14],
+                    "author_id": row[15],
+                    "firstname": row[16],
+                    "lastname": row[17],
                 }
                 return thesis
             else:
@@ -123,13 +131,14 @@ class ControllerThesis:
         turnitin_link,
         turnitin_porcentaje,
         expiration_date,
+        mencion,
         project_creation_date,
     ):
         try:
             person_id = current_user.person_id
             session = db.session()
             sql = text(
-                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, turnitin_porcentaje, thesis_status_id, project_id) "
+                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, turnitin_porcentaje, thesis_status_id, project_id, mention_id) "
                 "VALUES ( "
                 "    :title, :abstract, :project_creation_date, CURDATE(), "
                 "    CASE "
@@ -137,7 +146,7 @@ class ControllerThesis:
                 "        ELSE DATE_ADD(CURDATE(), INTERVAL 2 YEAR) "
                 "    END, "
                 "    CURDATE(), "
-                "    :pdf_link, :turnitin_link, :turnitin_porcentaje, 1, :project_id "
+                "    :pdf_link, :turnitin_link, :turnitin_porcentaje, 1, :project_id, :mention_id "
                 "    ); "
                 "SET @thesis_id = LAST_INSERT_ID(); "
                 "SET @author_id = (SELECT author_id FROM author where person_id = :person_id); "
@@ -153,6 +162,7 @@ class ControllerThesis:
                 "turnitin_porcentaje": turnitin_porcentaje,
                 "expiration_date": expiration_date,
                 "person_id": person_id,
+                "mention_id": mencion,
                 "project_creation_date": project_creation_date,
             }
             session.execute(sql, params)
@@ -173,6 +183,7 @@ class ControllerThesis:
         pdf_turnitin_link,
         pdf_article_link,
         expiration_date,
+        mencion,
         project_creation_date,
     ):
         try:
@@ -180,7 +191,7 @@ class ControllerThesis:
             session = db.session()
 
             sql = text(
-                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, article_link, thesis_status_id, project_id) "
+                "INSERT INTO THESIS (title, abstract, submission_date, uploaded_to_sys_date, expiration_date, last_update_date, pdf_link, turnitin_link, article_link, thesis_status_id, project_id, mention_id) "
                 "VALUES ( "
                 "    :title, :abstract, :project_creation_date, CURDATE(), "
                 "    CASE "
@@ -188,7 +199,7 @@ class ControllerThesis:
                 "        ELSE DATE_ADD(CURDATE(), INTERVAL 2 YEAR) "
                 "    END, "
                 "    CURDATE(), "
-                "    :pdf_link, :turnitin_link, :article_link, 1, :project_id "
+                "    :pdf_link, :turnitin_link, :article_link, 1, :project_id, :mention_id "
                 "    ); "
                 "SET @thesis_id = LAST_INSERT_ID(); "
                 "SET @author_id = (SELECT author_id FROM author where person_id = :person_id); "
@@ -204,6 +215,7 @@ class ControllerThesis:
                 "article_link": pdf_article_link,
                 "expiration_date": expiration_date,
                 "person_id": person_id,
+                "mention_id": mencion,
                 "project_creation_date": project_creation_date,
             }
             session.execute(sql, params)
@@ -366,8 +378,9 @@ class ControllerThesis:
             session = db.session()
             
             sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, A.author_id, P.firstname, P.lastname "
+                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name, A.author_id, P.firstname, P.lastname "
                 "FROM THESIS T "
+                "INNER JOIN MENTION M ON M.id = T.mention_id "
                 "INNER JOIN AUTHOR_THESIS AT ON AT.thesis_id = T.thesis_id "
                 "INNER JOIN AUTHOR A ON A.author_id = AT.author_id "
                 "INNER JOIN PERSON P ON P.person_id = A.person_id "
@@ -413,6 +426,8 @@ class ControllerThesis:
                         row[13],
                         row[14],
                         row[15],
+                        row[16],
+                        row[17]
                     )
                     thesiss.append(thesis)
                 return thesiss
@@ -420,3 +435,62 @@ class ControllerThesis:
                 return None
         except Exception as ex:
             raise Exception(ex)
+        
+    @classmethod
+    def getAllUnits(cls, db):
+        try:
+            session = db.session()
+            sql = text("SELECT * FROM unit")
+            result = session.execute(sql, {"id": id})
+            rows = result.fetchall()
+            units = []
+            if rows != None:
+                for row in rows:
+                    unit = Unit(
+                        row[0],
+                        row[1],
+                        row[2]
+                    )
+                    units.append(unit)
+                return units
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def getAllMentionsById(cls, db, id):
+        try:
+            session = db.session()
+            sql = text("SELECT * FROM mention WHERE unit_id = :unit_id;")
+            result = session.execute(sql, {"unit_id": id})
+            rows = result.fetchall()
+            mentions = []
+            if rows != None:
+                for row in rows:
+                    mention = Mention(
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3]
+                    )
+                    mentions.append(mention)
+                return mentions
+        except Exception as ex:
+            raise Exception(ex)
+        
+    @classmethod
+    def getUnitByMention(cls, db, id):
+        try:
+            session = db.session()
+            sql = text(
+                "select U.name from thesis t "
+                "inner join mention m on m.id = t.mention_id "
+                "inner join unit u on u.id = m.unit_id "
+                "where t.thesis_id = :id"
+                )
+            result = session.execute(sql, {"id": id})
+            unit = result.scalar()
+            result.close()
+            return unit
+        except Exception as ex:
+            raise Exception(ex)
+

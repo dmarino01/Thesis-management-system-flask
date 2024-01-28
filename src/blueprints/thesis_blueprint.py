@@ -8,7 +8,8 @@ from flask import (
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    jsonify
 )
 
 locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
@@ -90,6 +91,7 @@ def view_dissertation_page(id):
         raise Exception(ex)
 
 
+
 # Sign Review Thesis Form
 @thesis_bp.route("/sign_review_thesis_page/<int:id>", methods=["GET"])
 @login_required
@@ -158,7 +160,17 @@ def edit_thesis_form(id):
 @login_required
 def create_thesis_form():
     current_date = datetime.now().date()
-    return render_template("myThesis/create.html", current_date=current_date)
+    units = ControllerThesis.getAllUnits(db)
+    return render_template("myThesis/create.html", current_date=current_date, units=units)
+
+
+@thesis_bp.route("/get_mentions")
+@login_required
+def get_mentions():
+    unit_id = request.args.get('unit_id')
+    mentions = ControllerThesis.getAllMentionsById(db, unit_id)
+    mentions_data = [{'id': mention.id, 'name': mention.name} for mention in mentions]
+    return jsonify({'mentions': mentions_data})
 
 
 # Update Thesis Route
@@ -252,6 +264,7 @@ def save_thesis():
         turnitin_porcentaje = request.form["turnitin_porcentaje"]
         project_id = request.form.get("project_id")
         expiration_date = request.form.get("expiration_date")
+        mencion = request.form["mencion"]
         project_creation_date = request.form["project_creation_date"]
 
         if not project_id:
@@ -259,7 +272,7 @@ def save_thesis():
         else:
             project_id = int(project_id)
 
-        if title and abstract and pdf_file and pdf_turnitin and turnitin_porcentaje:
+        if title and abstract and pdf_file and pdf_turnitin and turnitin_porcentaje and mencion:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             if allowed_pdf(pdf_file.filename) and allowed_pdf(pdf_turnitin.filename):
                 # Generate a unique identifier
@@ -299,6 +312,7 @@ def save_thesis():
                     new_filename_turnitin,
                     turnitin_porcentaje,
                     expiration_date,
+                    mencion,
                     project_creation_date,
                 )
                 return redirect(url_for("thesis.myThesis"))
@@ -326,6 +340,7 @@ def save_dissertation_thesis():
 
         project_id = request.form.get("project_id")
         expiration_date = request.form.get("expiration_date")
+        mencion = request.form["mencion"]
         project_creation_date = request.form["project_creation_date"]
 
         if title and abstract and pdf_file and pdf_turnitin and pdf_article:
@@ -381,6 +396,7 @@ def save_dissertation_thesis():
                     new_filename_turnitin,
                     new_filename_article,
                     expiration_date,
+                    mencion,
                     project_creation_date,
                 )
 
@@ -562,7 +578,7 @@ def generate_pdf(id):
     date = "Fecha"
     thesis_title = "Título de la Tesis"
     student_name = "Nombre del Estudiante"
-    academic_degree = "Grado Académico"
+    
     defense_date = "Fecha de Defensa"
     defense_time = "Hora de Defensa"
     defense_location = "Lugar de Defensa"
@@ -572,10 +588,12 @@ def generate_pdf(id):
     thesis_details = ControllerThesis.get_thesis_by_id(db, id)
     status_review = ControllerReview.getStatusReview(db, id)
     last_date = ControllerReview.getLastReviewDate(db, id)
+    academic_degree = ControllerThesis.getUnitByMention(db, id)
     advisor_name = "Nombre del Asesor de Tesis"
     formatted_date = last_date.review_date.strftime('%d de %B de %Y a las %H:%M:%S')
+    
     conclusions = [
-        "Se considera que la tesis cumple con los requisitos establecidos para obtener el grado de" f"{academic_degree}.",
+        "Se considera que la tesis cumple con los requisitos establecidos para obtener el grado de " f"{academic_degree}.",
         "Los resultados presentados demuestran un conocimiento profundo del tema de investigación y un aporte significativo al campo académico.",
         "El estudiante demostró habilidades para la investigación, análisis crítico y capacidad de expresión oral."
     ]

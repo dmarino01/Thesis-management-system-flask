@@ -145,8 +145,8 @@ def update_reviewer(id):
             flash("Revisor Actualizado Exitosamente...", "success")
             return redirect(url_for("reviewer.reviewer"))
         else:
-            flash("No deben haber campos vacios..." "danger")
-            return redirect(url_for("reviewer.create_reviewer_form"))
+            flash("No deben haber campos vacios...", "danger")
+            return redirect(url_for("reviewer.reviewer"))
     except Exception as ex:
         return redirect(url_for("reviewer.edit_reviewer_form", id=id))
 

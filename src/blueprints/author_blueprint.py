@@ -140,7 +140,7 @@ def update_autor(id):
             return redirect(url_for("author.autor"))
         else:
             flash("No deben haber campos vacios...", "danger")
-            return redirect(url_for("author.edit_autor_form"))
+            return redirect(url_for("author.autor"))
     except Exception as ex:
         return redirect(url_for("author.edit_autor_form", id=id))
 

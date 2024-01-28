@@ -3,6 +3,28 @@
 {% block title %} Registrar Proyecto de Tesis {% endblock %}
 
 {% block customCSS %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#unidad').change(function () {
+            var unitId = $(this).val();
+            $.ajax({
+                url: '/get_mentions', // Flask route to fetch mentions
+                type: 'GET',
+                data: { unit_id: unitId },
+                success: function (response) {
+                    $('#mencion').empty();
+                    $.each(response.mentions, function (index, mention) {
+                        $('#mencion').append($('<option>', {
+                            value: mention.id,
+                            text: mention.name
+                        }));
+                    });
+                }
+            });
+        });
+    });
+</script>
 <script>
     function checkValue(input) {
         // Remove leading zeros and ensure it's a valid number
@@ -298,20 +320,10 @@
                         <div class="mb-3">
                             <label for="unidad" class="form-label">Unidad</label>
                             <select id="unidad" class="form-control" name="unidad">
-                                <option value="option1">CS. AGROPECUARIAS</option>
-                                <option value="option2">CS. BIOLOGICAS</option>
-                                <option value="option3">CS. ECONOMICAS</option>
-                                <option value="option3">CS. FISICAS Y MAT</option>
-                                <option value="option3">CS. MEDICAS</option>
-                                <option value="option3">CS. SOCIALES</option>
-                                <option value="option3">DERECHO Y C.P.</option>
-                                <option value="option3">DOCTORADO</option>
-                                <option value="option3">EDUCACION Y CIENCIAS DE LA COMUNICACION</option>
-                                <option value="option3">ENFERMERIA</option>
-                                <option value="option3">FAR. Y BIOQ.</option>
-                                <option value="option3">INGENIERÍA</option>
-                                <option value="option3">ING. QUIMICA</option>
-                                <!-- Add more options as needed -->
+                                <option value="">Seleccione una unidad...</option>
+                                {% for item in units %}
+                                <option value="{{ item.id }}">{{ item.abbreviation }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -319,9 +331,9 @@
                         <div class="mb-3">
                             <label for="mencion" class="form-label">Mencion</label>
                             <select id="mencion" class="form-control" name="mencion">
-                                <option value="option1">PRODUCCION Y SANIDAD ANIMAL</option>
-                                <option value="option2">TECNOLOGIA DE ALIMENTOS</option>
-                                <option value="option3">MANEJO INTEGRADO DE PLAGAS</option>
+                                {% for item in mentions %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -352,9 +364,6 @@
 <!-- Your HTML and other code -->
 
 {% block CustomJS %}
-<script>
-
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Get today's date
