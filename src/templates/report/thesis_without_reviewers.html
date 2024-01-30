@@ -23,7 +23,7 @@
                 </div>
             </div>
             <br>
-            <a href="{{ url_for('thesis.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
+            <a href="{{ url_for('report.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
                     class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
             <!-- Filters -->
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <button class="btn btn-primary mt-4" onclick="applyFilters()"><i class="fas fa-filter"></i> Aplicar Filtros</button>
+                    <button class="btn btn-primary mt-4"><i class="fas fa-filter"></i> Aplicar Filtros</button>
                 </div>
             </div>
 
@@ -126,29 +126,6 @@
             data: data
         });
     });
-</script>
-<script>
-    function applyFilters() {
-        const projectTypeFilter = document.getElementById('projectTypeFilter').value;
-        const startDateFilter = document.getElementById('startDateFilter').value;
-        const endDateFilter = document.getElementById('endDateFilter').value;
-
-        const rows = table.querySelectorAll('tbody tr');
-        const totalRows = rows.length;
-
-        rows.forEach((row, index) => {
-            const projectType = row.cells[5].textContent.toLowerCase();
-            const submissionDate = row.cells[6].textContent;
-
-            const showRow = (projectTypeFilter === 'all' || projectType.includes(projectTypeFilter)) &&
-                (!startDateFilter || new Date(submissionDate) >= new Date(startDateFilter)) &&
-                (!endDateFilter || new Date(submissionDate) <= new Date(endDateFilter));
-
-            row.style.display = showRow ? 'table-row' : 'none';
-        });
-        // Reset pagination to the first page after applying filters
-        currentPage = 1;
-    }
 </script>
 
 <script>

@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, render_template, redirect, request, url_for, send_from_directory
+from flask import Flask, render_template, redirect, url_for, send_from_directory
 from flask_login import LoginManager, login_required
 from datetime import timedelta
 from jinja2 import Environment, FileSystemLoader
@@ -7,7 +7,6 @@ from config import Config, db, csrf
 
 # Controller:
 from controllers.ControllerUser import ControllerUser
-from controllers.ControllerThesis import ControllerThesis
 
 # Blueprints:
 from blueprints.author_blueprint import author_bp
@@ -19,6 +18,7 @@ from blueprints.thesis_blueprint import thesis_bp
 from blueprints.user_blueprint import user_bp
 from blueprints.review_blueprint import review_bp
 from blueprints.recommendation_blueprint import recommendation_bp
+from blueprints.report_blueprint import report_bp
 
 app = Flask(__name__)
 
@@ -43,6 +43,7 @@ app.register_blueprint(thesis_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(review_bp)
 app.register_blueprint(recommendation_bp)
+app.register_blueprint(report_bp)
 
 login_manager_app=LoginManager(app)
 

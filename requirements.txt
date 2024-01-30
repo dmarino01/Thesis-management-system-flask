@@ -34,3 +34,4 @@ Werkzeug==2.3.7
 WTForms==3.0.1
 reportlab==4.0.9
 chardet==5.2.0
+xhtml2pdf==0.2.14

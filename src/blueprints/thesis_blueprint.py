@@ -21,20 +21,13 @@ from controllers.ControllerReview import ControllerReview
 from controllers.ControllerReviewer import ControllerReviewer
 from controllers.ControllerAdvisor import ControllerAdvisor
 from werkzeug.utils import secure_filename
-
 from xhtml2pdf import pisa
-
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import Paragraph, SimpleDocTemplate
-
 from io import BytesIO
-
 import uuid
 from config import db
 
 thesis_bp = Blueprint("thesis", __name__)
+
 UPLOAD_FOLDER = os.path.join("src", "static", "file", "thesis")
 UPLOAD_FOLDER_TURNITIN = os.path.join("src", "static", "file", "turnitin")
 UPLOAD_FOLDER_ARTICLE = os.path.join("src", "static", "file", "article")
@@ -437,89 +430,12 @@ def desactivate_thesis(id):
         raise Exception(ex)
 
 
-# Define a function to check if the file extension is allowed
+# Function to check if the file extension is a pdf
 def allowed_pdf(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() == "pdf"
 
 
-# Report thesis without reviewers
-@thesis_bp.route("/report_ptsr")
-@login_required
-def report_ptsr():
-    try:
-        total_thesis = ControllerThesis.getTotalThesis(db)
-        total_thesis_without_reviewers = ControllerThesis.getTotalThesisWithoutReviewer(
-            db
-        )
-        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
-        template_vars = {
-            "total_thesis": total_thesis,
-            "thesis_without_reviewers": thesis_without_reviewers,
-            "total_thesis_without_reviewers": total_thesis_without_reviewers,
-        }
-        return render_template("report/thesis_without_reviewers.html", **template_vars)
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report thesis without reviews
-@thesis_bp.route("/report_ptsc")
-@login_required
-def report_ptsc():
-    try:
-        total_thesis = ControllerThesis.getTotalThesis(db)
-        total_thesis_without_reviews = ControllerThesis.getTotalThesisWithoutReviews(db)
-        thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
-        return render_template(
-            "report/thesis_without_reviews.html",
-            total_thesis=total_thesis,
-            thesis_without_reviews=thesis_without_reviews,
-            total_thesis_without_reviews=total_thesis_without_reviews,
-        )
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report of Thesis without Reviewers AS EXCEL
-@thesis_bp.route("/download_excel_tesis_sin_revisores")
-@login_required
-def download_excel_tesis_sin_revisores():
-    try:
-        thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
-        # Create a DataFrame from the fetched data
-        df = pd.DataFrame(thesis_without_reviewers)
-        # Convert DataFrame to Excel
-        excel_file = "report.xlsx"
-        df.to_excel(excel_file, index=False)
-        # Send the Excel file in the response
-        response = make_response(open(excel_file, "rb").read())
-        response.headers["Content-Type"] = "application/vnd.ms-excel"
-        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
-        return response
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report of Thesis without Reviews AS EXCEL
-@thesis_bp.route("/download_excel_tesis_sin_revisores")
-@login_required
-def download_excel_tesis_sin_revisiones():
-    try:
-        thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
-        # Create a DataFrame from the fetched data
-        df = pd.DataFrame(thesis_without_reviews)
-        # Convert DataFrame to Excel
-        excel_file = "report.xlsx"
-        df.to_excel(excel_file, index=False)
-        # Send the Excel file in the response
-        response = make_response(open(excel_file, "rb").read())
-        response.headers["Content-Type"] = "application/vnd.ms-excel"
-        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
-        return response
-    except Exception as ex:
-        raise Exception(ex)
-
-
+# Function to check if the file extension is a image
 def allowed_img(filename):
     ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS

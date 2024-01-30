@@ -5,11 +5,9 @@ from flask import (
     redirect,
     url_for,
     flash,
-    make_response,
 )
 from controllers.ControllerAuthor import ControllerAuthor
 from flask_login import login_required
-import pandas as pd
 
 from config import db
 
@@ -184,86 +182,4 @@ def upload_autores():
         raise Exception(ex)
 
 
-# Report of Authors without Advisors
-@author_bp.route("/report_asa")
-@login_required
-def report_asa():
-    try:
-        total_autores = ControllerAuthor.getTotalAuthors(db)
-        autores_sin_asesores = ControllerAuthor.getAuthorsWithoutAdvisor(db)
-        count_autores_sin_asesores = ControllerAuthor.getCountofAuthorsWithoutAdvisor(
-            db
-        )
 
-        # autores_con_asesores = ControllerAuthor.getAuthorsWithAdvisor(db)
-        return render_template(
-            "report/authors_without_advisors.html",
-            total_autores=total_autores,
-            autores_sin_asesores=autores_sin_asesores,
-            count_autores_sin_asesores=count_autores_sin_asesores,
-            #    autores_con_asesores=autores_con_asesores,
-        )
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report of Authors with Advisors
-@author_bp.route("/report_aca")
-@login_required
-def report_aca():
-    try:
-        total_autores = ControllerAuthor.getTotalAuthors(db)
-        autores_con_asesores = ControllerAuthor.getAuthorsWithAdvisor(db)
-        count_autores_con_asesores = ControllerAuthor.getCountofAuthorsWithAdvisor(db)
-        count_autores_sin_asesores = ControllerAuthor.getCountofAuthorsWithoutAdvisor(
-            db
-        )
-        template_vars = {
-            "total_autores": total_autores,
-            "autores_con_asesores": autores_con_asesores,
-            "count_autores_con_asesores": count_autores_con_asesores,
-            "count_autores_sin_asesores": count_autores_sin_asesores,
-        }
-        return render_template("report/authors_with_advisors.html", **template_vars)
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report of Authors without Advisors AS EXCEL
-@author_bp.route("/download_excel_autores_sin_asesores")
-@login_required
-def download_excel_autores_sin_asesores():
-    try:
-        autores_sin_asesores = ControllerAuthor.getAuthorsWithoutAdvisor(db)
-        # Create a DataFrame from the fetched data
-        df = pd.DataFrame(autores_sin_asesores)
-        # Convert DataFrame to Excel
-        excel_file = "report.xlsx"
-        df.to_excel(excel_file, index=False)
-        # Send the Excel file in the response
-        response = make_response(open(excel_file, "rb").read())
-        response.headers["Content-Type"] = "application/vnd.ms-excel"
-        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
-        return response
-    except Exception as ex:
-        raise Exception(ex)
-
-
-# Report of Authors with Advisors AS EXCEL
-@author_bp.route("/download_excel_autores_con_asesores")
-@login_required
-def download_excel_autores_con_asesores():
-    try:
-        autores_con_asesores = ControllerAuthor.getAuthorsWithAdvisor(db)
-        # Create a DataFrame from the fetched data
-        df = pd.DataFrame(autores_con_asesores)
-        # Convert DataFrame to Excel
-        excel_file = "report.xlsx"
-        df.to_excel(excel_file, index=False)
-        # Send the Excel file in the response
-        response = make_response(open(excel_file, "rb").read())
-        response.headers["Content-Type"] = "application/vnd.ms-excel"
-        response.headers["Content-Disposition"] = "attachment; filename=report.xlsx"
-        return response
-    except Exception as ex:
-        raise Exception(ex)
