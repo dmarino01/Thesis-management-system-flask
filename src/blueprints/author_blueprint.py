@@ -25,7 +25,7 @@ def autor():
 # Search for authors by name
 @author_bp.route("/search_autores", methods=["POST"])
 @login_required
-def search():
+def search_autores():
     try:
         name = request.form["keyname"]
         data = ControllerAuthor.getAutorsbyName(db, name)

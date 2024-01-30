@@ -175,3 +175,31 @@ def download_excel_autores_con_asesores():
         return response
     except Exception as ex:
         raise Exception(ex)
+    
+
+
+# Search for thesis without reviewer by type and date
+@report_bp.route("/search_filtered_thesis_without_reviewers", methods=["POST"])
+@login_required
+def search_filtered_thesis_without_reviewers():
+    try:
+        projectType = request.form["projectTypeFilter"]
+        startDate = request.form["startDateFilter"]
+        endDate = request.form["endDateFilter"]
+
+        if projectType == "all" or not projectType:
+            projectType = 'project_type'
+        if not startDate:
+            startDate = '0000-00-00'
+        if not endDate:
+            endDate = '9999-00-00'
+
+        thesis_without_reviewers = ControllerThesis.getFilteredThesisWithoutReviewers(db, projectType, startDate, endDate)
+        
+        template_vars = {
+            "filtered_thesis": thesis_without_reviewers
+        }
+
+        return render_template("report/thesis_without_reviewers.html", **template_vars)
+    except Exception as ex:
+        raise Exception(ex)

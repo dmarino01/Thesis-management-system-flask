@@ -18,7 +18,7 @@ def reviewer():
 # Search for reviewers by name
 @reviewer_bp.route("/search_reviewers", methods=["POST"])
 @login_required
-def search():
+def search_reviewers():
     try:
         name = request.form["keyname"]
         data = ControllerReviewer.getReviewersbyName(db, name)

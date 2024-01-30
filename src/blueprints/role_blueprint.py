@@ -17,7 +17,7 @@ def role():
 # Search for roles by name
 @role_bp.route('/search_roles', methods=['POST'])
 @login_required
-def search():
+def search_roles():
     try:
         name = request.form['keyname']
         data = ControllerRole.getRolesbyName(db, name)

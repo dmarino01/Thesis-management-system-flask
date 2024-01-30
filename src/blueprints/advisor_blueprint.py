@@ -16,7 +16,7 @@ def advisor():
 # Search for advisors by name
 @advisor_bp.route('/search_advisors', methods=['POST'])
 @login_required
-def search():
+def search_advisors():
     try:
         name = request.form['keyname']
         data = ControllerAdvisor.getAdvisorsbyName(db, name)

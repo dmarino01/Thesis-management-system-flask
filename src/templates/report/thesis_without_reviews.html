@@ -28,6 +28,7 @@
                     class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
 
             <!-- Filters -->
+            <form action="" method="POST">
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label for="projectTypeFilter">Filtrar por Tipo:</label>
@@ -52,6 +53,7 @@
                     <button class="btn btn-primary mt-4" onclick="applyFilters()"><i class="fas fa-filter"></i> Aplicar Filtros</button>
                 </div>
             </div>
+            </form>
 
             <div class="table-responsive">
                 <!-- Pagination Controls -->
@@ -127,30 +129,7 @@
         });
     });
 </script>
-<script>
-    function applyFilters() {
-        const projectTypeFilter = document.getElementById('projectTypeFilter').value;
-        const startDateFilter = document.getElementById('startDateFilter').value;
-        const endDateFilter = document.getElementById('endDateFilter').value;
 
-        const rows = table.querySelectorAll('tbody tr');
-        const totalRows = rows.length;
-
-        rows.forEach((row, index) => {
-            const projectType = row.cells[5].textContent.toLowerCase();
-            const submissionDate = row.cells[6].textContent;
-
-            const showRow = (projectTypeFilter === 'all' || projectType.includes(projectTypeFilter)) &&
-                (!startDateFilter || new Date(submissionDate) >= new Date(startDateFilter)) &&
-                (!endDateFilter || new Date(submissionDate) <= new Date(endDateFilter));
-
-            row.style.display = showRow ? 'table-row' : 'none';
-        });
-
-        // Reset pagination to the first page after applying filters
-        currentPage = 1;
-    }
-</script>
 <script>
     const table = document.querySelector('.table');
     const recordsPerPageSelect = document.getElementById('records-per-page');

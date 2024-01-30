@@ -494,3 +494,18 @@ class ControllerThesis:
         except Exception as ex:
             raise Exception(ex)
 
+
+    @classmethod
+    def getFilteredThesisWithoutReviewers(cls, db, projectType, startDate, endDate):
+        try:
+            session = db.session()
+            sql = text("SELECT * FROM thesis_without_reviewer_assigned_info WHERE project_type = :p_projectType AND submission_date >= :startDate AND submission_date <= :endDate;")
+            params = {
+                'p_projectType': projectType,
+                'p_startDate': startDate,
+                'p_endDate': endDate
+            }
+            result = session.execute(sql, params)
+            return result
+        except Exception as ex:
+            raise Exception(ex)
