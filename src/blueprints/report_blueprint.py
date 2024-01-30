@@ -1,15 +1,23 @@
 import datetime
-from flask import Blueprint, make_response, render_template, request, redirect, url_for, flash
+from flask import (
+    Blueprint,
+    make_response,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+)
 import pandas as pd
-#from controllers.ControllerReport import ControllerReport
+
+# from controllers.ControllerReport import ControllerReport
 from controllers.ControllerThesis import ControllerThesis
 from controllers.ControllerAuthor import ControllerAuthor
 from flask_login import current_user, login_required
 
 from config import db
 
-report_bp = Blueprint('report', __name__)
-
+report_bp = Blueprint("report", __name__)
 
 
 # Report of Authors without Advisors
@@ -57,7 +65,6 @@ def report_aca():
         raise Exception(ex)
 
 
-
 # Report thesis without reviewers
 @report_bp.route("/report_ptsr")
 @login_required
@@ -94,7 +101,7 @@ def report_ptsc():
         )
     except Exception as ex:
         raise Exception(ex)
-    
+
 
 # Report of Thesis without Reviewers AS EXCEL
 @report_bp.route("/download_excel_tesis_sin_revisores")
@@ -114,7 +121,7 @@ def download_excel_tesis_sin_revisores():
         return response
     except Exception as ex:
         raise Exception(ex)
-    
+
 
 # Report of Thesis without Reviews AS EXCEL
 @report_bp.route("/download_excel_tesis_sin_revisiones")
@@ -134,7 +141,6 @@ def download_excel_tesis_sin_revisiones():
         return response
     except Exception as ex:
         raise Exception(ex)
-    
 
 
 # Report of Authors without Advisors AS EXCEL
@@ -175,7 +181,6 @@ def download_excel_autores_con_asesores():
         return response
     except Exception as ex:
         raise Exception(ex)
-    
 
 
 # Search for thesis without reviewer by type and date
@@ -187,19 +192,74 @@ def search_filtered_thesis_without_reviewers():
         startDate = request.form["startDateFilter"]
         endDate = request.form["endDateFilter"]
 
-        if projectType == "all" or not projectType:
-            projectType = 'project_type'
-        if not startDate:
-            startDate = '0000-00-00'
-        if not endDate:
-            endDate = '9999-00-00'
+        total_thesis = ControllerThesis.getTotalThesis(db)
 
-        thesis_without_reviewers = ControllerThesis.getFilteredThesisWithoutReviewers(db, projectType, startDate, endDate)
-        
+        if projectType and startDate and endDate:
+            thesis_without_reviewers = (
+                ControllerThesis.getFilteredThesisWithoutReviewers(
+                    db, projectType, startDate, endDate
+                )
+            )
+            total_thesis_without_reviewers = (
+                ControllerThesis.getFilteredTotalThesisWithoutReviewer(
+                    db, projectType, startDate, endDate
+                )
+            )
+        else:
+            flash("Complete los campos...", "danger")
+            thesis_without_reviewers = ControllerThesis.getThesisWithoutReviewers(db)
+            total_thesis_without_reviewers = (
+                ControllerThesis.getTotalThesisWithoutReviewer(db)
+            )
+
         template_vars = {
-            "filtered_thesis": thesis_without_reviewers
+            "total_thesis": total_thesis,
+            "filtered_thesis": thesis_without_reviewers,
+            "total_thesis_without_reviewers": total_thesis_without_reviewers,
         }
 
-        return render_template("report/thesis_without_reviewers.html", **template_vars)
+        return render_template(
+            "report/resultado_thesis_without_reviewers.html", **template_vars
+        )
+    except Exception as ex:
+        raise Exception(ex)
+
+
+# Search for thesis without review by type and date
+@report_bp.route("/search_filtered_thesis_without_reviews", methods=["POST"])
+@login_required
+def search_filtered_thesis_without_reviews():
+    try:
+        projectType = request.form["projectTypeFilter"]
+        startDate = request.form["startDateFilter"]
+        endDate = request.form["endDateFilter"]
+
+        total_thesis = ControllerThesis.getTotalThesis(db)
+
+        if projectType and startDate and endDate:
+            thesis_without_reviews = ControllerThesis.getFilteredThesisWithoutReviews(
+                db, projectType, startDate, endDate
+            )
+            total_thesis_without_reviews = (
+                ControllerThesis.getFilteredTotalThesisWithoutReviews(
+                    db, projectType, startDate, endDate
+                )
+            )
+        else:
+            flash("Complete los campos...", "danger")
+            thesis_without_reviews = ControllerThesis.getThesisWithoutReviews(db)
+            total_thesis_without_reviews = (
+                ControllerThesis.getTotalThesisWithoutReviews(db)
+            )
+
+        template_vars = {
+            "total_thesis": total_thesis,
+            "filtered_thesis": thesis_without_reviews,
+            "total_thesis_without_reviews": total_thesis_without_reviews,
+        }
+
+        return render_template(
+            "report/resultado_thesis_without_reviews.html", **template_vars
+        )
     except Exception as ex:
         raise Exception(ex)

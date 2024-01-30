@@ -3,6 +3,7 @@ from models.Thesis import Thesis
 from models.Unit import Unit
 from models.Mention import Mention
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class ControllerThesis:
@@ -499,13 +500,99 @@ class ControllerThesis:
     def getFilteredThesisWithoutReviewers(cls, db, projectType, startDate, endDate):
         try:
             session = db.session()
-            sql = text("SELECT * FROM thesis_without_reviewer_assigned_info WHERE project_type = :p_projectType AND submission_date >= :startDate AND submission_date <= :endDate;")
+            if projectType == "All":
+                sql = text(
+                    "SELECT * FROM thesis_without_reviewer_assigned_info WHERE submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            else:
+                sql = text(
+                    "SELECT * FROM thesis_without_reviewer_assigned_info WHERE project_type = :p_projectType AND submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+
             params = {
                 'p_projectType': projectType,
                 'p_startDate': startDate,
                 'p_endDate': endDate
             }
             result = session.execute(sql, params)
-            return result
+            rows = result.fetchall()
+            return rows
         except Exception as ex:
-            raise Exception(ex)
+            print("An error occurred:", ex)
+            raise
+
+
+    @classmethod
+    def getFilteredTotalThesisWithoutReviewer(cls, db, projectType, startDate, endDate):
+        try:
+            session = db.session() 
+            if projectType == "All":
+                sql = text(
+                    "SELECT COUNT(*) FROM thesis_without_reviewer_assigned_info WHERE submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            else:
+                sql = text(
+                    "SELECT COUNT(*) FROM thesis_without_reviewer_assigned_info WHERE project_type = :p_projectType AND submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            params = {
+                'p_projectType': projectType,
+                'p_startDate': startDate,
+                'p_endDate': endDate
+            }
+            result = session.execute(sql, params)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            print("An error occurred:", ex)
+            raise
+
+
+    @classmethod
+    def getFilteredThesisWithoutReviews(cls, db, projectType, startDate, endDate):
+        try:
+            session = db.session()
+            if projectType == "All":
+                sql = text(
+                    "SELECT * FROM thesis_without_reviews_assigned_info WHERE submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            else:
+                sql = text(
+                    "SELECT * FROM thesis_without_reviews_assigned_info WHERE project_type = :p_projectType AND submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+
+            params = {
+                'p_projectType': projectType,
+                'p_startDate': startDate,
+                'p_endDate': endDate
+            }
+            result = session.execute(sql, params)
+            rows = result.fetchall()
+            return rows
+        except Exception as ex:
+            print("An error occurred:", ex)
+            raise
+
+    
+    @classmethod
+    def getFilteredTotalThesisWithoutReviews(cls, db, projectType, startDate, endDate):
+        try:
+            session = db.session() 
+            if projectType == "All":
+                sql = text(
+                    "SELECT COUNT(*) FROM thesis_without_reviews_assigned_info WHERE submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            else:
+                sql = text(
+                    "SELECT COUNT(*) FROM thesis_without_reviews_assigned_info WHERE project_type = :p_projectType AND submission_date >= :p_startDate AND submission_date <= :p_endDate;"
+                )
+            params = {
+                'p_projectType': projectType,
+                'p_startDate': startDate,
+                'p_endDate': endDate
+            }
+            result = session.execute(sql, params)
+            count = result.fetchone()[0]
+            return count
+        except Exception as ex:
+            print("An error occurred:", ex)
+            raise

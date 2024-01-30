@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+
+{% block title %} Reporte de proy. y tesis sin revisiones {% endblock %}
+
+{% block customCSS %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Reporte de Autores</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Reporte de Proyectos y Tesis sin Revisiones</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <h6 class="mb-0">El total de proyectos y tesis sin revisiones es: {{ total_thesis_without_reviews }}
+                        de
+                        un
+                        total de {{ total_thesis }} proyectos y tesis</h6>
+                </div>
+            </div><br>
+
+            <a href="{{ url_for('report.download_excel_tesis_sin_revisiones') }}" class="btn btn-success"><i
+                    class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+
+            <!-- Filters -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form action="/search_filtered_thesis_without_reviews" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="projectTypeFilter">Filtrar por Tipo:</label>
+                        <select class="form-control" name="projectTypeFilter" id="projectTypeFilter">
+                            <option value="All">Todos</option>
+                            <option value="Proyecto">Proyecto</option>
+                            <option value="Tesis">Tesis</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="startDateFilter">Fecha de Inicio:</label>
+                        <input type="date" class="form-control" name="startDateFilter" id="startDateFilter">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="endDateFilter">Fecha de Fin:</label>
+                        <input type="date" class="form-control" name="endDateFilter" id="endDateFilter">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn btn-primary mt-4"><i class="fas fa-filter"></i> Aplicar Filtros</button>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="table-responsive">
+                <!-- Pagination Controls -->
+                <div class="pagination-controls" style="display: flex; flex-direction: row; align-items: center;">
+                    <label for="records-per-page">Registros Por Página: </label>
+                    <select style="height: 35px; font-size: 14px; margin-left: 5px; margin-right: 10px; width: 5%;"
+                        class="form-control" id="records-per-page">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    <button style="margin-right: 5px;" class="btn btn-primary btn-sm" id="prev-page"><i
+                            class="fa fa-arrow-left"></i></button>
+                    <button class="btn btn-primary btn-sm" id="next-page"><i class="fa fa-arrow-right"></i></button>
+                </div><br>
+
+                <table class="table table-hover text-start align-middle table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Mención</th>
+                            <th scope="col">Código de Estudiante</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">¿Es Proyecto?</th>
+                            <th scope="col">Fecha de Creación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in thesis_without_reviews %}
+                        <tr>
+                            <td>{{ row['thesis_id'] }}</td>
+                            <td>{{ row['title'] }}</td>
+                            <td>{{ row['name'] }}</td>
+                            <td>{{ row['student_code'] }}</td>
+                            <td>{{ row['firstname'] }}</td>
+                            <td>{{ row['lastname'] }}</td>
+                            <td>{{ row['project_type'] }}</td>
+                            <td>{{ row['submission_date'] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div><br><br>
+            <div style="width: 250px; margin: 0 auto;">
+                <canvas id="myPieChart" data-count="{{ total_thesis_without_reviews }}" data-total="{{ total_thesis }}"
+                    width="250" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var count_thesis_with_reviews = parseInt(document.getElementById('myPieChart').getAttribute('data-count'));
+        var total_thesis = parseInt(document.getElementById('myPieChart').getAttribute('data-total'));
+        var data = {
+            labels: ['Proy. y Tesis con Revisiones', 'Proy. y Tesis sin Revisiones'],
+            datasets: [{
+                data: [count_thesis_with_reviews, total_thesis - count_thesis_with_reviews],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                hoverBackgroundColor: ['#FF6384', '#36A2EB']
+            }]
+        };
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data
+        });
+    });
+</script>
+
+<script>
+    const table = document.querySelector('.table');
+    const recordsPerPageSelect = document.getElementById('records-per-page');
+    const prevPageButton = document.getElementById('prev-page');
+    const nextPageButton = document.getElementById('next-page');
+
+    let currentPage = 1;
+    let recordsPerPage = parseInt(recordsPerPageSelect.value);
+
+    // Update the table based on current page and records per page
+    function updateTable() {
+        const rows = table.querySelectorAll('tbody tr');
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+
+        rows.forEach((row, index) => {
+            if (index >= startIndex && index < endIndex) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Event listeners for changing records per page and pagination
+    recordsPerPageSelect.addEventListener('change', () => {
+        recordsPerPage = parseInt(recordsPerPageSelect.value);
+        currentPage = 1;
+        updateTable();
+    });
+
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+        }
+    });
+
+    nextPageButton.addEventListener('click', () => {
+        const rows = table.querySelectorAll('tbody tr');
+        const totalRows = rows.length;
+        const maxPage = Math.ceil(totalRows / recordsPerPage);
+
+        if (currentPage < maxPage) {
+            currentPage++;
+            updateTable();
+        }
+    });
+
+    // Initial table setup
+    updateTable();
+</script>
+{% endblock %}

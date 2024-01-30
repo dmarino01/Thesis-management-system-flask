@@ -14,7 +14,25 @@
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
             <h6 class="m-0 font-weight-bold text-primary">Reporte de Proyectos y Tesis sin Revisores Asignados</h6>
         </div>
+
         <div class="card-body">
+
+            <a href="{{ url_for('report.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
+                    class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
+
+            <!-- Filters -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
             <div class="row">
                 <div class="col-12">
                     <h6 class="mb-0">El total de proyectos y tesis sin revisores asignados es: {{
@@ -23,19 +41,15 @@
                 </div>
             </div>
             <br>
-            <a href="{{ url_for('report.download_excel_tesis_sin_revisores') }}" class="btn btn-success"><i
-                    class="fas fa-file-excel"></i> Descargar Reporte como XLSX</a><br><br>
-
-            <!-- Filters -->
             <form action="/search_filtered_thesis_without_reviewers" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label for="projectTypeFilter">Filtrar por Tipo:</label>
                         <select class="form-control" name="projectTypeFilter" id="projectTypeFilter">
-                            <option value="all">Todos</option>
-                            <option value="proyecto">Proyecto</option>
-                            <option value="tesis">Tesis</option>
+                            <option value="All">Todos</option>
+                            <option value="Proyecto">Proyecto</option>
+                            <option value="Tesis">Tesis</option>
                         </select>
                     </div>
 
