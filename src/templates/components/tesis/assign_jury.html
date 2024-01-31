@@ -9,10 +9,18 @@
 
 {% block content %}
 <div class="container-fluid">
+    {% if thesis.project_id == 0 %}
+    <h1 class="h3 mb-2 text-gray-800">Asignar Jurado a Proyecto N° {{thesis.thesis_id}}</h1>
+    {% else %}
     <h1 class="h3 mb-2 text-gray-800">Asignar Jurado a Tesis N° {{thesis.thesis_id}}</h1>
+    {% endif %}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
-            <h6 class="m-0 font-weight-bold text-primary">Asignar Revisores de Tesis</h6>
+            {% if thesis.project_id == 0 %}
+            <h6 class="m-0 font-weight-bold text-primary">Asignar Jurado de Proyecto</h6>
+            {% else %}
+            <h6 class="m-0 font-weight-bold text-primary">Asignar Jurado de Tesis</h6>
+            {% endif %}
         </div>
         <div class="card-body">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -69,7 +77,7 @@
                                 endif %}>
                                 <i class="fa fa-plus"></i>
                                 {% if total_assigned_reviewer == 3 %}
-                                Limit (3) Reviewers Reached
+                                Limite (3) de Revisores Alcanzado
                                 {% else %}
                                 Asignar
                                 {% endif %}

@@ -9,10 +9,19 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Asignar Asesor a Tesis N° {{thesis.thesis_id}}</h1>
+    <h1 class="h3 mb-2 text-gray-800">
+        {% if thesis.project_id == 0 %}
+        Asignar Asesor a Proyecto N° {{thesis.thesis_id}}</h1>
+        {% else %}
+        Asignar Asesor a Tesis N° {{thesis.thesis_id}}</h1>
+        {% endif %}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+            {% if thesis.project_id == 0 %}
+            <h6 class="m-0 font-weight-bold text-primary">Asignar Asesor de Proyecto</h6>
+            {% else %}
             <h6 class="m-0 font-weight-bold text-primary">Asignar Asesor de Tesis</h6>
+            {% endif %}
         </div>
         <div class="card-body">
             {% with messages = get_flashed_messages(with_categories=true) %}
