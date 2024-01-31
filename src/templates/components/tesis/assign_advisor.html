@@ -16,7 +16,8 @@
         Asignar Asesor a Tesis N° {{thesis.thesis_id}}</h1>
         {% endif %}
     <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+        <div class="card-header py-3 d-flex align-items-center mb-4">
+            <a href="/tesis" class="btn btn-sm btn-primary"><i class="fas fa-arrow-left"></i></a>&nbsp;
             {% if thesis.project_id == 0 %}
             <h6 class="m-0 font-weight-bold text-primary">Asignar Asesor de Proyecto</h6>
             {% else %}
@@ -47,10 +48,10 @@
                             <select class="form-control" id="mySelect" name="advisor">
                                 {% if left_advisors %}
                                 <option value="">Seleccionar asesor...</option>
-                                {% for advisor in left_advisors %}
-                                <option value="{{ advisor.advisor_id }}">
-                                    {{ advisor.advisor_code }} | {{ advisor.firstname }} {{ advisor.lastname }} | {{
-                                    advisor.username }}
+                                {% for item in left_advisors %}
+                                <option value="{{ item.advisor_id }}">
+                                    {{ item.advisor_code }} | {{ item.firstname }} {{ item.lastname }} | {{
+                                    item.username }} | {{ item.email }}
                                 </option>
                                 {% endfor %}
                                 {% else %}

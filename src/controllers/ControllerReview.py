@@ -132,8 +132,7 @@ class ControllerReview:
                 "inner join reviewer_role r_r on r_r.id = r_t.reviewer_role_id "
                 "inner join reviewer rw on rw.reviewer_id = r_t.reviewer_id "
                 "inner join person p on p.person_id = rw.person_id "
-                "where r_t.thesis_id = :p_thesis_id "
-                "GROUP BY p.firstname, p.lastname, p.image; "
+                "where r_t.thesis_id = :p_thesis_id LIMIT 3"
             )
             params = {
                 "p_thesis_id": id,
