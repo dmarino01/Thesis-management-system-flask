@@ -34,6 +34,8 @@ app.url_map.strict_slashes = False
 
 db.init_app(app)
 
+
+
 app.register_blueprint(author_bp)
 app.register_blueprint(advisor_bp)
 app.register_blueprint(reviewer_bp)
