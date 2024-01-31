@@ -168,7 +168,7 @@
             var projectValue = row.dataset.projectId;
             var statusValue = row.dataset.statusId;
 
-            var projectMatch = (projectFilter === '' || projectValue === projectFilter);
+            var projectMatch = (projectFilter === '' || (projectFilter === '0' && projectValue === '0') || (projectFilter === '1' && projectValue !== '0'));
             var statusMatch = (statusFilter === '' || statusValue === statusFilter);
 
             if (projectMatch && statusMatch) {
