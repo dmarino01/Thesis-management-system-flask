@@ -2,7 +2,6 @@ from models.Advisor import Advisor
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
 from datetime import date
-from flask import flash
 from models.AssignedAdvisor import AssignedAdvisor
 
 

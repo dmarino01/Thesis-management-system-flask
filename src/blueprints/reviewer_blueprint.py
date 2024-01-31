@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.ControllerReviewer import ControllerReviewer
 from flask_login import login_required
-
 from config import db
 
 reviewer_bp = Blueprint("reviewer", __name__)

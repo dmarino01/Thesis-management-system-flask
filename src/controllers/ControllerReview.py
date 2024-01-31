@@ -1,47 +1,14 @@
-from flask_login import current_user
-from models.Review import Review
 from models.Thesis import Thesis
 from sqlalchemy import text
 
 
 class ControllerReview:
     @classmethod
-    def get_thesis_by_review_reviewer(
-        cls, db, id, project_filter=None, status_filter=None
-    ):
+    def get_thesis_by_review_reviewer(cls, db, id):
         try:
             session = db.session()
-            # sql = text("CALL GetThesisByReviewer(:person_id);")
-            sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name ,Aut.author_id, P.firstname, P.lastname "
-                "FROM thesis T "
-                "INNER JOIN MENTION M ON M.id = T.mention_id "
-                "INNER JOIN AUTHOR_THESIS AT ON T.thesis_id = AT.thesis_id "
-                "INNER JOIN AUTHOR Aut ON Aut.author_id = AT.author_id "
-                "INNER JOIN PERSON P ON P.person_id = Aut.person_id "
-                "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
-                "INNER JOIN REVIEWER_THESIS R_T ON T.thesis_id = R_T.thesis_id "
-                "INNER JOIN REVIEWER Rev ON Rev.reviewer_id = R_T.reviewer_id "
-                "INNER JOIN PERSON PA ON PA.person_id = Rev.person_id "
-                "WHERE T.is_deleted = 0 AND P.is_deleted = 0 AND PA.person_id = :p_person_id"
-            )
-
-            # Add filters based on project_id
-            if project_filter is not None:
-                sql += " AND T.project_id = :project_id"
-
-            # Add filters based on thesis_status_id
-            if status_filter is not None:
-                sql += " AND T.thesis_status_id = :status_id"
-
-            result = session.execute(
-                sql,
-                {
-                    "p_person_id": id,
-                    "project_id": project_filter,
-                    "status_id": status_filter,
-                },
-            )
+            sql = text("CALL GetThesisByReviewer(:p_person_id);")
+            result = session.execute(sql, {"p_person_id": id})
             rows = result.fetchall()
             thesiss = []
             if rows != None:
@@ -149,7 +116,7 @@ class ControllerReview:
             session = db.session()
 
             sql = text("CALL getStatusReviewThesis(:p_thesis_id)")
-            params = { 
+            params = {
                 "p_thesis_id": id,
             }
             result = session.execute(sql, params)
@@ -158,7 +125,6 @@ class ControllerReview:
             return status_review
         except Exception as ex:
             raise Exception(ex)
-        
 
     @classmethod
     def getLastReviewDate(cls, db, id):
@@ -176,8 +142,8 @@ class ControllerReview:
                 "WHERE r_t.thesis_id = :p_thesis_id "
                 "ORDER BY r.review_date DESC "
                 "LIMIT 1; "
-                )
-            params = { 
+            )
+            params = {
                 "p_thesis_id": id,
             }
             result = session.execute(sql, params)

@@ -8,23 +8,26 @@ from config import db
 
 review_bp = Blueprint('review', __name__)
 
+
+# View Thesis per reviewer
 @review_bp.route('/review/<int:id>', methods=['GET'])
 @login_required
 def review_thesis(id):
-    project_filter = request.args.get('project_filter')
-    status_filter = request.args.get('status_filter')
-    data = ControllerReview.get_thesis_by_review_reviewer(db, id, project_filter, status_filter)
+    data = ControllerReview.get_thesis_by_review_reviewer(db, id)
     return render_template('review/index.html', thesis=data)
 
+
+# View to Review Thesis
 @review_bp.route('/review_thesis_page/<int:id>', methods=['GET'])
 @login_required
 def review_thesis_page(id):
     person_id = current_user.person_id
     data = ControllerThesis.get_thesis_by_id(db, id)
-    # IF review_exists THEN HTML review form will be deactivated
     review_exists = ControllerReview.check_review_exists(db, id, person_id)
     return render_template('review/review.html', thesis=data, review_exists = review_exists)
 
+
+# Route to save review
 @review_bp.route('/save_review/<int:id>', methods=['GET', 'POST'])
 @login_required
 def save_review(id):

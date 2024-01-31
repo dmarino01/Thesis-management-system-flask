@@ -6,40 +6,11 @@ from sqlalchemy import text
 
 class ControllerRecommendation:
     @classmethod
-    def get_thesis_by_author_advisor(
-        cls, db, id, project_filter=None, status_filter=None
-    ):
+    def get_thesis_by_author_advisor(cls, db, id):
         try:
             session = db.session()
-            # sql = text("CALL GetThesisByAdvisor(:person_id);")
-            sql = text(
-                "SELECT DISTINCT T.thesis_id, T.title, T.abstract, T.submission_date, T.expiration_date, T.last_update_date, "
-                "T.rating, T.pdf_link, T.turnitin_porcentaje, T.turnitin_link, T.article_link, T.thesis_status_id, T.project_id, T.mention_id, M.name, Aut.author_id, P.firstname, P.lastname "
-                "FROM THESIS T "
-                "INNER JOIN MENTION M ON M.id = T.mention_id "
-                "INNER JOIN AUTHOR_THESIS AT ON T.thesis_id = AT.thesis_id "
-                "LEFT JOIN REVIEW R ON R.thesis_id = T.thesis_id "
-                "INNER JOIN AUTHOR Aut ON Aut.author_id = AT.author_id "
-                "INNER JOIN PERSON P ON P.person_id = Aut.person_id "
-                "INNER JOIN ADVISOR_THESIS A_T ON t.thesis_id = A_T.thesis_id "
-                "INNER JOIN ADVISOR Adv ON Adv.advisor_id = A_T.advisor_id "
-                "INNER JOIN PERSON PA ON PA.person_id = Adv.person_id "
-                "WHERE T.is_deleted = 0 AND P.is_deleted = 0 AND PA.person_id = :p_person_id"
-            )
-            # Add filters based on project_id
-            if project_filter is not None:
-                sql += " AND T.project_id = :project_id"
-
-            # Add filters based on thesis_status_id
-            if status_filter is not None:
-                sql += " AND T.thesis_status_id = :status_id"
-
-            params = {
-                "p_person_id": id,
-                "project_id": project_filter,
-                "status_id": status_filter,
-            }
-            result = session.execute(sql, params)
+            sql = text("CALL GetThesisByAdvisor(:p_person_id);")
+            result = session.execute(sql, {"p_person_id": id})
             rows = result.fetchall()
             thesiss = []
             if rows != None:

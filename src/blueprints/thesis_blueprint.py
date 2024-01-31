@@ -445,9 +445,7 @@ def allowed_img(filename):
 @thesis_bp.route("/tesis")
 @login_required
 def tesis():
-    project_filter = request.args.get("project_filter")
-    status_filter = request.args.get("status_filter")
-    data = ControllerThesis.getThesisForAdmin(db, project_filter, status_filter)
+    data = ControllerThesis.getThesisForAdmin(db)
     return render_template("components/tesis/index.html", thesis=data)
 
 

@@ -1,4 +1,3 @@
-import base64
 from models.User import User
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
