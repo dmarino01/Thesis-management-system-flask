@@ -73,7 +73,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item active" hidden>
                 <a class="nav-link" href="index">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -102,7 +102,7 @@
                         <a href="/reviewer" class="collapse-item"><i class="fa fa-user-tie me-2"></i> Reviewer</a>
                         <a href="/advisor" class="collapse-item"><i class="fa fa-person-chalkboard me-2"></i> Asesor</a>
                         <a href="/tesis" class="collapse-item"><i class="fa fa-book me-2"></i> Tesis</a>
-                        <a href="/review" class="collapse-item"><i class="fa fa-star me-2"></i> Review</a>
+                        <a href="/review" class="collapse-item" hidden><i class="fa fa-star me-2"></i> Review</a>
                         <a href="/status_thesis" class="collapse-item" hidden><i
                                 class="fa fa-check-circle me-2"></i>Estado Tesis</a>
                         <a href="/role" class="collapse-item" hidden><i class="fa fa-users me-2"></i> Roles</a>
@@ -166,12 +166,12 @@
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            <div class="sidebar-heading">
+            <div class="sidebar-heading" hidden>
                 Addons
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" hidden>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
@@ -192,21 +192,21 @@
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item" hidden>
                 <a class="nav-link" href="charts.html">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Charts</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item" hidden>
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Divider 
+            <hr class="sidebar-divider d-none d-md-block">-->
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -232,7 +232,7 @@
                     <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
+                        <div class="input-group" hidden>
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                                 aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
@@ -271,7 +271,7 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <li class="nav-item dropdown no-arrow mx-1" hidden>
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
@@ -322,7 +322,7 @@
                         </li>
 
                         <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <li class="nav-item dropdown no-arrow mx-1" hidden>
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
