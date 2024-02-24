@@ -92,14 +92,15 @@ class ControllerReview:
         try:
             session = db.session()
             sql = text(
-                "select DISTINCT  p.firstname, p.lastname, p.image, r.rating, r.review_date, r.comment, r_r.role "
-                "from review r "
-                "inner join thesis t on t.thesis_id = r.thesis_id "
-                "inner join reviewer_thesis r_t on r_t.thesis_id = t.thesis_id "
-                "inner join reviewer_role r_r on r_r.id = r_t.reviewer_role_id "
-                "inner join reviewer rw on rw.reviewer_id = r_t.reviewer_id "
-                "inner join person p on p.person_id = rw.person_id "
-                "where r_t.thesis_id = :p_thesis_id LIMIT 3"
+                "SELECT DISTINCT rw.reviewer_id, p.firstname, p.lastname, p.image, r.rating, r.review_date, r.comment, r_r.role "
+                "FROM "
+                "    review r "
+                "INNER JOIN thesis t ON t.thesis_id = r.thesis_id "
+                "INNER JOIN reviewer rw ON rw.reviewer_id = r.reviewer_id "
+                "INNER JOIN person p ON p.person_id = rw.person_id "
+                "LEFT JOIN reviewer_thesis r_t ON r_t.reviewer_id = r.reviewer_id AND r_t.thesis_id = r.thesis_id "
+                "INNER JOIN reviewer_role r_r ON r_r.id = r_t.reviewer_role_id "
+                "where r.thesis_id = :p_thesis_id"
             )
             params = {
                 "p_thesis_id": id,
