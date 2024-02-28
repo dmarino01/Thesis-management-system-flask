@@ -2,9 +2,163 @@
 
 {% block title %} INICIO {% endblock %}
 
+
 {% block content %}
 <div class="container-fluid pt-4 px-4">
     <h2>PÁGINA DE INICIO</h2>
-</div>
+    <h1 class="h3 mb-2 text-gray-800">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between mb-4">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    Menú
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if current_user.role == 'Admin' %}
+                <div class="card-deck">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Mantenedor</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Vista Autores</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/autor" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Mantenedor</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Vista Revisores</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/reviewer" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Mantenedor</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Vista Asesores</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/advisor" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Mantenedor</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Vista Tesis</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/tesis" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+                </div><br>
+                <div class="card-deck">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Reportes</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Ver trabajos sin asesores asignados.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/report_asa" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
 
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Reportes</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Ver trabajos con asesores asignados.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/report_aca" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Reportes</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Ver trabajos sin revisores asignados.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/report_ptsr" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Reportes</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Admin</h5>
+                            <p class="card-text">Ver trabajos sin calificaciones por fecha.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/report_ptsc" class="btn btn-primary">Ir</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if current_user.role == 'Autor' %}
+                <div class="card mb-4" style="max-width: 18rem;">
+                    <!-- Card Header - Accordion -->
+                    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                        aria-expanded="true" aria-controls="collapseCardExample">
+                        <h6 class="m-0 font-weight-bold text-primary">Mantenedor</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="collapseCardExample">
+                        <div class="card-body">
+                            <h5>Vista Tesis</h5>
+                        </div>
+                        <div class="card-footer"><a href="myThesis"
+                                class="btn btn-primary"><i class="fas fa-eye"></i> Ir</a></div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if current_user.role == 'Asesor' %}
+                <div class="card mb-4" style="max-width: 18rem;">
+                    <!-- Card Header - Accordion -->
+                    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                        aria-expanded="true" aria-controls="collapseCardExample">
+                        <h6 class="m-0 font-weight-bold text-primary">Mantenedor</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="collapseCardExample">
+                        <div class="card-body">
+                            <h5>Vista Tesis a Revisar</h5>
+                        </div>
+                        <div class="card-footer"><a href="{{ url_for('recommendation.recommendation_thesis', id=current_user.person_id)}}"
+                                class="btn btn-primary"><i class="fas fa-eye"></i> Ir</a></div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if current_user.role == 'Revisor' %}
+                <div class="card mb-4" style="max-width: 18rem;">
+                    <!-- Card Header - Accordion -->
+                    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                        aria-expanded="true" aria-controls="collapseCardExample">
+                        <h6 class="m-0 font-weight-bold text-primary">Mantenedor</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="collapseCardExample">
+                        <div class="card-body">
+                            <h5>Vista Tesis a Revisar</h5>
+                        </div>
+                        <div class="card-footer"><a href="{{ url_for('review.review_thesis', id=current_user.person_id)}}"
+                                class="btn btn-primary"><i class="fas fa-eye"></i> Ir</a></div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </h1>
+</div>
 {% endblock %}
