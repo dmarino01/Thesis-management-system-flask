@@ -55,22 +55,27 @@
                             <option value="25">25</option>
                             <option value="50">50</option>
                         </select>
-                        <button class="btn btn-primary btn-sm ml-2" id="prev-page"><i class="fa fa-arrow-left"></i></button>
-                        <button class="btn btn-primary btn-sm ml-2" id="next-page"><i class="fa fa-arrow-right"></i></button>
+                        <button class="btn btn-primary btn-sm ml-2" id="prev-page"><i
+                                class="fa fa-arrow-left"></i></button>
+                        <button class="btn btn-primary btn-sm ml-2" id="next-page"><i
+                                class="fa fa-arrow-right"></i></button>
                     </div>
-                
+
                     <!-- Search Autores -->
-                    <form action="/search_autores" method="POST" class="ml-auto d-flex align-items-center" style="width: 30%;">
+                    <form action="/search_autores" method="POST" class="ml-auto d-flex align-items-center"
+                        style="width: 30%;">
                         <div class="input-group mb-2" style="width: 100%;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="text" class="form-control" name="keyname" placeholder="Buscar autor por nombre..." style="height: 45px; font-size: 16px;">
+                            <input type="text" class="form-control" name="keyname"
+                                placeholder="Buscar autor por nombre..." style="height: 45px; font-size: 16px;">
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary" style="height: 45px;"><i class="fa fa-search"></i></button>
+                                <button type="submit" class="btn btn-primary" style="height: 45px;"><i
+                                        class="fa fa-search"></i></button>
                             </div>
                         </div>
                     </form>
-                </div><br>  
-                
+                </div><br>
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 {% for category, message in messages %}
@@ -87,42 +92,23 @@
                 <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Código</th>
-                            <th>Nombres y Apellidos</th>
+                            <th>Apellidos y Nombres</th>
                             <th>DNI</th>
                             <th>Email</th>
                             <th>Usuario</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>ID</th>
-                            <th>Código</th>
-                            <th>Nombres y Apellidos</th>
-                            <th>DNI</th>
-                            <th>Email</th>
-                            <th>Usuario</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                            <th>Acción</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         {% if autores %}
                         {% for item in autores %}
                         <tr>
-                            <td>{{ item.author_id }}</td>
                             <td>{{ item.student_code }}</td>
-                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.lastname }} {{ item.firstname }}</td>
                             <td>{{ item.dni }}</td>
                             <td>{{ item.email }}</td>
                             <td>{{ item.username }}</td>
-                            <td>{{ item.phone }}</td>
-                            <td>{{ item.address }}</td>
                             <td class="col-2">
                                 <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.person_id }}"><i
                                         class="fa fa-pen"></i> Editar</a>
@@ -133,10 +119,20 @@
                         {% endfor %}
                         {% else %}
                         <tr>
-                            <td class="text-center" colspan="9">No hay resultados encontrados.</td>
+                            <td class="text-center" colspan="6">No hay resultados encontrados.</td>
                         </tr>
                         {% endif %}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Código</th>
+                            <th>Apellidos y Nombres</th>
+                            <th>DNI</th>
+                            <th>Email</th>
+                            <th>Usuario</th>
+                            <th>Acción</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

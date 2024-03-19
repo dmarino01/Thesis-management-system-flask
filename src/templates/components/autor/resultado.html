@@ -59,46 +59,50 @@
 
             <div class="table-responsive">
 
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">Código</th>
-                            <th scope="col">Nombres y Apellidos</th>
+                            <th scope="col">Apellidos y Nombres</th>
                             <th scope="col">DNI</th>
                             <th scope="col">Email</th>
                             <th scope="col">Usuario</th>
                             <th scope="col">Teléfono</th>
-                            <th scope="col">Dirección</th>
-                            <th scope="col">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% if filtered_autores %}
                         {% for item in filtered_autores %}
                         <tr>
-                            <td>{{ item.author_id }}</td>
                             <td>{{ item.student_code }}</td>
-                            <td>{{ item.firstname }} {{ item.lastname }}</td>
+                            <td>{{ item.lastname }} {{ item.firstname }}</td>
                             <td>{{ item.dni }}</td>
                             <td>{{ item.email }}</td>
                             <td>{{ item.username }}</td>
-                            <td>{{ item.phone }}</td>
-                            <td>{{ item.address }}</td>
                             <td class="col-2">
-                                <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.author_id }}"><i
+                                <a class="btn btn-sm btn-warning" href="/edit_autor_form/{{ item.person_id }}"><i
                                         class="fa fa-pen"></i> Editar</a>
-                                <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.author_id }}"
+                                <a class="btn btn-sm btn-danger" href="/desactivate_autor/{{ item.person_id }}"
                                     onclick="return confirmDelete();"><i class="fa fa-trash"></i> Eliminar</a>
                             </td>
                         </tr>
                         {% endfor %}
                         {% else %}
                         <tr>
-                            <td class="text-center" colspan="9">No hay resultados encontrados.</td>
+                            <td class="text-center" colspan="6">No hay resultados encontrados.</td>
                         </tr>
                         {% endif %}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Apellidos y Nombres</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Teléfono</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
