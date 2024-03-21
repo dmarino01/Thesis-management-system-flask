@@ -331,6 +331,7 @@
                         <div class="mb-3">
                             <label for="mencion" class="form-label">Mencion</label>
                             <select id="mencion" class="form-control" name="mencion">
+                                <option value="">Seleccione una mención...</option>
                                 {% for item in mentions %}
                                 <option value="{{ item.id }}">{{ item.name }}</option>
                                 {% endfor %}
